@@ -1,4 +1,4 @@
-import type { Candle, MarketStructure, Technicals } from "./types";
+import type { Candle, FairValueGap, MarketStructure, OrderBlock, Technicals } from "./types";
 
 export function rsi(candles: Candle[], period = 14): number {
   if (candles.length < period + 1) return 50;
@@ -59,7 +59,10 @@ export function technicals(candles: Candle[]): Technicals {
   const last = candles.at(-1)?.close ?? 0;
   const momentum =
     r >= 58 && e20 >= e50 ? "bullish" : r <= 42 && e20 <= e50 ? "bearish" : "neutral";
-  const trendStrength = Math.min(100, Math.abs(e20 - e50) / Math.max(last, 1) * 4000 + Math.abs(r - 50));
+  const trendStrength = Math.min(
+    100,
+    (Math.abs(e20 - e50) / Math.max(last, 1)) * 4000 + Math.abs(r - 50),
+  );
   return { rsi: r, ema20: e20, ema50: e50, atr: atr(candles), vwap: vwap(candles), momentum, trendStrength };
 }
 
@@ -72,5 +75,60 @@ export function structure(candles: Candle[]): MarketStructure {
   const e20 = ema(candles, 20);
   const e50 = ema(candles, 50);
   const trend = e20 > e50 * 1.002 ? "BULLISH" : e20 < e50 * 0.998 ? "BEARISH" : "NEUTRAL";
-  return { trend, support: [q1, Math.min(q1, last * 0.992)], resistance: [q3, Math.max(q3, last * 1.008)] };
+
+  const fvgs: FairValueGap[] = [];
+  for (let i = 2; i < candles.length; i++) {
+    const a = candles[i - 2];
+    const c = candles[i];
+    if (c.low > a.high) {
+      const filled = last < a.high;
+      fvgs.push({ type: "bullish", high: c.low, low: a.high, status: filled ? "filled" : "open" });
+    } else if (c.high < a.low) {
+      const filled = last > a.low;
+      fvgs.push({ type: "bearish", high: a.low, low: c.high, status: filled ? "filled" : "open" });
+    }
+  }
+
+  const orderBlocks: OrderBlock[] = [];
+  for (let i = 2; i < candles.length; i++) {
+    const a = candles[i - 2];
+    const b = candles[i - 1];
+    const c = candles[i];
+    const up = c.close > c.open && b.close > b.open;
+    const down = c.close < c.open && b.close < b.open;
+    if (up && a.close < a.open) {
+      orderBlocks.push({
+        type: "bullish",
+        priceStart: a.low,
+        priceEnd: a.high,
+        status: last < a.low ? "mitigated" : "active",
+      });
+    }
+    if (down && a.close > a.open) {
+      orderBlocks.push({
+        type: "bearish",
+        priceStart: a.low,
+        priceEnd: a.high,
+        status: last > a.high ? "mitigated" : "active",
+      });
+    }
+  }
+
+  const mid = Math.floor(candles.length / 2);
+  const firstHalfHigh = Math.max(...candles.slice(0, mid).map((c) => c.high));
+  const secondHalfHigh = Math.max(...candles.slice(mid).map((c) => c.high));
+  const firstHalfLow = Math.min(...candles.slice(0, mid).map((c) => c.low));
+  const secondHalfLow = Math.min(...candles.slice(mid).map((c) => c.low));
+  const bos = trend === "BULLISH" ? secondHalfHigh > firstHalfHigh : secondHalfLow < firstHalfLow;
+  const choch = (trend === "BULLISH" && secondHalfLow < firstHalfLow) || (trend === "BEARISH" && secondHalfHigh > firstHalfHigh);
+
+  return {
+    trend,
+    support: [q1, Math.min(q1, last * 0.992)],
+    resistance: [q3, Math.max(q3, last * 1.008)],
+    orderBlocks: orderBlocks.slice(-4),
+    fvgs: fvgs.filter((f) => f.status === "open").slice(-4),
+    bos,
+    choch,
+  };
 }

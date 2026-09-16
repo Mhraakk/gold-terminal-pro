@@ -8,6 +8,6 @@ Request path:
 
 `web --HTTPS--> gateway --> orchestrator ⇄ (llm + guardrails + memory) ⇄ cache`
 
-Auth off. Portfolio and alerts are device-local. Quotes are world-readable market data.
+Auth off. Portfolio, alerts, journal and rules are device-local. Quotes are world-readable market data.
 
-Custom instructions from the original Gold Terminal: Persian-only quant, no fake live prices, Tehran gold/FX desk (melted, 18k, coins, USD, XAUUSD), SMC language, Kelly-style setups.
+Custom instructions from the original Gold Terminal: Persian-only quant, no fake live prices, Tehran gold/FX desk (melted, 18k, coins, USD, XAUUSD), SMC language, Kelly-style setups. Spec in `SPEC.md`.

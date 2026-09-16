@@ -1,4 +1,4 @@
-import { formatPct, formatPrice } from "@/lib/format";
+import { formatPct, formatPrice, formatSigned } from "@/lib/format";
 import type { MazanehDesk } from "@/data/market/types";
 
 const VERDICT = {
@@ -20,7 +20,7 @@ export function HunterDesk({ mazaneh }: { mazaneh: MazanehDesk }) {
         <Cell label="دلار آزاد" value={formatPrice(mazaneh.usdToman)} />
         <Cell label="گرم ۱۸ تئوریک" value={formatPrice(mazaneh.theoretical18k)} />
         <Cell label="گرم ۱۸ زنده" value={formatPrice(mazaneh.live18k)} />
-        <Cell label="اسپرد" value={`${formatPrice(mazaneh.spreadToman)} · ${formatPct(mazaneh.spreadPercent)}`} />
+        <Cell label="اسپرد" value={`${formatSigned(mazaneh.spreadToman)} · ${formatPct(mazaneh.spreadPercent)}`} />
         <Cell label="مثقال آب‌شده" value={formatPrice(mazaneh.meltedMesghal)} />
       </dl>
       <p className="mt-6 text-xs text-muted">

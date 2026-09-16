@@ -6,6 +6,7 @@ export type AssetId =
   | "COIN_EMAMI"
   | "COIN_HALF"
   | "COIN_QUARTER"
+  | "COIN_GERAMI"
   | "GOLD_GRAM"
   | "USDIRT"
   | "USDTIRT"
@@ -35,7 +36,6 @@ export interface MarketQuote {
   decimals: number;
   /** Display price (toman for IRR assets, USD for XAU). */
   price: number;
-  /** Raw rial when quoteUnit is toman, else same as price. */
   raw: number;
   high: number;
   low: number;
@@ -66,10 +66,28 @@ export interface Technicals {
   trendStrength: number;
 }
 
+export interface OrderBlock {
+  type: "bullish" | "bearish";
+  priceStart: number;
+  priceEnd: number;
+  status: "active" | "mitigated";
+}
+
+export interface FairValueGap {
+  type: "bullish" | "bearish";
+  high: number;
+  low: number;
+  status: "open" | "filled";
+}
+
 export interface MarketStructure {
   trend: "BULLISH" | "BEARISH" | "NEUTRAL";
   support: number[];
   resistance: number[];
+  orderBlocks: OrderBlock[];
+  fvgs: FairValueGap[];
+  bos: boolean;
+  choch: boolean;
 }
 
 export interface MazanehDesk {

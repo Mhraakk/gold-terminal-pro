@@ -82,6 +82,16 @@ export const ASSETS: AssetMeta[] = [
     tgjuKey: "rob",
   },
   {
+    id: "COIN_GERAMI",
+    name: "Gerami coin",
+    persianName: "سکه گرمی",
+    symbol: "GERAMI",
+    unit: "تومان / عدد",
+    quoteUnit: "toman",
+    decimals: 0,
+    tgjuKey: "gerami",
+  },
+  {
     id: "USDIRT",
     name: "USD free",
     persianName: "دلار آزاد",

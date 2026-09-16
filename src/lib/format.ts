@@ -22,14 +22,20 @@ export function formatPct(value: number): string {
   return `${n}٪`;
 }
 
-export function tehranNow(): Date {
-  return new Date();
-}
-
 export function formatTehranTime(date = new Date()): string {
   return date.toLocaleTimeString("fa-IR", { hour12: false, timeZone: "Asia/Tehran" });
 }
 
 export function formatTehranDate(date = new Date()): string {
+  return date.toLocaleDateString("fa-IR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Tehran",
+  });
+}
+
+export function formatTehranShort(date = new Date()): string {
   return date.toLocaleDateString("fa-IR", { timeZone: "Asia/Tehran" });
 }

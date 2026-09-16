@@ -2,7 +2,7 @@ import { rag } from "@/rag";
 import { knowledge } from "@/knowledge";
 import { QUANT_SYSTEM, completeXai } from "@/llm";
 import { guardInbound, parseStructured } from "@/guardrails";
-import type { MarketQuote, Technicals } from "@/data/market/types";
+import type { MarketQuote, MarketStructure, Technicals } from "@/data/market/types";
 
 export type OrchestratorResult =
   | {
@@ -18,6 +18,7 @@ export async function runQuantGraph(input: {
   question: string;
   quote: MarketQuote;
   tech: Technicals;
+  structure?: MarketStructure;
 }): Promise<OrchestratorResult> {
   const inbound = guardInbound(input.question);
   if (!inbound.ok) {
@@ -26,6 +27,7 @@ export async function runQuantGraph(input: {
 
   const ragNote = rag.enabled ? "rag-on" : "rag-disabled";
   const knowledgeNote = knowledge.enabled ? "knowledge-on" : "knowledge-disabled";
+  const st = input.structure;
 
   const user = [
     `دارایی: ${input.quote.persianName} (${input.quote.symbol})`,
@@ -33,6 +35,9 @@ export async function runQuantGraph(input: {
     `تغییر: ${input.quote.changePercent}% | high ${input.quote.high} | low ${input.quote.low}`,
     `منبع: ${input.quote.source} | تازگی: ${input.quote.freshness}`,
     `RSI ${input.tech.rsi} | EMA20 ${input.tech.ema20.toFixed(2)} | EMA50 ${input.tech.ema50.toFixed(2)} | ATR ${input.tech.atr.toFixed(2)} | مومنتوم ${input.tech.momentum}`,
+    st
+      ? `ساختار: ${st.trend} | BOS ${st.bos} | CHOCH ${st.choch} | FVG باز ${st.fvgs.length} | OB فعال ${st.orderBlocks.filter((o) => o.status === "active").length}`
+      : "ساختار: نامشخص",
     `لایه دانش: ${knowledgeNote} | RAG: ${ragNote}`,
     `سؤال کاربر: ${inbound.text || "تحلیل ساختار بازار و سناریوی معامله."}`,
     "خروجی را JSON ساخت‌یافته مطابق اسکیما بده، بعد یک خلاصه فارسی کوتاه.",

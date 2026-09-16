@@ -55,6 +55,7 @@ export const analyzeFn = createServerFn({ method: "POST" })
       question: data.question ?? "تحلیل ساختار و سناریوی معامله",
       quote,
       tech: technicals(pack.candles),
+      structure: structure(pack.candles),
     });
     logGateway({
       requestId,
