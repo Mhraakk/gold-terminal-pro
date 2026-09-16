@@ -1,3 +1,4 @@
+import { FrameButton } from "@/components/frame";
 import { cn } from "@/lib/cn";
 import { formatPct, formatPrice, formatSigned } from "@/lib/format";
 import type { MarketQuote } from "@/data/market/types";
@@ -22,14 +23,7 @@ export function QuoteCard({
   const down = quote.changePercent < 0;
   const dead = quote.freshness === "unavailable" || quote.price <= 0;
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={cn(
-        "panel l-bracket w-full p-4 text-right transition-shadow duration-200",
-        active && "shadow-border-hover",
-      )}
-    >
+    <FrameButton selected={active} onClick={onSelect} className="w-full p-4">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <p className="text-sm text-fg">{quote.persianName}</p>
@@ -56,6 +50,6 @@ export function QuoteCard({
         </span>
         <span className="text-muted">{quote.source}</span>
       </div>
-    </button>
+    </FrameButton>
   );
 }

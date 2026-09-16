@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FrameCard } from "@/components/frame";
 import { ASSETS } from "@/data/market/assets";
 import type { AssetId, MarketQuote } from "@/data/market/types";
 import { formatPrice, formatSigned } from "@/lib/format";
@@ -43,7 +44,7 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
   }, 0);
 
   return (
-    <div className="panel l-bracket p-4">
+    <FrameCard className="p-4">
       <div className="mb-4 flex items-end justify-between">
         <div>
           <p className="label-tech">BOOK</p>
@@ -57,7 +58,7 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
         <select
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm text-fg shadow-border"
+          className="desk-input"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -69,13 +70,13 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={qty}
           onChange={(e) => setQty(e.target.value)}
           placeholder="مقدار"
-          className="min-h-11 rounded-sm bg-transparent px-3 text-sm shadow-border"
+          className="desk-input"
         />
         <input
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
           placeholder="ورود (خالی = قیمت زنده)"
-          className="min-h-11 rounded-sm bg-transparent px-3 text-sm shadow-border"
+          className="desk-input"
         />
         <Button variant="primary" onClick={add}>
           ثبت
@@ -90,7 +91,7 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
             const delta = (px - p.entry) * p.qty;
             const meta = ASSETS.find((a) => a.id === p.assetId);
             return (
-              <li key={p.id} className="flex items-center justify-between gap-3 shadow-border p-3 text-sm">
+              <li key={p.id} className="well flex items-center justify-between gap-3 p-3 text-sm">
                 <div>
                   <p>{meta?.persianName}</p>
                   <p className="num text-muted">
@@ -108,6 +109,6 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           })}
         </ul>
       )}
-    </div>
+    </FrameCard>
   );
 }

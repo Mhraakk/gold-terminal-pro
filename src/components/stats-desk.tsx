@@ -1,11 +1,12 @@
+import { FrameCard } from "@/components/frame";
 import { formatPct, formatPrice } from "@/lib/format";
 import type { MarketQuote } from "@/data/market/types";
 
 export function StatsDesk({ quotes }: { quotes: MarketQuote[] }) {
   const live = quotes.filter((q) => q.freshness !== "unavailable" && q.price > 0);
   return (
-    <div className="space-y-4">
-      <div className="panel l-bracket p-5">
+    <div className="fg-grid" data-recipe="builder">
+      <FrameCard className="p-5">
         <p className="label-tech">RANGE · LIVE</p>
         <h3 className="mt-1 text-lg font-light">نوسان روز از سقف و کف زنده</h3>
         <p className="mt-2 text-xs text-muted">این نوسان از high/low همان چاپ است، نه از تاریخچهٔ ساختگی.</p>
@@ -13,7 +14,7 @@ export function StatsDesk({ quotes }: { quotes: MarketQuote[] }) {
           {live.map((q) => {
             const range = q.high > 0 && q.low > 0 ? ((q.high - q.low) / q.price) * 100 : 0;
             return (
-              <li key={q.id} className="flex items-center justify-between shadow-border p-3 text-sm">
+              <li key={q.id} className="well flex items-center justify-between p-3 text-sm">
                 <span>{q.persianName}</span>
                 <span className="num text-gold">
                   {formatPct(range)} · {formatPrice(q.low, q.decimals)}–{formatPrice(q.high, q.decimals)}
@@ -22,8 +23,8 @@ export function StatsDesk({ quotes }: { quotes: MarketQuote[] }) {
             );
           })}
         </ul>
-      </div>
-      <div className="panel l-bracket p-5">
+      </FrameCard>
+      <FrameCard className="p-5">
         <p className="label-tech">CO-MOVE TODAY</p>
         <h3 className="mt-1 text-lg font-light">هم‌جهتی تغییر امروز</h3>
         <p className="mt-2 text-xs text-muted">
@@ -61,7 +62,7 @@ export function StatsDesk({ quotes }: { quotes: MarketQuote[] }) {
             </tbody>
           </table>
         </div>
-      </div>
+      </FrameCard>
     </div>
   );
 }

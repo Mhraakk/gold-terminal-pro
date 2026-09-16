@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Activity,
@@ -19,6 +19,7 @@ import { AlertsDesk } from "@/components/alerts-desk";
 import { CandleChart } from "@/components/candle-chart";
 import { DealerDesk } from "@/components/dealer-desk";
 import { ForecastDesk } from "@/components/forecast-desk";
+import { FrameCard, Shell } from "@/components/frame";
 import { HunterDesk } from "@/components/hunter-desk";
 import { JournalDesk } from "@/components/journal-desk";
 import { LiveClock } from "@/components/live-clock";
@@ -28,27 +29,42 @@ import { QuoteCard } from "@/components/quote-card";
 import { SourcesDesk } from "@/components/sources-desk";
 import { StatsDesk } from "@/components/stats-desk";
 import { StrategyDesk } from "@/components/strategy-desk";
+import { ASSET_BY_ID } from "@/data/market/assets";
 import { getChartFn, getMarketFn } from "@/lib/market-fn";
 import { cn } from "@/lib/cn";
 import { formatPct, formatPrice } from "@/lib/format";
 import type { AssetId } from "@/data/market/types";
 
+const DESKS = [
+  "markets",
+  "terminal",
+  "quant",
+  "forecast",
+  "hunter",
+  "stats",
+  "book",
+  "alerts",
+  "strategy",
+  "truth",
+] as const;
+
+type Tab = (typeof DESKS)[number];
+
+type DeskSearch = { desk: Tab; asset?: AssetId };
+
+function parseSearch(raw: Record<string, unknown>): DeskSearch {
+  const desk = DESKS.includes(raw.desk as Tab) ? (raw.desk as Tab) : "markets";
+  const asset =
+    typeof raw.asset === "string" && raw.asset in ASSET_BY_ID ? (raw.asset as AssetId) : undefined;
+  return { desk, asset };
+}
+
 export const Route = createFileRoute("/")({
+  validateSearch: parseSearch,
   loader: () => getMarketFn(),
+  pendingComponent: TerminalPending,
   component: Terminal,
 });
-
-type Tab =
-  | "markets"
-  | "terminal"
-  | "quant"
-  | "forecast"
-  | "hunter"
-  | "stats"
-  | "book"
-  | "alerts"
-  | "strategy"
-  | "truth";
 
 const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "markets", label: "بازار", icon: LayoutDashboard },
@@ -63,8 +79,20 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "truth", label: "صحت داده", icon: Database },
 ];
 
+function TerminalPending() {
+  return (
+    <AmberAura>
+      <Shell className="flex min-h-dvh items-center justify-center">
+        <p className="label-tech text-gold">در حال دریافت چاپ زنده…</p>
+      </Shell>
+    </AmberAura>
+  );
+}
+
 function Terminal() {
   const initial = Route.useLoaderData();
+  const { desk: tab, asset } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const market = useQuery({
     queryKey: ["market"],
     queryFn: () => getMarketFn(),
@@ -72,8 +100,7 @@ function Terminal() {
     refetchInterval: 30_000,
   });
   const snap = market.data ?? initial;
-  const [tab, setTab] = useState<Tab>("markets");
-  const [assetId, setAssetId] = useState<AssetId>("GOLD_18K");
+  const assetId: AssetId = asset ?? "GOLD_18K";
   const quote = useMemo(
     () => snap.quotes.find((q) => q.id === assetId) ?? snap.quotes[0],
     [snap.quotes, assetId],
@@ -86,10 +113,21 @@ function Terminal() {
   });
 
   const liveCount = snap.quotes.filter((q) => q.freshness === "live" && q.price > 0).length;
+  const delayedCount = snap.quotes.filter((q) => q.freshness === "delayed" && q.price > 0).length;
+
+  function setTab(id: Tab) {
+    void navigate({ search: (s) => ({ ...s, desk: id }) });
+  }
+  function setAssetId(id: AssetId) {
+    void navigate({ search: (s) => ({ ...s, asset: id }) });
+  }
 
   return (
     <AmberAura>
-      <div className="mx-auto flex min-h-dvh max-w-6xl flex-col px-4 py-5 sm:px-6">
+      <a href="#desk" className="skip-link">
+        پرش به میز
+      </a>
+      <Shell className="flex min-h-dvh flex-col">
         <header className="mb-5 flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="label-tech text-gold">ZARIN · GOLD TERMINAL</p>
@@ -101,14 +139,20 @@ function Terminal() {
           <div className="flex items-end gap-6">
             <div>
               <p className="label-tech">SOURCES</p>
-              <p className="num mt-1 text-sm text-up">{liveCount} زنده</p>
+              <p className="num mt-1 text-sm text-up">
+                {liveCount > 0
+                  ? `${liveCount} زنده`
+                  : delayedCount > 0
+                    ? `${delayedCount} تأخیر`
+                    : "قطع"}
+              </p>
             </div>
             <LiveClock />
           </div>
         </header>
 
-        <div className="mb-5 -mx-4 overflow-x-auto px-4">
-          <div className="flex min-w-max gap-4 pb-2 text-xs">
+        <div className="-mx-1 overflow-x-auto">
+          <div className="ticker-row text-xs">
             {snap.quotes.map((q) => (
               <button
                 key={q.id}
@@ -117,7 +161,7 @@ function Terminal() {
                   setAssetId(q.id);
                   setTab("terminal");
                 }}
-                className="flex items-baseline gap-2 whitespace-nowrap"
+                className="flex min-h-11 items-baseline gap-2 whitespace-nowrap"
               >
                 <span className="text-muted">{q.persianName}</span>
                 <span className={cn("num", q.price > 0 ? "text-fg" : "text-muted")}>
@@ -138,7 +182,7 @@ function Terminal() {
           </div>
         </div>
 
-        <nav className="-mx-4 mb-6 flex gap-1 overflow-x-auto px-4 pb-1" aria-label="بخش‌ها">
+        <nav className="mt-4 mb-6 flex gap-1 overflow-x-auto pb-1" aria-label="بخش‌ها">
           {TABS.map((t) => {
             const Icon = t.icon;
             const on = tab === t.id;
@@ -146,101 +190,108 @@ function Terminal() {
               <button
                 key={t.id}
                 type="button"
+                data-on={on}
+                aria-current={on ? "page" : undefined}
                 onClick={() => setTab(t.id)}
-                className={cn(
-                  "inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm px-3 text-sm",
-                  on ? "bg-gold text-ink" : "text-muted hover:text-fg",
-                )}
+                className="tab-mark"
               >
-                <Icon className="size-4" />
+                <Icon className="size-4" aria-hidden="true" />
                 {t.label}
               </button>
             );
           })}
         </nav>
 
-        {tab === "markets" && (
-          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {snap.quotes.map((q) => (
-              <QuoteCard
-                key={q.id}
-                quote={q}
-                active={q.id === assetId}
-                onSelect={() => {
-                  setAssetId(q.id);
-                  setTab("terminal");
-                }}
-              />
-            ))}
-          </section>
-        )}
-
-        {tab === "terminal" && (
-          <section className="space-y-4">
-            <div className="flex flex-wrap gap-2">
+        <main id="desk">
+          {tab === "markets" && (
+            <section className="fg-grid" data-recipe="board" aria-label="بازار">
               {snap.quotes.map((q) => (
-                <button
+                <QuoteCard
                   key={q.id}
-                  type="button"
-                  onClick={() => setAssetId(q.id)}
-                  className={cn(
-                    "min-h-11 rounded-sm px-3 text-sm",
-                    q.id === assetId ? "bg-gold text-ink" : "text-fg shadow-border",
-                  )}
-                >
-                  {q.persianName}
-                </button>
+                  quote={q}
+                  active={q.id === assetId}
+                  onSelect={() => {
+                    setAssetId(q.id);
+                    setTab("terminal");
+                  }}
+                />
               ))}
-            </div>
-            {chart.data ? (
-              <CandleChart
-                candles={chart.data.candles}
-                synthetic={chart.data.synthetic}
-                tech={chart.data.tech}
-                structure={chart.data.structure}
-              />
+            </section>
+          )}
+
+          {tab === "terminal" && (
+            <section className="fg-grid" data-recipe="builder" aria-label="ترمینال">
+              <div className="flex flex-wrap gap-1">
+                {snap.quotes.map((q) => (
+                  <button
+                    key={q.id}
+                    type="button"
+                    data-on={q.id === assetId}
+                    aria-current={q.id === assetId ? "true" : undefined}
+                    onClick={() => setAssetId(q.id)}
+                    className="tab-mark"
+                  >
+                    {q.persianName}
+                  </button>
+                ))}
+              </div>
+              {chart.data ? (
+                <CandleChart
+                  candles={chart.data.candles}
+                  synthetic={chart.data.synthetic}
+                  tech={chart.data.tech}
+                  structure={chart.data.structure}
+                />
+              ) : (
+                <FrameCard className="p-8">
+                  <p className="text-sm text-muted">در حال بارگذاری ساختار…</p>
+                </FrameCard>
+              )}
+            </section>
+          )}
+
+          {tab === "quant" && <QuantDesk assetId={quote.id} assetName={quote.persianName} />}
+
+          {tab === "forecast" &&
+            (chart.data ? (
+              <ForecastDesk quote={chart.data.quote} tech={chart.data.tech} />
             ) : (
-              <p className="panel p-8 text-sm text-muted">در حال بارگذاری ساختار…</p>
-            )}
-          </section>
-        )}
+              <FrameCard className="p-8">
+                <p className="text-sm text-muted">در حال بارگذاری ساختار…</p>
+              </FrameCard>
+            ))}
 
-        {tab === "quant" && <QuantDesk assetId={quote.id} assetName={quote.persianName} />}
+          {tab === "hunter" && (
+            <section className="fg-grid" data-recipe="builder" aria-label="شکار مظنه">
+              <HunterDesk mazaneh={snap.mazaneh} />
+              <DealerDesk mazaneh={snap.mazaneh} />
+            </section>
+          )}
 
-        {tab === "forecast" && chart.data && (
-          <ForecastDesk quote={chart.data.quote} tech={chart.data.tech} />
-        )}
+          {tab === "stats" && <StatsDesk quotes={snap.quotes} />}
 
-        {tab === "hunter" && (
-          <section className="space-y-4">
-            <HunterDesk mazaneh={snap.mazaneh} />
-            <DealerDesk mazaneh={snap.mazaneh} />
-          </section>
-        )}
+          {tab === "book" && (
+            <section className="fg-grid" data-recipe="builder" aria-label="دفتر">
+              <PortfolioDesk quotes={snap.quotes} />
+              <JournalDesk />
+            </section>
+          )}
 
-        {tab === "stats" && <StatsDesk quotes={snap.quotes} />}
+          {tab === "alerts" && <AlertsDesk quotes={snap.quotes} />}
 
-        {tab === "book" && (
-          <section className="space-y-4">
-            <PortfolioDesk quotes={snap.quotes} />
-            <JournalDesk />
-          </section>
-        )}
+          {tab === "strategy" && <StrategyDesk quotes={snap.quotes} />}
 
-        {tab === "alerts" && <AlertsDesk quotes={snap.quotes} />}
-
-        {tab === "strategy" && <StrategyDesk quotes={snap.quotes} />}
-
-        {tab === "truth" && <SourcesDesk snap={snap} />}
+          {tab === "truth" && <SourcesDesk snap={snap} />}
+        </main>
 
         <footer className="mt-auto flex items-start gap-2 pt-10 text-xs text-muted">
-          <ScrollText className="mt-0.5 size-3.5 shrink-0" />
+          <ScrollText className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
           <p>
             لایهٔ داده: TGJU + Gold API · کوانت: grok-4.5 پشت گارد · پورتفوی روی همین دستگاه.{" "}
             {snap.requestId}
           </p>
         </footer>
-      </div>
+      </Shell>
     </AmberAura>
   );
 }

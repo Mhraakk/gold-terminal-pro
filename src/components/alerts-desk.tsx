@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FrameCard } from "@/components/frame";
 import { ASSETS } from "@/data/market/assets";
 import type { AssetId, MarketQuote } from "@/data/market/types";
 import { formatPrice } from "@/lib/format";
@@ -35,14 +36,14 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
   });
 
   return (
-    <div className="panel l-bracket p-4">
+    <FrameCard className="p-4">
       <p className="label-tech">ALERTS</p>
       <h3 className="mt-1 mb-4 text-lg font-light">هشدار قیمت</h3>
       <div className="mb-4 grid gap-2 sm:grid-cols-4">
         <select
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -53,7 +54,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
         <select
           value={direction}
           onChange={(e) => setDirection(e.target.value as "above" | "below")}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           <option value="above" className="bg-ink">
             بالای
@@ -66,7 +67,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           placeholder="سطح"
-          className="min-h-11 rounded-sm bg-transparent px-3 text-sm shadow-border"
+          className="desk-input"
         />
         <Button variant="primary" onClick={add}>
           ثبت هشدار
@@ -79,7 +80,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           {watched.map((a) => {
             const meta = ASSETS.find((x) => x.id === a.assetId);
             return (
-              <li key={a.id} className="flex items-center justify-between shadow-border p-3 text-sm">
+              <li key={a.id} className="well flex items-center justify-between p-3 text-sm">
                 <span>
                   {meta?.persianName} {a.direction === "above" ? "≥" : "≤"} {formatPrice(a.price)}
                 </span>
@@ -89,6 +90,6 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           })}
         </ul>
       )}
-    </div>
+    </FrameCard>
   );
 }

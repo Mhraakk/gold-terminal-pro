@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FrameCard } from "@/components/frame";
 import { ASSETS } from "@/data/market/assets";
 import type { AssetId, MarketQuote } from "@/data/market/types";
 import { formatPct, formatPrice } from "@/lib/format";
@@ -33,7 +34,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
   }
 
   return (
-    <div className="panel l-bracket p-4">
+    <FrameCard className="p-4">
       <p className="label-tech">RULE ENGINE</p>
       <h3 className="mt-1 mb-4 text-lg font-light">سازندهٔ استراتژی</h3>
       <p className="mb-4 text-xs text-muted">قواعد روی چاپ زنده ارزیابی می‌شوند و روی همین دستگاه می‌مانند.</p>
@@ -41,7 +42,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         <select
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -52,7 +53,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         <select
           value={field}
           onChange={(e) => setField(e.target.value as StrategyRule["field"])}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           <option value="changePercent" className="bg-ink">
             تغییر ٪
@@ -64,7 +65,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         <select
           value={op}
           onChange={(e) => setOp(e.target.value as StrategyRule["op"])}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           <option value="above" className="bg-ink">
             بالای
@@ -76,7 +77,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="min-h-11 rounded-sm bg-transparent px-3 text-sm shadow-border"
+          className="desk-input"
         />
         <Button variant="primary" onClick={add}>
           افزودن
@@ -86,7 +87,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="یادداشت قانون"
-        className="mb-4 min-h-11 w-full rounded-sm bg-transparent px-3 text-sm shadow-border"
+        className="desk-input mb-4"
       />
       {items.length === 0 ? (
         <p className="text-sm text-muted">قانونی نیست.</p>
@@ -98,7 +99,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
             const hit = q && q.price > 0 && (r.op === "above" ? px >= r.value : px <= r.value);
             const meta = ASSETS.find((a) => a.id === r.assetId);
             return (
-              <li key={r.id} className="flex items-center justify-between gap-3 shadow-border p-3 text-sm">
+              <li key={r.id} className="well flex items-center justify-between gap-3 p-3 text-sm">
                 <div>
                   <p>
                     {meta?.persianName} {r.field === "price" ? "قیمت" : "تغییر"} {r.op === "above" ? "≥" : "≤"}{" "}
@@ -117,6 +118,6 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
           })}
         </ul>
       )}
-    </div>
+    </FrameCard>
   );
 }

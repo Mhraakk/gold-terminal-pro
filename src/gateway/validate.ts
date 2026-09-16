@@ -6,6 +6,15 @@ export const analyzeInput = z.object({
   assetId: z.string(),
   question: z.string().max(800).optional(),
   mode: z.enum(["structure", "chat"]).default("structure"),
+  memory: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        text: z.string().max(2000),
+      }),
+    )
+    .max(8)
+    .optional(),
 });
 
 export type AnalyzeInput = z.infer<typeof analyzeInput>;

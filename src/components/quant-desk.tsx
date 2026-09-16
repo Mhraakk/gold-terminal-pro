@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { FrameCard } from "@/components/frame";
 import { Button } from "@/components/ui/button";
 import { analyzeFn } from "@/lib/market-fn";
 import { formatPrice } from "@/lib/format";
 import { readChat, writeChat, type ChatTurn } from "@/memory";
 import type { StructuredAnalysis } from "@/guardrails";
 import type { AssetId } from "@/data/market/types";
+import type { GraphNode } from "@/orchestrator";
 
 export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName: string }) {
   const [turns, setTurns] = useState<ChatTurn[]>([]);
@@ -13,6 +15,9 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [setup, setSetup] = useState<StructuredAnalysis | null>(null);
+  const [trace, setTrace] = useState<{ tools: string[]; nodes: GraphNode[]; model: string; tokens: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     setTurns(readChat());
@@ -27,12 +32,25 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
     setTurns(next);
     writeChat(next);
     try {
-      const result = await analyzeFn({ data: { assetId, question, mode } });
+      const result = await analyzeFn({
+        data: {
+          assetId,
+          question,
+          mode,
+          memory: next.slice(-6).map((t) => ({ role: t.role, text: t.text.slice(0, 500) })),
+        },
+      });
       if (!result.ok) {
         setError(result.error);
         return;
       }
       if (result.structured) setSetup(result.structured);
+      setTrace({
+        tools: result.tools,
+        nodes: result.nodes,
+        model: result.model,
+        tokens: result.tokens,
+      });
       const reply = result.structured?.detailedAnalysisMarkdown ?? result.text;
       const done = [...next, { role: "assistant" as const, text: reply, at: Date.now() }];
       setTurns(done);
@@ -46,9 +64,9 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
   }
 
   return (
-    <div className="space-y-4">
-      <div className="panel l-bracket flex min-h-96 flex-col p-4">
-        <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="fg-grid" data-recipe="builder">
+      <FrameCard className="flex min-h-96 flex-col p-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="label-tech">QUANT DESK · GROK-4.5</p>
             <h3 className="mt-1 text-lg font-light">کوانت زرین</h3>
@@ -58,6 +76,12 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
             {busy ? "در حال استدلال…" : "تحلیل ساختار"}
           </Button>
         </div>
+        {trace ? (
+          <p className="label-tech mb-3 text-gold">
+            {trace.nodes.map((n) => n.name).join(" → ")} · {trace.tools.join(" · ")} · {trace.model}
+            {trace.tokens ? ` · ${trace.tokens} tok` : ""}
+          </p>
+        ) : null}
         <div className="flex-1 space-y-3 overflow-y-auto">
           {turns.length === 0 ? (
             <p className="text-sm text-muted">
@@ -86,13 +110,13 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder={`سؤال دربارهٔ ${assetName}`}
-            className="min-h-11 flex-1 rounded-sm bg-transparent px-3 text-sm text-fg shadow-border placeholder:text-muted"
+            className="desk-input flex-1"
           />
           <Button type="submit" disabled={busy}>
             بپرس
           </Button>
         </form>
-      </div>
+      </FrameCard>
       {setup ? <SetupCard setup={setup} /> : null}
     </div>
   );
@@ -101,7 +125,7 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
 function SetupCard({ setup }: { setup: StructuredAnalysis }) {
   const t = setup.tradeSetup;
   return (
-    <div className="panel l-bracket p-5">
+    <FrameCard className="p-5">
       <p className="label-tech">SETUP · {setup.trend}</p>
       <h3 className="mt-1 text-lg font-light">{setup.marketPhase}</h3>
       <p className="mt-2 text-sm text-muted">اعتماد {Math.round(setup.confidenceScore)} از ۱۰۰</p>
@@ -123,13 +147,13 @@ function SetupCard({ setup }: { setup: StructuredAnalysis }) {
           <span className="text-fg">ابطال:</span> {setup.scenarios.invalidation}
         </p>
       </div>
-    </div>
+    </FrameCard>
   );
 }
 
 function Cell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="shadow-border p-3">
+    <div className="well p-3">
       <dt className="label-tech">{label}</dt>
       <dd className="num mt-1 text-sm">{value}</dd>
     </div>

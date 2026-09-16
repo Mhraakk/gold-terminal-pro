@@ -130,11 +130,16 @@ export function mountAmberAuraBackground(root: Element) {
   let raf = 0;
   let running = true;
   const t0 = performance.now();
+  let last = t0;
   const tick = (now: number) => {
     if (!running) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
     if (!document.hidden && !reduce) {
       uniforms.u_time.value = (now - t0) / 1000;
-      uniforms.u_mouse.value.lerp(targetMouse, 0.025);
+      // 1.5s settle (~95% in 3τ, τ = 0.5s)
+      const alpha = 1 - Math.exp(-dt / 0.5);
+      uniforms.u_mouse.value.lerp(targetMouse, alpha);
       renderer.render(scene, camera);
     } else if (!document.hidden && reduce) {
       renderer.render(scene, camera);

@@ -56,6 +56,9 @@ export const analyzeFn = createServerFn({ method: "POST" })
       quote,
       tech: technicals(pack.candles),
       structure: structure(pack.candles),
+      mazaneh: snap.mazaneh,
+      memory: data.memory,
+      assetId,
     });
     logGateway({
       requestId,
@@ -63,7 +66,9 @@ export const analyzeFn = createServerFn({ method: "POST" })
       ok: result.ok,
       latencyMs: Date.now() - started,
       model: result.ok ? result.model : undefined,
+      tokens: result.ok ? result.tokens : undefined,
       guardrail: result.ok ? result.guardrail : result.guardrail,
+      detail: result.ok ? result.tools.join(",") : undefined,
     });
     return result;
   });

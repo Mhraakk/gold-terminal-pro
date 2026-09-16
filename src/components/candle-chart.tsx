@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FrameCard } from "@/components/frame";
 import { formatPrice } from "@/lib/format";
 import type { Candle, MarketStructure, Technicals } from "@/data/market/types";
 
@@ -29,7 +30,7 @@ export function CandleChart({
   const last = candles.at(-1);
 
   return (
-    <div className="panel l-bracket p-4">
+    <FrameCard className="p-4">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="label-tech">CHART · SMC</p>
@@ -104,12 +105,12 @@ export function CandleChart({
           value={tech.momentum === "bullish" ? "صعودی" : tech.momentum === "bearish" ? "نزولی" : "خنثی"}
         />
       </dl>
-    </div>
+    </FrameCard>
   );
 }
 
 function Tag({ children }: { children: ReactNode }) {
-  return <span className="label-tech shadow-border px-2 py-1 text-gold">{children}</span>;
+  return <span className="label-tech well px-2 py-1 text-gold">{children}</span>;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {

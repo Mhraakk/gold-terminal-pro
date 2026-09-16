@@ -1,3 +1,4 @@
+import { FrameCard } from "@/components/frame";
 import { formatPct, formatPrice } from "@/lib/format";
 import type { MarketQuote, Technicals } from "@/data/market/types";
 
@@ -8,7 +9,7 @@ export function ForecastDesk({ quote, tech }: { quote: MarketQuote; tech: Techni
   const lo = quote.price - atr;
   const hi = quote.price + atr;
   return (
-    <div className="panel l-bracket p-5">
+    <FrameCard className="p-5">
       <p className="label-tech">RANGE FORECAST</p>
       <h3 className="mt-1 text-lg font-light">باند فردا — {quote.persianName}</h3>
       <p className="mt-3 text-sm text-muted">
@@ -31,6 +32,6 @@ export function ForecastDesk({ quote, tech }: { quote: MarketQuote; tech: Techni
       <p className="mt-4 text-xs text-muted">
         RSI {tech.rsi} · قدرت روند {formatPct(tech.trendStrength / 10)} · ATR {formatPrice(atr, quote.decimals)}
       </p>
-    </div>
+    </FrameCard>
   );
 }

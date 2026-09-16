@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FrameCard } from "@/components/frame";
 import { ASSETS } from "@/data/market/assets";
 import type { AssetId } from "@/data/market/types";
 import { formatTehranShort } from "@/lib/format";
@@ -30,14 +31,14 @@ export function JournalDesk() {
   }
 
   return (
-    <div className="panel l-bracket p-4">
+    <FrameCard className="p-4">
       <p className="label-tech">JOURNAL</p>
       <h3 className="mt-1 mb-4 text-lg font-light">ژورنال معامله</h3>
       <div className="mb-3 grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
         <select
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
-          className="min-h-11 rounded-sm bg-transparent px-2 text-sm shadow-border"
+          className="desk-input"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -49,7 +50,7 @@ export function JournalDesk() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="یادداشت ساختار، ورود، خطا"
-          className="min-h-11 rounded-sm bg-transparent px-3 text-sm shadow-border"
+          className="desk-input"
         />
         <Button variant="primary" onClick={add}>
           ثبت
@@ -62,7 +63,7 @@ export function JournalDesk() {
           {items.map((e) => {
             const meta = ASSETS.find((a) => a.id === e.assetId);
             return (
-              <li key={e.id} className="flex items-start justify-between gap-3 shadow-border p-3 text-sm">
+              <li key={e.id} className="well flex items-start justify-between gap-3 p-3 text-sm">
                 <div>
                   <p className="label-tech">
                     {meta?.persianName} · {formatTehranShort(new Date(e.at))}
@@ -77,6 +78,6 @@ export function JournalDesk() {
           })}
         </ul>
       )}
-    </div>
+    </FrameCard>
   );
 }

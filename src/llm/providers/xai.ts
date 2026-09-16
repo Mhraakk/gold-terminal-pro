@@ -5,7 +5,10 @@ export async function completeXai(opts: {
   system: string;
   user: string;
   maxTokens?: number;
-}): Promise<{ ok: true; text: string; model: string } | { ok: false; error: string }> {
+}): Promise<
+  | { ok: true; text: string; model: string; tokens: number }
+  | { ok: false; error: string }
+> {
   const apiKey = process.env.XAI_API_KEY;
   if (!apiKey) return { ok: false, error: "AI is not available in this environment" };
 
@@ -30,10 +33,12 @@ export async function completeXai(opts: {
 
   const body = (await res.json()) as {
     choices?: { message?: { content?: string } }[];
+    usage?: { total_tokens?: number };
   };
   return {
     ok: true,
     text: body.choices?.[0]?.message?.content ?? "",
     model: MODEL,
+    tokens: body.usage?.total_tokens ?? 0,
   };
 }

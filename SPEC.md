@@ -29,4 +29,4 @@ Frontend TanStack Start RTL · Gateway TanStack server functions · Orchestrator
 
 ## Design
 
-Frame Gold Terminal luxury obsidian (field `#050505`, accent `#D4AF37`, Vazirmatn + JetBrains Mono, RTL) · Atmosphere amber-aura-background · Motion shader breath + 1.5s pointer lerp · Surfaces opaque gold-thread cards
+Frame Gold Terminal luxury obsidian (field `#050505`, accent `#D4AF37`, Vazirmatn + JetBrains Mono, RTL) + framed-grid + container-lines · Atmosphere amber-aura-background · Motion shader breath + 1.5s pointer lerp · Surfaces opaque gold-thread cards
