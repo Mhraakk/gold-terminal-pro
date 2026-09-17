@@ -32,6 +32,9 @@ Design system — Frame newsreader-slate-shell, Atmosphere nebula-webgl-backgrou
 
 Auth خاموش است. دفتر و هشدار فقط روی دستگاه بازدیدکننده می‌مانند.
 
+- زنده: [gold-terminal-pro-lemon.vercel.app](https://gold-terminal-pro-lemon.vercel.app)
+- کد: [Mhraakk/gold-terminal-pro](https://github.com/Mhraakk/gold-terminal-pro)
+
 ## اجرا
 
 ```bash

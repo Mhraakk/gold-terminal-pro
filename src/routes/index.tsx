@@ -1,20 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Activity,
-  Bell,
-  BrainCircuit,
-  Crosshair,
-  Database,
-  HandCoins,
-  LayoutDashboard,
-  Scale,
-  ScrollText,
-  SlidersHorizontal,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
 import { AlertsDesk } from "@/components/alerts-desk";
 import {
   BsiBody,
@@ -42,6 +28,7 @@ import { SourcesDesk } from "@/components/sources-desk";
 import { StatsDesk } from "@/components/stats-desk";
 import { StrategyDesk } from "@/components/strategy-desk";
 import { PointCloudGlobe } from "@/components/point-cloud-globe";
+import { SolarCpu } from "@/components/nss-card";
 import { SeamlessMarquee } from "@/components/seamless-marquee";
 import { stillForAsset } from "@/data/aura";
 import { ASSET_BY_ID, ASSETS } from "@/data/market/assets";
@@ -75,18 +62,18 @@ function parseSearch(raw: Record<string, unknown>): DeskSearch {
   return { desk, asset };
 }
 
-const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
-  { id: "markets", label: "بازار", icon: LayoutDashboard },
-  { id: "terminal", label: "ترمینال", icon: Activity },
-  { id: "quant", label: "کوانت", icon: BrainCircuit },
-  { id: "forecast", label: "پیش‌بینی", icon: TrendingUp },
-  { id: "hunter", label: "شکار", icon: Crosshair },
-  { id: "dealer", label: "دیلر", icon: HandCoins },
-  { id: "stats", label: "آمار", icon: Scale },
-  { id: "book", label: "دفتر", icon: Wallet },
-  { id: "alerts", label: "هشدار", icon: Bell },
-  { id: "strategy", label: "استراتژی", icon: SlidersHorizontal },
-  { id: "truth", label: "صحت داده", icon: Database },
+const TABS: { id: Tab; label: string }[] = [
+  { id: "markets", label: "بازار" },
+  { id: "terminal", label: "ترمینال" },
+  { id: "quant", label: "کوانت" },
+  { id: "forecast", label: "پیش‌بینی" },
+  { id: "hunter", label: "شکار" },
+  { id: "dealer", label: "دیلر" },
+  { id: "stats", label: "آمار" },
+  { id: "book", label: "دفتر" },
+  { id: "alerts", label: "هشدار" },
+  { id: "strategy", label: "استراتژی" },
+  { id: "truth", label: "صحت داده" },
 ];
 
 const TAB_BY_ID = Object.fromEntries(TABS.map((t) => [t.id, t])) as Record<Tab, (typeof TABS)[number]>;
@@ -280,8 +267,8 @@ function Terminal() {
             {tab === "alerts" && <AlertsDesk quotes={snap.quotes} />}
             {tab === "strategy" && <StrategyDesk quotes={snap.quotes} />}
             {tab === "truth" && <SourcesDesk snap={snap} />}
-            <p className="bsi-cite mt-8 flex items-start gap-2">
-              <ScrollText className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            <p className="nss-meta mt-8 flex items-start gap-2">
+              <SolarCpu />
               لایهٔ داده: TGJU + Gold API · کوانت: grok-4.5 پشت گارد
             </p>
           </BsiPage>

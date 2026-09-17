@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
-import { ModuleShell } from "@/components/module-shell";
+import { NssCard } from "@/components/nss-card";
 import { cn } from "@/lib/cn";
 
 export function Brackets() {
@@ -29,8 +29,13 @@ export function ContainerLinesMarks() {
 export function FrameCard({
   className,
   children,
-}: HTMLAttributes<HTMLDivElement> & { selected?: boolean; children?: ReactNode }) {
-  return <ModuleShell className={className}>{children}</ModuleShell>;
+  tile = true,
+}: HTMLAttributes<HTMLDivElement> & { selected?: boolean; tile?: boolean; children?: ReactNode }) {
+  return (
+    <NssCard className={className} tile={tile}>
+      {children}
+    </NssCard>
+  );
 }
 
 export function FrameButton({
@@ -39,9 +44,9 @@ export function FrameButton({
   onClick,
 }: ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) {
   return (
-    <ModuleShell className={className} onClick={onClick} flush>
+    <button type="button" className={cn("nss-chip nss-link", className)} onClick={onClick}>
       {children}
-    </ModuleShell>
+    </button>
   );
 }
 
@@ -52,11 +57,5 @@ export function Shell({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={cn("fg-shell cl-host fg-brackets", className)} data-inset="outside">
-      <ContainerLinesMarks />
-      <Brackets />
-      {children}
-    </div>
-  );
+  return <div className={cn("nss-page", className)}>{children}</div>;
 }

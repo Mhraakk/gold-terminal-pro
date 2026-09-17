@@ -5,6 +5,7 @@ import { AtmosphereHost } from "@/components/atmosphere-host";
 import { NdItem, NdList } from "@/components/number-details";
 import { ProgressiveBlur } from "@/components/progressive-blur";
 import { useMaskedReveal } from "@/components/use-masked-reveal";
+import { useSectionReveal } from "@/components/use-section-reveal";
 import type { AssetId } from "@/data/market/types";
 
 export function BsiShell({ children }: { children: ReactNode }) {
@@ -80,10 +81,12 @@ export function BsiWell({
   banner,
   ...rest
 }: HTMLAttributes<HTMLElement> & { banner?: ReactNode }) {
+  const ref = useRef<HTMLElement>(null);
+  useSectionReveal(ref);
   return (
-    <section className={`nss-section ${className}`.trim()} {...rest}>
+    <section ref={ref} className={`nss-section ${className}`.trim()} {...rest}>
       {banner}
-      <div className="nss-shell">
+      <div className="nss-shell" data-nss-reveal>
         <div className="nss-face">{children}</div>
       </div>
     </section>

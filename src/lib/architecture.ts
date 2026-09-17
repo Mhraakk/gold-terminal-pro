@@ -42,7 +42,7 @@ export const DESIGN_DNA = {
     | "corner-lasers"
     | "chromatic-band-background"
     | "off",
-  motion: "shader liquid warp + masked-reveal",
+  motion: "150ms section reveal + masked-reveal",
   surfaces: "elevated #131315 inside 1px white-gradient shell",
 } as const;
 

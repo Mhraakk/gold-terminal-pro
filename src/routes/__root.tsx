@@ -21,7 +21,7 @@ export const Route = createRootRoute({
         name: "description",
         content: "ترمینال طلا و ارز تهران — قیمت زنده، مظنه، کوانت و ساختار بازار.",
       },
-      { name: "theme-color", content: "#0c0b09" },
+      { name: "theme-color", content: "#030305" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
