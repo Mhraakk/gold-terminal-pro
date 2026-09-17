@@ -1,68 +1,17 @@
 import { cache } from "@/data/cache";
 import { ASSETS } from "./assets";
+import { buildMazaneh } from "./mazaneh";
 import { freshnessFromTs, parseNumber, rialToToman } from "./parse";
-import type { Freshness, MarketQuote, MarketSnapshot, MazanehDesk } from "./types";
+
+import type { MarketQuote, MarketSnapshot } from "./types";
 
 const TGJU = "https://call5.tgju.org/ajax.json";
 const GOLD_API = "https://api.gold-api.com/price/XAU";
-const TROY_OZ_G = 31.1034768;
-const MESGHAL_FROM_18K = 4.3318;
 
 type TgjuRow = { p?: string; h?: string; l?: string; d?: string; dp?: number; ts?: string };
 
 interface TgjuPayload {
   current?: Record<string, TgjuRow>;
-}
-
-function emptyMazaneh(): MazanehDesk {
-  return {
-    theoretical18k: 0,
-    live18k: 0,
-    spreadToman: 0,
-    spreadPercent: 0,
-    ounceUsd: 0,
-    usdToman: 0,
-    meltedMesghal: 0,
-    impliedMesghal: 0,
-    verdict: "unknown",
-    note: "دادهٔ کافی برای مظنه نیست.",
-  };
-}
-
-function buildMazaneh(quotes: MarketQuote[]): MazanehDesk {
-  const xau = quotes.find((q) => q.id === "XAUUSD");
-  const usd = quotes.find((q) => q.id === "USDIRT");
-  const g18 = quotes.find((q) => q.id === "GOLD_18K");
-  const melt = quotes.find((q) => q.id === "MELTED_GOLD") ?? quotes.find((q) => q.id === "MESGHAL");
-  if (!xau || !usd || !g18 || xau.price <= 0 || usd.price <= 0 || g18.price <= 0) {
-    return emptyMazaneh();
-  }
-  const theoretical18k = (xau.price / TROY_OZ_G) * 0.75 * usd.price;
-  const spreadToman = g18.price - theoretical18k;
-  const spreadPercent = (spreadToman / theoretical18k) * 100;
-  const impliedMesghal = g18.price * MESGHAL_FROM_18K;
-  const meltedMesghal = melt?.price ?? 0;
-  const abs = Math.abs(spreadPercent);
-  const verdict: MazanehDesk["verdict"] =
-    abs < 0.6 ? "fair" : spreadPercent > 0 ? "expensive" : "cheap";
-  const note =
-    verdict === "fair"
-      ? "گرم ۱۸ عیار نزدیک مظنهٔ تئوریک اونس×دلار است."
-      : verdict === "expensive"
-        ? "طلای داخلی از مظنهٔ جهانی گران‌تر است — حباب مثبت."
-        : "طلای داخلی از مظنهٔ جهانی ارزان‌تر است — حباب منفی.";
-  return {
-    theoretical18k,
-    live18k: g18.price,
-    spreadToman,
-    spreadPercent,
-    ounceUsd: xau.price,
-    usdToman: usd.price,
-    meltedMesghal,
-    impliedMesghal,
-    verdict,
-    note,
-  };
 }
 
 async function fetchTgju(): Promise<{ ok: boolean; current: Record<string, TgjuRow>; detail: string }> {

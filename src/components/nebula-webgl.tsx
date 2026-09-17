@@ -29,15 +29,7 @@ export function NebulaWebgl({ children }: { children: ReactNode }) {
       <div className="nw-grid" aria-hidden="true" />
       <div className="nw-grain" aria-hidden="true" />
       <div className="nw-veil" aria-hidden="true" />
-      <div className="nw-content">
-        <span className="im-rail" data-side="start" aria-hidden="true" />
-        <span className="im-rail" data-side="end" aria-hidden="true" />
-        <span className="im-node" data-corner="tl" aria-hidden="true" />
-        <span className="im-node" data-corner="tr" aria-hidden="true" />
-        <span className="im-node" data-corner="bl" aria-hidden="true" />
-        <span className="im-node" data-corner="br" aria-hidden="true" />
-        {children}
-      </div>
+      <div className="nw-content">{children}</div>
     </div>
   );
 }

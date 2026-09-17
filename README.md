@@ -12,7 +12,8 @@
 | ترمینال | کندل + SMC (BOS / CHOCH / FVG / OB) |
 | کوانت | grok-4.5: plan → tools → evaluate |
 | پیش‌بینی | باند ATR از چاپ زنده |
-| شکار / دیلر | مظنه تئوریک و نیم‌کلی |
+| شکار | مظنه تئوریک، آرب دلار/تتر، گپ آب‌شده |
+| دیلر | نیم‌کلی روی دفتر محلی |
 | آمار | نوسان روز و هم‌جهتی |
 | دفتر / هشدار / استراتژی | ذخیره روی همین دستگاه |
 | صحت داده | وضعیت منبع + لایه‌های معماری |
@@ -27,7 +28,7 @@ TanStack Start RTL · Gateway (validate / rate / log) · Orchestrator graph · R
 
 ## طراحی
 
-Design system — Frame book-serif-index + container-lines + border-gradients, Atmosphere corner-lasers, Motion corner emitter pulse + pointer flashlight, Surfaces bounded-module-grid + aura-assets + beautiful-shadows
+Design system — Frame newsreader-slate-shell, Atmosphere nebula-webgl-background (D2), Motion masked-reveal, Surfaces elevated #131315. Type Newsreader 48.
 
 Auth خاموش است. دفتر و هشدار فقط روی دستگاه بازدیدکننده می‌مانند.
 

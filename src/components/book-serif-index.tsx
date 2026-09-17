@@ -42,6 +42,7 @@ export function BsiIndexItem({
     | "quant"
     | "forecast"
     | "hunter"
+    | "dealer"
     | "stats"
     | "book"
     | "alerts"

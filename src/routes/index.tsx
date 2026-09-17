@@ -7,6 +7,7 @@ import {
   BrainCircuit,
   Crosshair,
   Database,
+  HandCoins,
   LayoutDashboard,
   Scale,
   ScrollText,
@@ -55,6 +56,7 @@ const DESKS = [
   "quant",
   "forecast",
   "hunter",
+  "dealer",
   "stats",
   "book",
   "alerts",
@@ -78,7 +80,8 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "terminal", label: "ترمینال", icon: Activity },
   { id: "quant", label: "کوانت", icon: BrainCircuit },
   { id: "forecast", label: "پیش‌بینی", icon: TrendingUp },
-  { id: "hunter", label: "شکار / دیلر", icon: Crosshair },
+  { id: "hunter", label: "شکار", icon: Crosshair },
+  { id: "dealer", label: "دیلر", icon: HandCoins },
   { id: "stats", label: "آمار", icon: Scale },
   { id: "book", label: "دفتر", icon: Wallet },
   { id: "alerts", label: "هشدار", icon: Bell },
@@ -260,6 +263,10 @@ function Terminal() {
             {tab === "hunter" && (
               <section className="bmg-grid" data-recipe="builder" aria-label="شکار مظنه">
                 <HunterDesk mazaneh={snap.mazaneh} />
+              </section>
+            )}
+            {tab === "dealer" && (
+              <section className="bmg-grid" data-recipe="builder" aria-label="دیلر">
                 <DealerDesk mazaneh={snap.mazaneh} quotes={snap.quotes} />
               </section>
             )}

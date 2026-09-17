@@ -97,8 +97,12 @@ export interface MazanehDesk {
   spreadPercent: number;
   ounceUsd: number;
   usdToman: number;
+  usdtToman: number;
+  usdUsdtSpread: number;
+  usdUsdtPercent: number;
   meltedMesghal: number;
   impliedMesghal: number;
+  meltGap: number;
   verdict: "cheap" | "fair" | "expensive" | "unknown";
   note: string;
 }
