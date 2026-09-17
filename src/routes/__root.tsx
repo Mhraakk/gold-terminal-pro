@@ -4,6 +4,7 @@ import { AppNotFound } from "@/components/not-found";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { AppErrorComponent } from "@/lib/error-component";
 import { QueryRoot } from "@/lib/query";
+import "@/lib/gsap-boot";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "زرین — گلد ترمینال";

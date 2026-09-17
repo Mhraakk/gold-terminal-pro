@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ModuleShell } from "@/components/module-shell";
+import { NdStamp } from "@/components/number-details";
 import { stillForAsset } from "@/data/aura";
 import { cn } from "@/lib/cn";
 import { formatPct, formatPrice, formatSigned } from "@/lib/format";
@@ -20,11 +21,7 @@ export function QuoteCard({ quote, index }: { quote: MarketQuote; index?: number
   return (
     <Link to="/" search={{ desk: "terminal", asset: quote.id }} className="block">
       <ModuleShell className="sdp-card">
-        {index != null ? (
-          <span className="nd-stamp" aria-hidden="true">
-            <span className="nd-num">{String(index).padStart(2, "0")}</span>
-          </span>
-        ) : null}
+        {index != null ? <NdStamp index={index} /> : null}
         <div className="relative h-32">
           <img
             src={still.src}

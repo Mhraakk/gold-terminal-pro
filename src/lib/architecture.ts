@@ -15,8 +15,8 @@ export const ARCHITECTURE = {
 
 /** One atmosphere owner. Last applied atmosphere skill wins. */
 export const DESIGN_SKILLS = [
-  { skill: "industrial-minimalism", role: "atmosphere" as const },
-  { skill: "industrial-minimalism", role: "frame" as const },
+  { skill: "nebula-webgl-background", role: "atmosphere" as const },
+  { skill: "newsreader-slate-shell", role: "frame" as const },
   { skill: "masked-reveal", role: "motion" as const },
   { skill: "number-details", role: "details" as const },
   { skill: "point-cloud-globe", role: "illustration" as const },
@@ -26,11 +26,12 @@ export const DESIGN_SKILLS = [
 ] as const;
 
 export const DESIGN_DNA = {
-  frame: "industrial-minimalism rails + 1.5px nodes",
-  field: "#050507",
-  accent: "#e8e8ea",
-  type: "Inter 300 tight tracking · 12px uppercase labels",
-  atmosphere: "industrial-minimalism" as
+  frame: "newsreader-slate-shell (flex, full-bleed, open, 2px radius)",
+  field: "#030305",
+  accent: "#3B82F6",
+  type: "Newsreader 48 + system-sans",
+  atmosphere: "nebula-webgl-background" as
+    | "nebula-webgl-background"
     | "industrial-minimalism"
     | "perspective-glass-dashboard"
     | "radial-blade-sculpture"
@@ -41,12 +42,12 @@ export const DESIGN_DNA = {
     | "corner-lasers"
     | "chromatic-band-background"
     | "off",
-  motion: "masked-reveal + plane breath",
-  surfaces: "#050507 + 100px shadow + white-alpha glass",
+  motion: "shader liquid warp + masked-reveal",
+  surfaces: "elevated #131315 inside 1px white-gradient shell",
 } as const;
 
 export const ARCHITECTURE_LINE =
   "Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG disabled adapter, Models xAI grok-4.5, Guardrails on, Memory short-term localStorage, Data in-memory cache + TGJU/Gold API, LLMOps Dockerfile + eval fixtures, Cloud Vercel";
 
 export const DESIGN_LINE =
-  "Design system — Frame industrial-minimalism rails + 1.5px nodes, Atmosphere stacked-plane field (30deg FOV), Motion masked-reveal + plane breath, Surfaces #050507 + 100px shadow + white-alpha glass";
+  "Design system — Frame newsreader-slate-shell (flex, full-bleed, open, 2px radius), Atmosphere nebula-webgl-background (D2), Motion 150ms + masked-reveal, Surfaces elevated #131315 inside 1px white-gradient shell. Type Newsreader 48 + system-sans";

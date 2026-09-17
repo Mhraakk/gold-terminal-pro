@@ -2,6 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { AtmosphereHost } from "@/components/atmosphere-host";
+import { NdItem, NdList } from "@/components/number-details";
 import { ProgressiveBlur } from "@/components/progressive-blur";
 import { useMaskedReveal } from "@/components/use-masked-reveal";
 import type { AssetId } from "@/data/market/types";
@@ -17,9 +18,9 @@ export function BsiShell({ children }: { children: ReactNode }) {
 
 export function BsiIndex({ children, className = "", ...rest }: HTMLAttributes<HTMLElement>) {
   return (
-    <ol className={`nd-list ${className}`.trim()} data-nd="leading" aria-label="فهرست" {...rest}>
+    <NdList className={className} variant="leading" aria-label="فهرست" {...rest}>
       {children}
-    </ol>
+    </NdList>
   );
 }
 
@@ -48,10 +49,10 @@ export function BsiIndexItem({
     | "truth";
   asset?: AssetId;
 }) {
-  const className = `sdp-nav-link${active ? " is-active" : ""}`;
+  const className = `sdp-nav-link nd-title${active ? " is-active" : ""}`;
   if (desk) {
     return (
-      <li>
+      <NdItem current={active}>
         <Link
           to="/"
           search={{ desk, asset }}
@@ -60,15 +61,15 @@ export function BsiIndexItem({
         >
           {children}
         </Link>
-      </li>
+      </NdItem>
     );
   }
   return (
-    <li>
+    <NdItem current={active}>
       <span className={className} aria-current={active ? "page" : undefined}>
         {children}
       </span>
-    </li>
+    </NdItem>
   );
 }
 
@@ -79,9 +80,11 @@ export function BsiWell({
   ...rest
 }: HTMLAttributes<HTMLElement> & { banner?: ReactNode }) {
   return (
-    <section className={`im-well ${className}`.trim()} {...rest}>
+    <section className={`nss-section ${className}`.trim()} {...rest}>
       {banner}
-      <div className="im-card">{children}</div>
+      <div className="nss-shell">
+        <div className="nss-face">{children}</div>
+      </div>
     </section>
   );
 }
@@ -120,9 +123,9 @@ export function BsiDisplay({ children }: { children: ReactNode }) {
   const text = typeof children === "string" ? children : "";
   const words = text.split(/\s+/).filter(Boolean);
   useMaskedReveal(ref, text);
-  if (!text) return <h1 className="im-heading">{children}</h1>;
+  if (!text) return <h1 className="nss-display">{children}</h1>;
   return (
-    <h1 ref={ref} className="reveal im-heading">
+    <h1 ref={ref} className="reveal nss-display">
       {words.map((w, i) => (
         <span className="reveal-word" key={`${i}-${w}`}>
           <span className="reveal-inner">{w}</span>

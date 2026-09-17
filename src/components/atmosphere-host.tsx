@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ChromaticBand } from "@/components/chromatic-band";
 import { CornerLasers } from "@/components/corner-lasers";
 import { IndustrialMinimalism } from "@/components/industrial-minimalism";
+import { NebulaWebgl } from "@/components/nebula-webgl";
 import { PerspectiveGlass } from "@/components/perspective-glass";
 import { SageDualPane } from "@/components/sage-dual-pane";
 import { SyntheticFlora } from "@/components/synthetic-flora";
@@ -12,6 +13,8 @@ import { DESIGN_DNA } from "@/lib/architecture";
 /** One atmosphere per viewport. Reads DESIGN_DNA so a new skill swap is a registry change. */
 export function AtmosphereHost({ children }: { children: ReactNode }) {
   switch (DESIGN_DNA.atmosphere) {
+    case "nebula-webgl-background":
+      return <NebulaWebgl>{children}</NebulaWebgl>;
     case "industrial-minimalism":
       return <IndustrialMinimalism>{children}</IndustrialMinimalism>;
     case "perspective-glass-dashboard":

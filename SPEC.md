@@ -29,6 +29,6 @@ Frontend TanStack Start RTL · Gateway TanStack server functions · Orchestrator
 
 ## Design
 
-Design system — Frame industrial-minimalism rails + 1.5px nodes, Atmosphere stacked-plane field (30deg FOV), Motion masked-reveal + plane breath, Surfaces #050507 + 100px shadow + white-alpha glass
+Design system — Frame newsreader-slate-shell (flex, full-bleed, open, 2px radius), Atmosphere nebula-webgl-background (D2), Motion 150ms + masked-reveal, Surfaces elevated #131315 inside 1px white-gradient shell. Type Newsreader 48 + system-sans
 
 Pixels come from the design skills placed in chat. Runtime stays the architecture graph. One atmosphere at a time.

@@ -2,7 +2,7 @@
 
 Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG disabled adapter, Models xAI grok-4.5, Guardrails on, Memory short-term localStorage, Data in-memory cache + TGJU / Gold API, LLMOps Dockerfile + eval fixtures, Cloud Vercel
 
-Design system — Frame industrial-minimalism rails + 1.5px nodes, Atmosphere stacked-plane field (30deg FOV), Motion masked-reveal + plane breath, Surfaces #050507 + 100px shadow + white-alpha glass
+Design system — Frame newsreader-slate-shell (flex, full-bleed, open, 2px radius), Atmosphere nebula-webgl-background (D2), Motion 150ms + masked-reveal, Surfaces elevated #131315 inside 1px white-gradient shell. Type Newsreader 48 + system-sans
 
 Request path:
 
@@ -14,8 +14,8 @@ Applied design skills (pixels, not runtime):
 
 | Role | Skill |
 |---|---|
-| Frame | industrial-minimalism 1px rails + 1.5px nodes |
-| Atmosphere | industrial-minimalism stacked planes FOV 30 |
+| Frame | newsreader-slate-shell 2px gradient shell |
+| Atmosphere | nebula-webgl-background (D2, one owner) |
 | Motion | masked-reveal |
 | Illustration | point-cloud-globe · terminal-modernism |
 | Details | number-details 01–99 |
