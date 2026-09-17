@@ -1,4 +1,5 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { TriangleAlert } from "lucide-react";
 
 const FALLBACK_MESSAGE = "خطای پیش‌بینی‌نشده. صفحه را دوباره بارگذاری کن.";
@@ -17,6 +18,13 @@ export function AppErrorComponent({ error }: ErrorComponentProps) {
       </span>
       <h1 className="text-lg font-semibold">خطا در ترمینال</h1>
       <p className="max-w-md text-sm break-words text-muted">{errorMessage(error)}</p>
+      <Link
+        to="/"
+        search={{ desk: "markets" }}
+        className="mt-2 inline-flex min-h-11 items-center px-4 text-sm text-gold"
+      >
+        بازگشت به بازار
+      </Link>
     </main>
   );
 }

@@ -1,7 +1,4 @@
-import { rag } from "@/rag";
-import { knowledge } from "@/knowledge";
-import { QUANT_SYSTEM, completeXai } from "@/llm";
-import { guardInbound, parseStructured } from "@/guardrails";
+import { completeXai, guardInbound, knowledge, parseStructured, QUANT_SYSTEM, rag } from "@/core-ai";
 import type { ChatTurn } from "@/memory";
 import type { AssetId, MarketQuote, MarketStructure, MazanehDesk, Technicals } from "@/data/market/types";
 import { evaluateAnalysis } from "./evaluate";
@@ -46,6 +43,16 @@ export async function runQuantGraph(input: {
     return { ok: false, error: "درخواست رد شد (گارد).", guardrail: inbound.reason, nodes };
   }
 
+  const memMs = clock();
+  const window = input.memory?.slice(-8) ?? [];
+  nodes.push({ name: "memory", ok: true, ms: memMs() });
+
+  const ragMs = clock();
+  nodes.push({ name: "rag", ok: !rag.enabled, ms: ragMs() });
+
+  const knMs = clock();
+  nodes.push({ name: "knowledge", ok: !knowledge.enabled, ms: knMs() });
+
   const pMs = clock();
   const tools = planTools(inbound.text, input.assetId);
   nodes.push({ name: "plan", ok: true, ms: pMs() });
@@ -56,7 +63,7 @@ export async function runQuantGraph(input: {
     tech: input.tech,
     structure: input.structure,
     mazaneh: input.mazaneh,
-    memory: input.memory,
+    memory: window,
     assetId: input.assetId,
   });
   nodes.push({ name: "tools", ok: true, ms: tMs() });
@@ -64,6 +71,7 @@ export async function runQuantGraph(input: {
   const user = [
     renderToolContext(obs),
     `لایه دانش: ${knowledge.enabled ? "on" : "disabled"} | RAG: ${rag.enabled ? "on" : "disabled"}`,
+    `حافظه کوتاه: ${window.length} نوبت`,
     `سؤال: ${inbound.text || "تحلیل ساختار بازار و سناریوی معامله."}`,
     "خروجی را JSON ساخت‌یافته مطابق اسکیما بده، بعد یک خلاصه فارسی کوتاه.",
   ].join("\n");

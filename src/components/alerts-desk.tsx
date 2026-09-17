@@ -44,6 +44,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
           className="desk-input"
+          aria-label="دارایی"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -55,6 +56,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={direction}
           onChange={(e) => setDirection(e.target.value as "above" | "below")}
           className="desk-input"
+          aria-label="جهت"
         >
           <option value="above" className="bg-ink">
             بالای
@@ -68,6 +70,7 @@ export function AlertsDesk({ quotes }: { quotes: MarketQuote[] }) {
           onChange={(e) => setPrice(e.target.value)}
           placeholder="سطح"
           className="desk-input"
+          aria-label="سطح قیمت"
         />
         <Button variant="primary" onClick={add}>
           ثبت هشدار

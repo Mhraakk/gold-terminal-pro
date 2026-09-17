@@ -5,7 +5,7 @@ import type { MarketQuote } from "@/data/market/types";
 export function StatsDesk({ quotes }: { quotes: MarketQuote[] }) {
   const live = quotes.filter((q) => q.freshness !== "unavailable" && q.price > 0);
   return (
-    <div className="fg-grid" data-recipe="builder">
+    <div className="bmg-grid" data-recipe="builder">
       <FrameCard className="p-5">
         <p className="label-tech">RANGE · LIVE</p>
         <h3 className="mt-1 text-lg font-light">نوسان روز از سقف و کف زنده</h3>

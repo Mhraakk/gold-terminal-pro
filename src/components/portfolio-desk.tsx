@@ -59,6 +59,7 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
           className="desk-input"
+          aria-label="دارایی"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -71,12 +72,14 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           onChange={(e) => setQty(e.target.value)}
           placeholder="مقدار"
           className="desk-input"
+          aria-label="مقدار"
         />
         <input
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
           placeholder="ورود (خالی = قیمت زنده)"
           className="desk-input"
+          aria-label="قیمت ورود"
         />
         <Button variant="primary" onClick={add}>
           ثبت

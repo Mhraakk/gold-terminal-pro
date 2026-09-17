@@ -43,6 +43,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
           className="desk-input"
+          aria-label="دارایی"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -54,6 +55,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={field}
           onChange={(e) => setField(e.target.value as StrategyRule["field"])}
           className="desk-input"
+          aria-label="میدان"
         >
           <option value="changePercent" className="bg-ink">
             تغییر ٪
@@ -66,6 +68,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={op}
           onChange={(e) => setOp(e.target.value as StrategyRule["op"])}
           className="desk-input"
+          aria-label="عملگر"
         >
           <option value="above" className="bg-ink">
             بالای
@@ -78,6 +81,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           className="desk-input"
+          aria-label="آستانه"
         />
         <Button variant="primary" onClick={add}>
           افزودن
@@ -88,6 +92,7 @@ export function StrategyDesk({ quotes }: { quotes: MarketQuote[] }) {
         onChange={(e) => setNote(e.target.value)}
         placeholder="یادداشت قانون"
         className="desk-input mb-4"
+        aria-label="یادداشت قانون"
       />
       {items.length === 0 ? (
         <p className="text-sm text-muted">قانونی نیست.</p>

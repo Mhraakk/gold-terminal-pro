@@ -1,5 +1,5 @@
 import { FrameCard } from "@/components/frame";
-import { ARCHITECTURE, DESIGN_DNA } from "@/lib/architecture";
+import { ARCHITECTURE, DESIGN_DNA, DESIGN_LINE, DESIGN_SKILLS } from "@/lib/architecture";
 import type { MarketSnapshot } from "@/data/market/types";
 
 const LAYERS: { label: string; value: string }[] = [
@@ -17,7 +17,7 @@ const LAYERS: { label: string; value: string }[] = [
 
 export function SourcesDesk({ snap }: { snap: MarketSnapshot }) {
   return (
-    <div className="fg-grid" data-recipe="builder">
+    <div className="bmg-grid" data-recipe="builder">
       <FrameCard className="p-4">
         <p className="label-tech">DATA TRUTH</p>
         <h3 className="mt-1 mb-4 text-lg font-light">صحت داده</h3>
@@ -46,7 +46,16 @@ export function SourcesDesk({ snap }: { snap: MarketSnapshot }) {
           ))}
         </ul>
         <p className="mt-6 label-tech text-gold">DESIGN DNA</p>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">{DESIGN_LINE}</p>
+        <ul className="mt-4 space-y-2">
+          {DESIGN_SKILLS.map((row) => (
+            <li key={row.skill} className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+              <span className="label-tech">{row.role}</span>
+              <span className="text-muted">{row.skill}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-xs text-muted">
           {DESIGN_DNA.frame} · {DESIGN_DNA.atmosphere} · {DESIGN_DNA.surfaces}
         </p>
       </FrameCard>

@@ -1,24 +1,43 @@
 import { Link } from "@tanstack/react-router";
-import { AmberAura } from "@/components/amber-aura";
-import { FrameCard, Shell } from "@/components/frame";
+import {
+  BsiBody,
+  BsiDisplay,
+  BsiFolio,
+  BsiIndex,
+  BsiIndexGroup,
+  BsiIndexItem,
+  BsiPage,
+  BsiShell,
+  BsiSpread,
+  BsiWell,
+} from "@/components/book-serif-index";
 
 export function AppNotFound() {
   return (
-    <AmberAura>
-      <Shell className="flex min-h-dvh flex-col items-center justify-center py-16">
-        <FrameCard className="max-w-md p-8 text-center">
-          <p className="label-tech text-gold">404</p>
-          <h1 className="mt-2 text-2xl font-light">این میز در ترمینال نیست</h1>
-          <p className="mt-3 text-sm text-muted">آدرس اشتباه است یا میز برداشته شده.</p>
-          <Link
-            to="/"
-            search={{ desk: "markets" }}
-            className="mt-6 inline-flex min-h-11 items-center justify-center bg-gold px-4 text-sm font-semibold text-ink"
-          >
-            بازگشت به بازار
-          </Link>
-        </FrameCard>
-      </Shell>
-    </AmberAura>
+    <BsiShell>
+      <BsiIndex>
+        <BsiIndexGroup>بایگانی</BsiIndexGroup>
+        <BsiIndexItem active>۴۰۴</BsiIndexItem>
+      </BsiIndex>
+      <BsiWell>
+        <BsiSpread>
+          <BsiPage>
+            <BsiFolio>f. 404</BsiFolio>
+            <p className="bsi-kicker">ZARIN · MISS</p>
+            <BsiDisplay>برگ نیست</BsiDisplay>
+            <BsiBody drop="ا">
+              ین میز در فهرست ترمینال نیست. آدرس اشتباه است یا برگ برداشته شده.
+            </BsiBody>
+            <Link
+              to="/"
+              search={{ desk: "markets" }}
+              className="mt-8 inline-flex min-h-11 items-center justify-center bg-[var(--bsi-accent)] px-4 text-sm font-semibold text-[#f6f0e2] shadow-beautiful-sm hover:shadow-beautiful-md"
+            >
+              بازگشت به دفتر
+            </Link>
+          </BsiPage>
+        </BsiSpread>
+      </BsiWell>
+    </BsiShell>
   );
 }

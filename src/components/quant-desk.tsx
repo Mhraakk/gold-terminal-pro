@@ -64,7 +64,7 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
   }
 
   return (
-    <div className="fg-grid" data-recipe="builder">
+    <div className="bmg-grid" data-recipe="builder">
       <FrameCard className="flex min-h-96 flex-col p-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -111,6 +111,7 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
             onChange={(e) => setDraft(e.target.value)}
             placeholder={`سؤال دربارهٔ ${assetName}`}
             className="desk-input flex-1"
+            aria-label="سؤال کوانت"
           />
           <Button type="submit" disabled={busy}>
             بپرس

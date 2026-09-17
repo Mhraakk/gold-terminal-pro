@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import { ModuleShell } from "@/components/module-shell";
 import { cn } from "@/lib/cn";
 
 export function Brackets() {
@@ -26,40 +27,21 @@ export function ContainerLinesMarks() {
 }
 
 export function FrameCard({
-  selected,
   className,
   children,
-  ...rest
 }: HTMLAttributes<HTMLDivElement> & { selected?: boolean; children?: ReactNode }) {
-  return (
-    <div
-      className={cn("frame-card frame-brackets", className)}
-      data-state={selected ? "selected" : undefined}
-      {...rest}
-    >
-      <Brackets />
-      {children}
-    </div>
-  );
+  return <ModuleShell className={className}>{children}</ModuleShell>;
 }
 
 export function FrameButton({
-  selected,
   className,
   children,
-  type = "button",
-  ...rest
+  onClick,
 }: ButtonHTMLAttributes<HTMLButtonElement> & { selected?: boolean }) {
   return (
-    <button
-      type={type}
-      className={cn("frame-card frame-brackets text-right", className)}
-      data-state={selected ? "selected" : undefined}
-      {...rest}
-    >
-      <Brackets />
+    <ModuleShell className={className} onClick={onClick} flush>
       {children}
-    </button>
+    </ModuleShell>
   );
 }
 

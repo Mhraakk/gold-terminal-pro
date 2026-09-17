@@ -39,6 +39,7 @@ export function JournalDesk() {
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
           className="desk-input"
+          aria-label="دارایی"
         >
           {ASSETS.map((a) => (
             <option key={a.id} value={a.id} className="bg-ink">
@@ -51,6 +52,7 @@ export function JournalDesk() {
           onChange={(e) => setText(e.target.value)}
           placeholder="یادداشت ساختار، ورود، خطا"
           className="desk-input"
+          aria-label="یادداشت ژورنال"
         />
         <Button variant="primary" onClick={add}>
           ثبت

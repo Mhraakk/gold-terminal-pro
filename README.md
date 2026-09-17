@@ -27,6 +27,15 @@ TanStack Start RTL · Gateway (validate / rate / log) · Orchestrator graph · R
 
 ## طراحی
 
-Field `#050505` · accent `#D4AF37` · Vazirmatn + JetBrains Mono · amber-aura · framed-grid · container-lines · gold-thread cards
+Design system — Frame book-serif-index + container-lines + border-gradients, Atmosphere corner-lasers, Motion corner emitter pulse + pointer flashlight, Surfaces bounded-module-grid + aura-assets + beautiful-shadows
 
 Auth خاموش است. دفتر و هشدار فقط روی دستگاه بازدیدکننده می‌مانند.
+
+## اجرا
+
+```bash
+npm install
+npm run dev
+```
+
+پیش‌نمایش تولید: `npm run build && npm run preview`
