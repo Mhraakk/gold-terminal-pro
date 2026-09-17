@@ -21,7 +21,6 @@ import {
   BsiDisplay,
   BsiFolio,
   BsiIndex,
-  BsiIndexGroup,
   BsiIndexItem,
   BsiPage,
   BsiShell,
@@ -41,8 +40,10 @@ import { QuoteCard } from "@/components/quote-card";
 import { SourcesDesk } from "@/components/sources-desk";
 import { StatsDesk } from "@/components/stats-desk";
 import { StrategyDesk } from "@/components/strategy-desk";
+import { PointCloudGlobe } from "@/components/point-cloud-globe";
+import { SeamlessMarquee } from "@/components/seamless-marquee";
 import { stillForAsset } from "@/data/aura";
-import { ASSET_BY_ID } from "@/data/market/assets";
+import { ASSET_BY_ID, ASSETS } from "@/data/market/assets";
 import { getChartFn, getMarketFn } from "@/lib/market-fn";
 import { cn } from "@/lib/cn";
 import { formatPct, formatPrice } from "@/lib/format";
@@ -85,12 +86,6 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "truth", label: "صحت داده", icon: Database },
 ];
 
-const INDEX_GROUPS: { label: string; ids: Tab[] }[] = [
-  { label: "دفتر", ids: ["markets", "terminal", "quant", "forecast"] },
-  { label: "صراف", ids: ["hunter", "stats", "book"] },
-  { label: "بایگانی", ids: ["alerts", "strategy", "truth"] },
-];
-
 const TAB_BY_ID = Object.fromEntries(TABS.map((t) => [t.id, t])) as Record<Tab, (typeof TABS)[number]>;
 
 export const Route = createFileRoute("/")({
@@ -107,11 +102,10 @@ export const Route = createFileRoute("/")({
 function TerminalPending() {
   return (
     <BsiShell>
-      <BsiIndex>
-        <p className="bsi-index-group">دفتر</p>
-        <span className="bsi-index-item is-active">بازار</span>
-      </BsiIndex>
       <BsiWell>
+        <BsiIndex>
+          <BsiIndexItem active>بازار</BsiIndexItem>
+        </BsiIndex>
         <BsiSpread>
           <BsiPage>
             <p className="bsi-folio">f. 00 · PRESS</p>
@@ -154,34 +148,43 @@ function Terminal() {
 
   return (
     <BsiShell>
-      <a href="#desk" className="skip-link shadow-beautiful-sm">
+      <a href="#desk" className="skip-link">
         پرش به برگ
       </a>
+      <BsiWell
+        banner={
+          <SeamlessMarquee
+            className="mb-6"
+            pxPerSecond={34}
+            gap={40}
+            items={ASSETS.map((a) => ({
+              id: a.id,
+              node: (
+                <Link to="/" search={{ desk: "terminal", asset: a.id }} className="mq-chip">
+                  <span>{a.persianName}</span>
+                  <span className="mq-chip-sym">{a.symbol}</span>
+                </Link>
+              ),
+            }))}
+          />
+        }
+      >
       <BsiIndex>
-        {INDEX_GROUPS.map((g) => (
-          <div key={g.label}>
-            <BsiIndexGroup>{g.label}</BsiIndexGroup>
-            {g.ids.map((id) => (
-              <BsiIndexItem key={id} active={tab === id} desk={id} asset={assetId}>
-                {TAB_BY_ID[id].label}
-              </BsiIndexItem>
-            ))}
-          </div>
+        {TABS.map((t) => (
+          <BsiIndexItem key={t.id} active={tab === t.id} desk={t.id} asset={assetId}>
+            {t.label}
+          </BsiIndexItem>
         ))}
-        <BsiIndexGroup>چاپ</BsiIndexGroup>
-        <p className="bsi-index-item" style={{ borderInlineStartColor: "transparent", cursor: "default" }}>
+        <BsiIndexItem>
           {liveCount > 0 ? `${liveCount} زنده` : delayedCount > 0 ? `${delayedCount} تأخیر` : "قطع"}
-        </p>
-        <div className="mt-6">
-          <LiveClock />
-        </div>
+        </BsiIndexItem>
       </BsiIndex>
-      <BsiWell>
         <BsiSpread>
           <BsiPage side="verso">
             <BsiFolio>
               f. {quote.symbol} · {deskLabel}
             </BsiFolio>
+            <LiveClock />
             <p className="bsi-kicker">ZARIN · TGJU · VOL. I</p>
             <BsiDisplay>{quote.persianName}</BsiDisplay>
             <blockquote className="bsi-quote">
@@ -209,8 +212,9 @@ function Terminal() {
             <span className="bsi-label">Lectio</span>
             {tab === "markets" && (
               <section className="bmg-grid" data-recipe="board" aria-label="بازار">
-                {snap.quotes.map((q) => (
-                  <QuoteCard key={q.id} quote={q} />
+                <PointCloudGlobe className="tg-span" hint="Drag to rotate" />
+                {snap.quotes.map((q, i) => (
+                  <QuoteCard key={q.id} quote={q} index={i + 1} />
                 ))}
               </section>
             )}

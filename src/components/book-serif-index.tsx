@@ -1,95 +1,30 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { AtmosphereHost } from "@/components/atmosphere-host";
+import { ProgressiveBlur } from "@/components/progressive-blur";
+import { useMaskedReveal } from "@/components/use-masked-reveal";
 import type { AssetId } from "@/data/market/types";
 
-type Accent = "gold" | "oxblood" | "bronze";
-
-const ACCENT: Record<Accent, string> = {
-  gold: "#b08948",
-  oxblood: "#6e1f24",
-  bronze: "#8a5a2a",
-};
-
-function ShellMarks() {
+export function BsiShell({ children }: { children: ReactNode }) {
   return (
     <>
-      <span className="cl-rail" data-side="start" aria-hidden="true" />
-      <span className="cl-rail" data-side="end" aria-hidden="true" />
-      <span className="cl-sq" data-corner="tl" aria-hidden="true" />
-      <span className="cl-sq" data-corner="tr" aria-hidden="true" />
-      <span className="cl-sq" data-corner="bl" aria-hidden="true" />
-      <span className="cl-sq" data-corner="br" aria-hidden="true" />
-      <span data-bracket="tl" />
-      <span data-bracket="tr" />
-      <span data-bracket="bl" />
-      <span data-bracket="br" />
+      <ProgressiveBlur />
+      <AtmosphereHost>{children}</AtmosphereHost>
     </>
-  );
-}
-
-export function BsiShell({
-  children,
-  accent = "gold",
-  antiquity = 0.55,
-  realism = 0.8,
-  overlay = 1,
-  density = 0.55,
-  drift = false,
-  className = "",
-  style,
-  ...rest
-}: HTMLAttributes<HTMLDivElement> & {
-  accent?: Accent;
-  antiquity?: number;
-  realism?: number;
-  overlay?: number;
-  density?: number;
-  drift?: boolean;
-}) {
-  return (
-    <AtmosphereHost>
-      <div
-        className={`bsi-shell frame-shell frame-brackets cl-host ${className}`.trim()}
-        data-drift={drift ? "on" : undefined}
-        style={{
-          ["--bsi-accent" as string]: ACCENT[accent],
-          ["--bsi-antiquity" as string]: String(antiquity),
-          ["--bsi-realism" as string]: String(realism),
-          ["--bsi-overlay" as string]: String(overlay),
-          ["--bsi-density" as string]: String(density),
-          ...style,
-        }}
-        {...rest}
-      >
-        <ShellMarks />
-        {children}
-      </div>
-    </AtmosphereHost>
   );
 }
 
 export function BsiIndex({ children, className = "", ...rest }: HTMLAttributes<HTMLElement>) {
   return (
-    <aside
-      className={`bsi-index frame-card frame-brackets ${className}`.trim()}
-      aria-label="فهرست"
-      {...rest}
-    >
-      <span data-bracket="tl" />
-      <span data-bracket="tr" />
-      <span data-bracket="bl" />
-      <span data-bracket="br" />
-      <div className="frame-disc" aria-hidden="true">
-        <span className="frame-disc-mark">ز</span>
-      </div>
+    <ol className={`nd-list ${className}`.trim()} data-nd="leading" aria-label="فهرست" {...rest}>
       {children}
-    </aside>
+    </ol>
   );
 }
 
 export function BsiIndexGroup({ children }: { children: ReactNode }) {
-  return <p className="bsi-index-group">{children}</p>;
+  return <p className="nss-label">{children}</p>;
 }
 
 export function BsiIndexItem({
@@ -113,38 +48,47 @@ export function BsiIndexItem({
     | "truth";
   asset?: AssetId;
 }) {
-  const className = `bsi-index-item${active ? " is-active" : ""}`;
+  const className = `sdp-nav-link${active ? " is-active" : ""}`;
   if (desk) {
     return (
-      <Link
-        to="/"
-        search={{ desk, asset }}
-        className={className}
-        aria-current={active ? "page" : undefined}
-      >
-        {children}
-      </Link>
+      <li>
+        <Link
+          to="/"
+          search={{ desk, asset }}
+          className={className}
+          aria-current={active ? "page" : undefined}
+        >
+          {children}
+        </Link>
+      </li>
     );
   }
   return (
-    <span className={className} aria-current={active ? "page" : undefined}>
-      {children}
-    </span>
+    <li>
+      <span className={className} aria-current={active ? "page" : undefined}>
+        {children}
+      </span>
+    </li>
   );
 }
 
-export function BsiWell({ children, className = "", ...rest }: HTMLAttributes<HTMLElement>) {
+export function BsiWell({
+  children,
+  className = "",
+  banner,
+  ...rest
+}: HTMLAttributes<HTMLElement> & { banner?: ReactNode }) {
   return (
-    <main className={`bsi-well ${className}`.trim()} {...rest}>
-      {children}
-    </main>
+    <section className={`im-well ${className}`.trim()} {...rest}>
+      {banner}
+      <div className="im-card">{children}</div>
+    </section>
   );
 }
 
 export function BsiSpread({ children, className = "", ...rest }: HTMLAttributes<HTMLElement>) {
   return (
     <article className={`bsi-spread ${className}`.trim()} {...rest}>
-      <div className="bsi-fiber" aria-hidden="true" />
       {children}
     </article>
   );
@@ -168,16 +112,29 @@ export function BsiCrease() {
 }
 
 export function BsiFolio({ children }: { children: ReactNode }) {
-  return <p className="bsi-folio">{children}</p>;
+  return <p className="nss-meta">{children}</p>;
 }
 
 export function BsiDisplay({ children }: { children: ReactNode }) {
-  return <h1 className="bsi-display">{children}</h1>;
+  const ref = useRef<HTMLHeadingElement>(null);
+  const text = typeof children === "string" ? children : "";
+  const words = text.split(/\s+/).filter(Boolean);
+  useMaskedReveal(ref, text);
+  if (!text) return <h1 className="im-heading">{children}</h1>;
+  return (
+    <h1 ref={ref} className="reveal im-heading">
+      {words.map((w, i) => (
+        <span className="reveal-word" key={`${i}-${w}`}>
+          <span className="reveal-inner">{w}</span>
+        </span>
+      ))}
+    </h1>
+  );
 }
 
 export function BsiBody({ drop, children }: { drop?: string; children: ReactNode }) {
   return (
-    <p className="bsi-body">
+    <p className="nss-body">
       {drop ? <span className="bsi-drop">{drop}</span> : null}
       {children}
     </p>

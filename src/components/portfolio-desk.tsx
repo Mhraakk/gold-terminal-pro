@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FrameCard } from "@/components/frame";
+import { SkBtn, SkTray } from "@/components/skeuomorph";
 import { ASSETS } from "@/data/market/assets";
 import type { AssetId, MarketQuote } from "@/data/market/types";
 import { formatPrice, formatSigned } from "@/lib/format";
@@ -54,7 +55,8 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           PnL باز: <span className={pnl >= 0 ? "text-up" : "text-down"}>{formatSigned(pnl)}</span>
         </p>
       </div>
-      <div className="mb-4 grid gap-2 sm:grid-cols-4">
+      <SkTray className="mb-4">
+      <div className="grid gap-2 sm:grid-cols-4">
         <select
           value={assetId}
           onChange={(e) => setAssetId(e.target.value as AssetId)}
@@ -81,10 +83,9 @@ export function PortfolioDesk({ quotes }: { quotes: MarketQuote[] }) {
           className="desk-input"
           aria-label="قیمت ورود"
         />
-        <Button variant="primary" onClick={add}>
-          ثبت
-        </Button>
+        <SkBtn onClick={add}>ثبت</SkBtn>
       </div>
+      </SkTray>
       {items.length === 0 ? (
         <p className="text-sm text-muted">پوزیشنی نیست. روی این دستگاه ذخیره می‌شود.</p>
       ) : (

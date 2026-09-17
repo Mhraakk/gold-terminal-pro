@@ -12,14 +12,19 @@ const FRESH: Record<MarketQuote["freshness"], string> = {
   unavailable: "قطع",
 };
 
-export function QuoteCard({ quote }: { quote: MarketQuote }) {
+export function QuoteCard({ quote, index }: { quote: MarketQuote; index?: number }) {
   const up = quote.changePercent > 0;
   const down = quote.changePercent < 0;
   const dead = quote.freshness === "unavailable" || quote.price <= 0;
   const still = stillForAsset(quote.id);
   return (
     <Link to="/" search={{ desk: "terminal", asset: quote.id }} className="block">
-      <ModuleShell>
+      <ModuleShell className="sdp-card">
+        {index != null ? (
+          <span className="nd-stamp" aria-hidden="true">
+            <span className="nd-num">{String(index).padStart(2, "0")}</span>
+          </span>
+        ) : null}
         <div className="relative h-32">
           <img
             src={still.src}

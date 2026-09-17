@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
 import { FrameCard } from "@/components/frame";
+import { ThBtn } from "@/components/technical-hud";
 import { Button } from "@/components/ui/button";
 import { analyzeFn } from "@/lib/market-fn";
 import { formatPrice } from "@/lib/format";
@@ -71,10 +71,9 @@ export function QuantDesk({ assetId, assetName }: { assetId: AssetId; assetName:
             <p className="label-tech">QUANT DESK · GROK-4.5</p>
             <h3 className="mt-1 text-lg font-light">کوانت زرین</h3>
           </div>
-          <Button variant="primary" onClick={() => void run("structure")} disabled={busy}>
-            <Sparkles className="size-4" />
+          <ThBtn onClick={() => void run("structure")} disabled={busy}>
             {busy ? "در حال استدلال…" : "تحلیل ساختار"}
-          </Button>
+          </ThBtn>
         </div>
         {trace ? (
           <p className="label-tech mb-3 text-gold">

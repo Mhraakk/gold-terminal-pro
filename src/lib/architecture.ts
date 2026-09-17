@@ -15,27 +15,38 @@ export const ARCHITECTURE = {
 
 /** One atmosphere owner. Last applied atmosphere skill wins. */
 export const DESIGN_SKILLS = [
-  { skill: "book-serif-index", role: "frame" as const },
-  { skill: "container-lines", role: "frame" as const },
-  { skill: "border-gradients", role: "frame" as const },
-  { skill: "bounded-module-grid", role: "tiles" as const },
+  { skill: "industrial-minimalism", role: "atmosphere" as const },
+  { skill: "industrial-minimalism", role: "frame" as const },
+  { skill: "masked-reveal", role: "motion" as const },
+  { skill: "number-details", role: "details" as const },
+  { skill: "point-cloud-globe", role: "illustration" as const },
+  { skill: "progressive-blur", role: "surfaces" as const },
   { skill: "aura-assets", role: "media" as const },
-  { skill: "beautiful-shadows", role: "surfaces" as const },
-  { skill: "corner-lasers", role: "atmosphere" as const },
+  { skill: "terminal-modernism", role: "illustration" as const },
 ] as const;
 
 export const DESIGN_DNA = {
-  frame: "book-serif-index + container-lines + border-gradients",
-  field: "#050505",
-  accent: "#b08948",
-  type: "Newsreader + Noto Naskh Arabic + IBM Plex Mono · Geist 300 on modules",
-  atmosphere: "corner-lasers" as "corner-lasers" | "chromatic-band-background" | "off",
-  motion: "corner emitter pulse + pointer flashlight",
-  surfaces: "opaque folio · bounded-module-grid · aura plates · beautiful-shadows on gold controls",
+  frame: "industrial-minimalism rails + 1.5px nodes",
+  field: "#050507",
+  accent: "#e8e8ea",
+  type: "Inter 300 tight tracking · 12px uppercase labels",
+  atmosphere: "industrial-minimalism" as
+    | "industrial-minimalism"
+    | "perspective-glass-dashboard"
+    | "radial-blade-sculpture"
+    | "sage-dual-pane"
+    | "synthetic-flora-background"
+    | "technical-hud"
+    | "webgl-laser-background"
+    | "corner-lasers"
+    | "chromatic-band-background"
+    | "off",
+  motion: "masked-reveal + plane breath",
+  surfaces: "#050507 + 100px shadow + white-alpha glass",
 } as const;
 
 export const ARCHITECTURE_LINE =
   "Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG disabled adapter, Models xAI grok-4.5, Guardrails on, Memory short-term localStorage, Data in-memory cache + TGJU/Gold API, LLMOps Dockerfile + eval fixtures, Cloud Vercel";
 
 export const DESIGN_LINE =
-  "Design system — Frame book-serif-index + container-lines + border-gradients, Atmosphere corner-lasers, Motion corner emitter pulse + pointer flashlight, Surfaces bounded-module-grid + aura-assets + beautiful-shadows";
+  "Design system — Frame industrial-minimalism rails + 1.5px nodes, Atmosphere stacked-plane field (30deg FOV), Motion masked-reveal + plane breath, Surfaces #050507 + 100px shadow + white-alpha glass";

@@ -29,6 +29,6 @@ Frontend TanStack Start RTL · Gateway TanStack server functions · Orchestrator
 
 ## Design
 
-Design system — Frame book-serif-index + container-lines + border-gradients, Atmosphere corner-lasers, Motion corner emitter pulse + pointer flashlight, Surfaces bounded-module-grid + aura-assets + beautiful-shadows
+Design system — Frame industrial-minimalism rails + 1.5px nodes, Atmosphere stacked-plane field (30deg FOV), Motion masked-reveal + plane breath, Surfaces #050507 + 100px shadow + white-alpha glass
 
 Pixels come from the design skills placed in chat. Runtime stays the architecture graph. One atmosphere at a time.

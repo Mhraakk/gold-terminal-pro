@@ -1,4 +1,5 @@
 import { FrameCard } from "@/components/frame";
+import { TerminalModernism } from "@/components/terminal-modernism";
 import { ARCHITECTURE, DESIGN_DNA, DESIGN_LINE, DESIGN_SKILLS } from "@/lib/architecture";
 import type { MarketSnapshot } from "@/data/market/types";
 
@@ -18,6 +19,9 @@ const LAYERS: { label: string; value: string }[] = [
 export function SourcesDesk({ snap }: { snap: MarketSnapshot }) {
   return (
     <div className="bmg-grid" data-recipe="builder">
+      <FrameCard className="tm-span overflow-hidden p-0">
+        <TerminalModernism />
+      </FrameCard>
       <FrameCard className="p-4">
         <p className="label-tech">DATA TRUTH</p>
         <h3 className="mt-1 mb-4 text-lg font-light">صحت داده</h3>
@@ -49,7 +53,7 @@ export function SourcesDesk({ snap }: { snap: MarketSnapshot }) {
         <p className="mt-2 text-sm text-muted">{DESIGN_LINE}</p>
         <ul className="mt-4 space-y-2">
           {DESIGN_SKILLS.map((row) => (
-            <li key={row.skill} className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+            <li key={`${row.role}-${row.skill}`} className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
               <span className="label-tech">{row.role}</span>
               <span className="text-muted">{row.skill}</span>
             </li>
