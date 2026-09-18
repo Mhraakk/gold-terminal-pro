@@ -9,7 +9,7 @@ export type NoulQuestion = {
 export type ChoiceQuestion = {
   type: "choice";
   instructions: string;
-  /** option id → description */
+  /** option id -> description */
   criteria: Record<string, string>;
 };
 

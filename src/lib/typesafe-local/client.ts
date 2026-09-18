@@ -22,7 +22,7 @@ function resolveBaseUrl(baseUrl?: string): string {
   return (baseUrl || fromEnv || DEFAULT_TYPESAFE_LOCAL_URL).replace(/\/$/, "");
 }
 
-/** GET /health — returns null when the local server is down. */
+/** GET /health - returns null when the local server is down. */
 export async function typesafeLocalHealth(
   baseUrl?: string,
 ): Promise<{ ok: boolean; model?: string } | null> {
@@ -38,7 +38,10 @@ export async function typesafeLocalHealth(
   }
 }
 
-/** POST /v1/systemone — typed questions to calibrated probabilities. Server-side only. */
+/**
+ * POST /v1/systemone - typed questions -> calibrated probabilities.
+ * Server-side only (local MLX process). Throws TypesafeLocalError if unreachable.
+ */
 export async function askSystemOne(
   request: SystemOneRequest,
   opts?: { baseUrl?: string; signal?: AbortSignal },
@@ -57,13 +60,15 @@ export async function askSystemOne(
       `typesafe-local unreachable at ${root}: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
+
   const text = await res.text();
   if (!res.ok) {
-    throw new TypesafeLocalError(`typesafe-local ${res.status}: ${text.slice(0, 400)}`, {
-      status: res.status,
-      body: text,
-    });
+    throw new TypesafeLocalError(
+      `typesafe-local ${res.status}: ${text.slice(0, 400)}`,
+      { status: res.status, body: text },
+    );
   }
+
   try {
     return JSON.parse(text) as SystemOneResponse;
   } catch {
@@ -76,5 +81,6 @@ export async function askSystemOne(
 
 export function isTypesafeLocalConfigured(): boolean {
   if (typeof process === "undefined") return false;
-  return Boolean(process.env.TYPESAFE_LOCAL_URL?.trim());
+  const v = process.env.TYPESAFE_LOCAL_URL?.trim();
+  return Boolean(v);
 }
