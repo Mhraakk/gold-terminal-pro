@@ -25,6 +25,8 @@ TanStack Start RTL · Gateway (validate / rate / log) · Orchestrator graph · R
 
 جزئیات: [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`SPEC.md`](SPEC.md) · **دیپلوی:** [`docs/DEPLOY.md`](docs/DEPLOY.md)
 
+OSS / RTL: [`docs/OSS_INSPIRATION.md`](docs/OSS_INSPIRATION.md) · [`docs/RTL_UI.md`](docs/RTL_UI.md)
+
 ## دیزاین
 
 Design system — Frame newsreader-slate-shell, Atmosphere nebula-webgl-background (D2), Motion masked-reveal, Surfaces elevated #131315. Type Newsreader 48.

@@ -6,6 +6,7 @@ import { AppErrorComponent } from "@/lib/error-component";
 import { QueryRoot } from "@/lib/query";
 import "@/lib/gsap-boot";
 import appCss from "../styles.css?url";
+import faFontCss from "../styles-fa.css?url";
 
 const APP_NAME = "زرین — گلد ترمینال";
 
@@ -26,9 +27,10 @@ export const Route = createRootRoute({
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: faFontCss },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Naskh+Arabic:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Naskh+Arabic:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&family=Vazirmatn:wght@300;400;500;600;700&display=swap",
       },
       {
         rel: "stylesheet",

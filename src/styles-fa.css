@@ -1,0 +1,9 @@
+/* Persian UI font token — loaded after styles.css; keeps terminal aesthetic */
+:root {
+  --font-fa: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-fa);
+}
