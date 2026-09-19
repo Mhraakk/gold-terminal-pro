@@ -1728,6 +1728,10 @@ button.bsi-index-item {
   width: min(100%, 420px);
   justify-self: center;
 }
+.pcg-shell--bleed.tg-span {
+  width: 100%;
+  max-width: none;
+}
 
 .tg-canvas {
   display: block;
@@ -2603,11 +2607,65 @@ button.bsi-index-item {
   .pgd-plane { transform: none; }
 }
 
+.pgd-root .nss-section {
+  padding: 136px 24px;
+}
+@media (min-width: 768px) {
+  .pgd-root .nss-section { padding: 136px 48px; }
+}
+@media (min-width: 1200px) {
+  .pgd-root .nss-section { padding: 136px 72px; }
+}
+
+.pgd-root .nss-shell {
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 90, 31, 0.55), rgba(255, 255, 255, 0.10) 42%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 90, 31, 0.28));
+}
+
+.pgd-root .nss-face {
+  background: rgba(24, 24, 27, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 24px;
+}
+
+.pgd-root .nss-face--tile {
+  padding: 20px;
+}
+
+.pgd-root .nss-display {
+  font-family: var(--pgd-sans);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.pgd-root .nss-link:hover,
+.pgd-root .nss-face a:hover {
+  color: #ff5a1f;
+}
+
+.pgd-root .nss-face a[aria-current="page"],
+.pgd-root .nss-face .sdp-nav-link.is-active {
+  color: #ff5a1f;
+}
+
+.pgd-root .nss-icon {
+  color: #ff5a1f;
+}
+
+.pgd-root :focus-visible {
+  outline-color: #ff5a1f;
+}
+
 /* --- Point-cloud globe --- */
 .pcg-shell {
   --pcg-dot: #ef233c;
   --pcg-halo: rgb(239 35 60 / 0.20);
   --pcg-hint: #52525b;
+  --pcg-type: 12px;
+  --pcg-tracking: 0.1em;
   position: relative;
   aspect-ratio: 1 / 1;
   width: min(100%, 520px);
@@ -2617,6 +2675,10 @@ button.bsi-index-item {
   color: var(--pcg-hint);
   font-family: "SFMono-Regular", ui-monospace, "SF Mono", Menlo, monospace;
   justify-self: center;
+}
+.pcg-shell--bleed {
+  width: 100%;
+  max-width: none;
 }
 .pcg-shell:active { cursor: grabbing; }
 .pcg-halo {
@@ -2644,9 +2706,9 @@ button.bsi-index-item {
   position: absolute;
   z-index: 2;
   pointer-events: none;
-  font-size: 12px;
+  font-size: var(--pcg-type);
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--pcg-tracking);
   text-transform: uppercase;
   color: var(--pcg-hint);
 }
@@ -2666,6 +2728,14 @@ button.bsi-index-item {
 @keyframes pcg-pulse {
   0%, 100% { opacity: 0.28; }
   50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcg-canvas { transition: none; }
+  .pcg-loading { animation: none; opacity: 0.7; }
+}
+@media (max-width: 599px) {
+  .pcg-shell { width: min(100%, 360px); }
+  .pcg-shell--bleed { width: 100%; }
 }
 
 /* --- Number details (01–99 stamps + leading list) --- */
@@ -2763,6 +2833,7 @@ button.bsi-index-item {
 }
 
 .nd-list > li[data-state="current"]::before,
+.nd-item[data-state="current"] .nd-num,
 .nd-list > li:has(.is-active)::before,
 .nd-list > li:has([aria-current="page"])::before,
 .nd-stamp[data-state="current"] .nd-num {
@@ -2774,20 +2845,59 @@ button.bsi-index-item {
   width: 2ch;
 }
 
+.nd-tick {
+  display: inline-block;
+  width: 1px;
+  height: var(--nd-tick-h);
+  background: var(--nd-tick);
+  flex: 0 0 auto;
+  pointer-events: none;
+  align-self: center;
+}
+
+.nd-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--nd-gap);
+}
+
+.nd-row[data-nd="stacked"] {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nd-row[data-nd="stacked"] .nd-tick {
+  width: 12px;
+  height: 1px;
+}
+
 .nd-stamp {
   position: absolute;
   inset-block-start: var(--nd-stamp-inset);
   inset-inline-start: var(--nd-stamp-inset);
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 
-.nss-face .nd-stamp {
-  z-index: 4;
+.nss-face.nd-host {
+  overflow: visible;
 }
 
 .nd-stamp .nd-num {
   width: auto;
+}
+
+.nd-rail-num {
+  position: absolute;
+  inset-inline-start: 0;
+  top: var(--nd-stamp-inset);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+[dir="rtl"] .nd-rail-num {
+  transform: translateX(50%);
 }
 
 .nd-body {
@@ -2809,27 +2919,50 @@ button.bsi-index-item {
 /* --- Newsreader slate shell (card material, last frame) --- */
 :root {
   --nss-page: #05080e;
+  --nss-page-invert: #ffffff;
   --nss-face: #131315;
   --nss-ink: #fafafa;
   --nss-muted: #525252;
+  --nss-accent: #0f172a;
   --nss-signal: #3b82f6;
-  --nss-shell: linear-gradient(to right bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.05), rgba(0,0,0,0));
-  --nss-sheen: linear-gradient(to bottom right, rgba(255,255,255,0.3), rgba(255,255,255,0.05), transparent);
+  --nss-shell: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.05),
+    rgba(0, 0, 0, 0)
+  );
+  --nss-veil: linear-gradient(to top, #131315, transparent);
+  --nss-sheen: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
   --nss-radius-shell: 2px;
   --nss-radius-face: 1px;
+  --nss-radius-pill: 9999px;
   --nss-pad-section: 64px;
   --nss-pad-card: 64px;
   --nss-gap: 6px;
-  --nss-duration: 150ms;
+  --nss-hairline: 1px;
   --nss-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --nss-duration: 150ms;
   --nss-elevate:
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
     rgba(0, 0, 0, 0.035) 0px 2.8px 2.2px 0px,
     rgba(0, 0, 0, 0.047) 0px 6.7px 5.3px 0px,
     rgba(0, 0, 0, 0.06) 0px 12.5px 10px 0px,
     rgba(0, 0, 0, 0.07) 0px 22.3px 17.9px 0px,
     rgba(0, 0, 0, 0.086) 0px 41.8px 33.4px 0px,
     rgba(0, 0, 0, 0.12) 0px 100px 80px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 3px -1px,
+    rgba(25, 28, 33, 0.02) 0px 1px 0px 0px,
     rgba(25, 28, 33, 0.08) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
     rgba(255, 255, 255, 0.5) 0px 0px 10px 0px;
 }
 
@@ -2839,12 +2972,11 @@ button.bsi-index-item {
   width: 100%;
   padding: var(--nss-pad-section);
   box-sizing: border-box;
-  gap: var(--nss-gap);
 }
 
 .nss-shell {
   display: block;
-  padding: 1px;
+  padding: var(--nss-hairline);
   border-radius: var(--nss-radius-shell);
   background: var(--nss-shell);
   transform: translateZ(0);
@@ -2853,7 +2985,7 @@ button.bsi-index-item {
 .nss-face {
   position: relative;
   box-sizing: border-box;
-  min-width: 240px;
+  min-width: min(240px, 100%);
   padding: var(--nss-pad-card);
   border-radius: var(--nss-radius-face);
   background: var(--nss-face);
@@ -2884,17 +3016,6 @@ button.bsi-index-item {
   padding: 0;
 }
 
-@media (max-width: 720px) {
-  .nss-section {
-    --nss-pad-section: 32px;
-    --nss-pad-card: 32px;
-  }
-  .nss-face {
-    min-width: 0;
-    padding: 32px;
-  }
-}
-
 .nss-display {
   font-family: Newsreader, serif;
   font-size: 48px;
@@ -2911,12 +3032,14 @@ button.bsi-index-item {
   font-size: 14px;
   font-weight: 300;
   line-height: 22.75px;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--nss-ink);
   margin: 0;
 }
 
 .nss-label {
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
@@ -2927,7 +3050,7 @@ button.bsi-index-item {
 }
 
 .nss-meta {
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
@@ -2937,14 +3060,27 @@ button.bsi-index-item {
   margin: 0;
 }
 
+.nss-mark {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nss-ink);
+  margin: 0;
+}
+
 .nss-icon {
   width: 14px;
   height: 14px;
-  color: var(--nss-signal);
+  color: var(--nss-ink);
   flex: none;
 }
 
 .nss-link,
+.nss-display a,
+.nss-body a,
 .nss-face a {
   color: var(--nss-signal);
   text-decoration: none;
@@ -2961,6 +3097,8 @@ button.bsi-index-item {
 }
 
 .nss-link:hover,
+.nss-display a:hover,
+.nss-body a:hover,
 .nss-face a:hover {
   color: #72a5f9;
 }
@@ -2969,7 +3107,7 @@ button.bsi-index-item {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border-radius: 9999px;
+  border-radius: var(--nss-radius-pill);
   padding: 8px 16px;
 }
 
@@ -2977,12 +3115,39 @@ button.bsi-index-item {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, #131315, transparent);
+  background: var(--nss-veil);
 }
 
-@media (max-width: 640px) {
-  .nss-section { padding: 32px 16px; }
-  .nss-display { font-size: 36px; line-height: 40px; }
+.nss-section .bsi-spread {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  width: 100%;
+  min-height: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--nss-ink);
+  grid-template-columns: none;
+}
+
+.nss-section .bsi-crease {
+  display: none;
+}
+
+.nss-section .bsi-page,
+.nss-section .bsi-page--verso,
+.nss-section .bsi-page--recto {
+  padding: 0;
+  background: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nss-link,
+  .nss-display a,
+  .nss-body a,
+  [data-nss-reveal] {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

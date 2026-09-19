@@ -2,13 +2,14 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AuthProvider } from "@/lib/auth/provider";
 import { AppNotFound } from "@/components/not-found";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { ProgressiveBlur } from "@/components/progressive-blur";
 import { AppErrorComponent } from "@/lib/error-component";
 import { QueryRoot } from "@/lib/query";
 import "@/lib/gsap-boot";
 import appCss from "../styles.css?url";
 import faFontCss from "../styles-fa.css?url";
 
-const APP_NAME = "زرین — گلد ترمینال";
+const APP_NAME = "زرین — آتلیه کانسپت";
 
 export const Route = createRootRoute({
   notFoundComponent: AppNotFound,
@@ -20,7 +21,7 @@ export const Route = createRootRoute({
       { title: APP_NAME },
       {
         name: "description",
-        content: "ترمینال طلا و ارز تهران — قیمت زنده، مظنه، کوانت و ساختار بازار.",
+        content: "آتلیهٔ کانسپت طلای لوکس — ایده، ساخت، پکیج و شناسنامه بدون تکرار.",
       },
       { name: "theme-color", content: "#030305" },
     ],
@@ -46,6 +47,7 @@ export const Route = createRootRoute({
         <HeadContent />
       </head>
       <body className="bg-bg text-fg antialiased">
+        <ProgressiveBlur />
         <PreviewHostBridge />
         <AuthProvider>
           <QueryRoot>

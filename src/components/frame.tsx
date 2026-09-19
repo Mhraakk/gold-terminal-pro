@@ -29,7 +29,7 @@ export function ContainerLinesMarks() {
 export function FrameCard({
   className,
   children,
-  tile = true,
+  tile = false,
 }: HTMLAttributes<HTMLDivElement> & { selected?: boolean; tile?: boolean; children?: ReactNode }) {
   return (
     <NssCard className={className} tile={tile}>

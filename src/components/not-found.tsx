@@ -26,11 +26,11 @@ export function AppNotFound() {
             <p className="bsi-kicker">ZARIN · MISS</p>
             <BsiDisplay>برگ نیست</BsiDisplay>
             <BsiBody drop="ا">
-              ین میز در فهرست ترمینال نیست. آدرس اشتباه است یا برگ برداشته شده.
+              این میز در آتلیه نیست. آدرس اشتباه است یا برگ برداشته شده.
             </BsiBody>
             <Link
               to="/"
-              search={{ desk: "markets" }}
+              search={{ desk: "board" }}
               className="mt-8 inline-flex min-h-11 items-center justify-center bg-[var(--bsi-accent)] px-4 text-sm font-semibold text-[#f6f0e2] shadow-beautiful-sm hover:shadow-beautiful-md"
             >
               بازگشت به دفتر

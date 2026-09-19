@@ -19,7 +19,7 @@ export function QuoteCard({ quote, index }: { quote: MarketQuote; index?: number
   const dead = quote.freshness === "unavailable" || quote.price <= 0;
   const still = stillForAsset(quote.id);
   return (
-    <Link to="/" search={{ desk: "terminal", asset: quote.id }} className="nss-link block">
+    <Link to="/" search={{ desk: "atelier" }} className="nss-link block">
       <NssCard tile stamp={index != null ? <NdStamp index={index} /> : null}>
         <div className="relative h-32">
           <img

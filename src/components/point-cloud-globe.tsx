@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 export function PointCloudGlobe({
   density = 22,
-  hint = "Drag to rotate",
+  hint = "DRAG TO ROTATE",
   className = "",
   autoRotate = true,
 }: {

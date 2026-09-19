@@ -3,12 +3,12 @@ export {
   completeCline2Api,
   isCline2ApiConfigured,
 } from "./providers/cline2api";
-export { QUANT_SYSTEM } from "./prompts";
+export { QUANT_SYSTEM, STUDIO_SYSTEM } from "./prompts";
 
 import { completeCline2Api, isCline2ApiConfigured } from "./providers/cline2api";
 import { completeXai } from "./providers/xai";
 
-type LlmOpts = { system: string; user: string; maxTokens?: number };
+type LlmOpts = { system: string; user: string; maxTokens?: number; temperature?: number };
 
 /** Prefer cline2api-workers when configured; otherwise xAI Grok. */
 export async function completeLlm(opts: LlmOpts) {

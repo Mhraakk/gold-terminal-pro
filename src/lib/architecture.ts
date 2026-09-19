@@ -8,14 +8,14 @@ export const ARCHITECTURE = {
   models: "xAI grok-4.5",
   guardrails: "injection · PII · schema",
   memory: "short-term localStorage",
-  data: "in-memory cache + TGJU / Gold API",
+  data: "device-local concepts + swappable AI",
   llmops: "Dockerfile + eval fixtures",
   cloud: "Vercel",
 } as const;
 
 /** One atmosphere owner. Last applied atmosphere skill wins. */
 export const DESIGN_SKILLS = [
-  { skill: "nebula-webgl-background", role: "atmosphere" as const },
+  { skill: "perspective-glass-dashboard", role: "atmosphere" as const },
   { skill: "newsreader-slate-shell", role: "frame" as const },
   { skill: "masked-reveal", role: "motion" as const },
   { skill: "number-details", role: "details" as const },
@@ -26,14 +26,14 @@ export const DESIGN_SKILLS = [
 ] as const;
 
 export const DESIGN_DNA = {
-  frame: "newsreader-slate-shell (flex, full-bleed, open, 2px radius)",
-  field: "#030305",
-  accent: "#3B82F6",
-  type: "Newsreader 48 + system-sans",
-  atmosphere: "nebula-webgl-background" as
+  frame: "perspective-glass-dashboard + Gradient Shell",
+  field: "#09090B",
+  accent: "#FF5A1F",
+  type: "system-sans 500 tight",
+  atmosphere: "perspective-glass-dashboard" as
+    | "perspective-glass-dashboard"
     | "nebula-webgl-background"
     | "industrial-minimalism"
-    | "perspective-glass-dashboard"
     | "radial-blade-sculpture"
     | "sage-dual-pane"
     | "synthetic-flora-background"
@@ -42,12 +42,12 @@ export const DESIGN_DNA = {
     | "corner-lasers"
     | "chromatic-band-background"
     | "off",
-  motion: "150ms section reveal + masked-reveal",
-  surfaces: "elevated #131315 inside 1px white-gradient shell",
+  motion: "plane scrub + masked-reveal",
+  surfaces: "#18181B glass + #FF5A1F signal",
 } as const;
 
 export const ARCHITECTURE_LINE =
-  "Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG disabled adapter, Models xAI grok-4.5, Guardrails on, Memory short-term localStorage, Data in-memory cache + TGJU/Gold API, LLMOps Dockerfile + eval fixtures, Cloud Vercel";
+  "Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG similarity adapter, Models xAI grok-4.5 (swappable), Guardrails on, Memory device-local concepts, Data localStore, LLMOps Dockerfile + eval fixtures, Cloud Vercel";
 
 export const DESIGN_LINE =
-  "Design system — Frame newsreader-slate-shell (flex, full-bleed, open, 2px radius), Atmosphere nebula-webgl-background (D2), Motion 150ms + masked-reveal, Surfaces elevated #131315 inside 1px white-gradient shell. Type Newsreader 48 + system-sans";
+  "Design system — Frame perspective-glass-dashboard + Gradient Shell, Atmosphere Three.js wireframe terrain 40% + God Rays, Motion plane scrub + masked-reveal, Surfaces #18181B glass + #FF5A1F signal";

@@ -1,7 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { AlertsDesk } from "@/components/alerts-desk";
 import {
   BsiBody,
   BsiCrease,
@@ -14,94 +11,81 @@ import {
   BsiSpread,
   BsiWell,
 } from "@/components/book-serif-index";
-import { CandleChart } from "@/components/candle-chart";
-import { DealerDesk } from "@/components/dealer-desk";
-import { ForecastDesk } from "@/components/forecast-desk";
-import { FrameCard } from "@/components/frame";
-import { HunterDesk } from "@/components/hunter-desk";
-import { JournalDesk } from "@/components/journal-desk";
-import { LiveClock } from "@/components/live-clock";
-import { PortfolioDesk } from "@/components/portfolio-desk";
-import { QuantDesk } from "@/components/quant-desk";
-import { QuoteCard } from "@/components/quote-card";
-import { SourcesDesk } from "@/components/sources-desk";
-import { StatsDesk } from "@/components/stats-desk";
-import { StrategyDesk } from "@/components/strategy-desk";
-import { PointCloudGlobe } from "@/components/point-cloud-globe";
 import { SolarCpu } from "@/components/nss-card";
 import { SeamlessMarquee } from "@/components/seamless-marquee";
-import { stillForAsset } from "@/data/aura";
-import { ASSET_BY_ID, ASSETS } from "@/data/market/assets";
-import { getChartFn, getMarketFn } from "@/lib/market-fn";
-import { cn } from "@/lib/cn";
-import { formatPct, formatPrice } from "@/lib/format";
-import type { AssetId } from "@/data/market/types";
+import { UserButton } from "@/lib/auth/gates";
+import {
+  StudioAtelier,
+  StudioBoard,
+  StudioBrief,
+  StudioCollections,
+  StudioDna,
+  StudioDossier,
+  StudioPapers,
+  StudioProduction,
+  StudioSet,
+} from "@/components/studio-desks";
+import { LEVEL_LABEL } from "@/data/studio/catalog";
+import { LUXURY_LEVELS } from "@/data/studio/types";
 
 const DESKS = [
-  "markets",
-  "terminal",
-  "quant",
-  "forecast",
-  "hunter",
-  "dealer",
-  "stats",
-  "book",
-  "alerts",
-  "strategy",
-  "truth",
+  "board",
+  "brief",
+  "atelier",
+  "dossier",
+  "production",
+  "set",
+  "collections",
+  "dna",
+  "papers",
 ] as const;
 
 type Tab = (typeof DESKS)[number];
 
-type DeskSearch = { desk: Tab; asset?: AssetId };
+type DeskSearch = { desk: Tab; concept?: string };
 
 function parseSearch(raw: Record<string, unknown>): DeskSearch {
-  const desk = DESKS.includes(raw.desk as Tab) ? (raw.desk as Tab) : "markets";
-  const asset =
-    typeof raw.asset === "string" && raw.asset in ASSET_BY_ID ? (raw.asset as AssetId) : undefined;
-  return { desk, asset };
+  const desk = DESKS.includes(raw.desk as Tab) ? (raw.desk as Tab) : "board";
+  const concept = typeof raw.concept === "string" ? raw.concept : undefined;
+  return { desk, concept };
 }
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "markets", label: "بازار" },
-  { id: "terminal", label: "ترمینال" },
-  { id: "quant", label: "کوانت" },
-  { id: "forecast", label: "پیش‌بینی" },
-  { id: "hunter", label: "شکار" },
-  { id: "dealer", label: "دیلر" },
-  { id: "stats", label: "آمار" },
-  { id: "book", label: "دفتر" },
-  { id: "alerts", label: "هشدار" },
-  { id: "strategy", label: "استراتژی" },
-  { id: "truth", label: "صحت داده" },
+  { id: "board", label: "داشبورد" },
+  { id: "brief", label: "کانسپت تازه" },
+  { id: "atelier", label: "آتلیه" },
+  { id: "dossier", label: "شناسنامه طرح" },
+  { id: "production", label: "تولید" },
+  { id: "set", label: "ست پکیج" },
+  { id: "collections", label: "کالکشن" },
+  { id: "dna", label: "دی‌ان‌ای" },
+  { id: "papers", label: "اصالت" },
 ];
 
 const TAB_BY_ID = Object.fromEntries(TABS.map((t) => [t.id, t])) as Record<Tab, (typeof TABS)[number]>;
 
 export const Route = createFileRoute("/")({
   validateSearch: parseSearch,
-  loader: () => getMarketFn(),
-  pendingComponent: TerminalPending,
-  component: Terminal,
+  pendingComponent: StudioPending,
+  component: Studio,
   head: ({ match }) => {
-    const desk = match.search.desk;
-    const label = TAB_BY_ID[desk]?.label ?? "بازار";
-    return { meta: [{ title: `${label} · زرین — گلد ترمینال` }] };
+    const label = TAB_BY_ID[match.search.desk]?.label ?? "داشبورد";
+    return { meta: [{ title: `${label} · زرین — آتلیه کانسپت` }] };
   },
 });
-function TerminalPending() {
+
+function StudioPending() {
   return (
     <BsiShell>
       <BsiWell>
         <BsiIndex>
-          <BsiIndexItem active>بازار</BsiIndexItem>
+          <BsiIndexItem active>داشبورد</BsiIndexItem>
         </BsiIndex>
         <BsiSpread>
           <BsiPage>
-            <p className="bsi-folio">f. 00 · PRESS</p>
-            <p className="bsi-kicker">ZARIN · TGJU</p>
+            <p className="bsi-kicker">ZARIN · ATELIER</p>
             <BsiDisplay>زرین</BsiDisplay>
-            <p className="bsi-body">در حال دریافت چاپ زنده…</p>
+            <p className="nss-body">در حال گشودن آتلیه…</p>
           </BsiPage>
         </BsiSpread>
       </BsiWell>
@@ -109,167 +93,60 @@ function TerminalPending() {
   );
 }
 
-function Terminal() {
-  const initial = Route.useLoaderData();
-  const { desk: tab, asset } = Route.useSearch();
-  const market = useQuery({
-    queryKey: ["market"],
-    queryFn: () => getMarketFn(),
-    initialData: initial,
-    refetchInterval: 30_000,
-  });
-  const snap = market.data ?? initial;
-  const assetId: AssetId = asset ?? "GOLD_18K";
-  const quote = useMemo(
-    () => snap.quotes.find((q) => q.id === assetId) ?? snap.quotes[0],
-    [snap.quotes, assetId],
-  );
-
-  const chart = useQuery({
-    queryKey: ["chart", quote.id],
-    queryFn: () => getChartFn({ data: { assetId: quote.id } }),
-    enabled: tab === "terminal" || tab === "forecast" || tab === "quant",
-  });
-
-  const liveCount = snap.quotes.filter((q) => q.freshness === "live" && q.price > 0).length;
-  const delayedCount = snap.quotes.filter((q) => q.freshness === "delayed" && q.price > 0).length;
-  const still = stillForAsset(quote.id);
+function Studio() {
+  const { desk: tab, concept } = Route.useSearch();
   const deskLabel = TAB_BY_ID[tab].label;
 
   return (
     <BsiShell>
-      <a href="#desk" className="skip-link">
-        پرش به برگ
-      </a>
       <BsiWell
         banner={
           <SeamlessMarquee
-            className="mb-6"
-            pxPerSecond={34}
-            gap={40}
-            items={ASSETS.map((a) => ({
-              id: a.id,
+            items={LUXURY_LEVELS.map((id) => ({
+              id,
               node: (
-                <Link to="/" search={{ desk: "terminal", asset: a.id }} className="mq-chip">
-                  <span>{a.persianName}</span>
-                  <span className="mq-chip-sym">{a.symbol}</span>
+                <Link to="/" search={{ desk: "brief", concept: undefined }} className="mq-chip">
+                  <span>{LEVEL_LABEL[id]}</span>
                 </Link>
               ),
             }))}
           />
         }
       >
-      <BsiIndex>
-        {TABS.map((t) => (
-          <BsiIndexItem key={t.id} active={tab === t.id} desk={t.id} asset={assetId}>
-            {t.label}
-          </BsiIndexItem>
-        ))}
-        <BsiIndexItem>
-          {liveCount > 0 ? `${liveCount} زنده` : delayedCount > 0 ? `${delayedCount} تأخیر` : "قطع"}
-        </BsiIndexItem>
-      </BsiIndex>
+        <BsiIndex>
+          {TABS.map((t) => (
+            <BsiIndexItem key={t.id} active={tab === t.id} desk={t.id}>
+              {t.label}
+            </BsiIndexItem>
+          ))}
+        </BsiIndex>
         <BsiSpread>
           <BsiPage side="verso">
-            <BsiFolio>
-              f. {quote.symbol} · {deskLabel}
-            </BsiFolio>
-            <LiveClock />
-            <p className="bsi-kicker">ZARIN · TGJU · VOL. I</p>
-            <BsiDisplay>{quote.persianName}</BsiDisplay>
-            <blockquote className="bsi-quote">
-              {formatPrice(quote.price, quote.decimals)} {quote.unit} · {formatPct(quote.changePercent)}
-            </blockquote>
-            <BsiBody drop="ت">
-              رمینال طلا و ارز تهران. قیمت از TGJU می‌آید و اگر زنده نباشد رقم ساختگی جای آن نمی‌نشیند. این برگ دفتر
-              همان چاپ است؛ مظنه و ساختار در صفحهٔ روبه‌رو خوانده می‌شود.
+            <BsiFolio>f. {deskLabel}</BsiFolio>
+            <UserButton />
+            <p className="bsi-kicker">ZARIN · ATELIER · VOL. I</p>
+            <BsiDisplay>طلا، بدون تکرار</BsiDisplay>
+            <BsiBody drop="آ">
+              تلیهٔ کانسپت زرین. چهار سطح لوکس، الهام از میلان و موناکو و پاریس، بدون کپی. هر طرح داستان، وزن، اجرت و جعبه دارد.
             </BsiBody>
-            <aside className="bsi-margin">{quote.unit}</aside>
-            <figure className="bsi-plate">
-              <img src={still.src} alt={still.alt} width={1600} height={900} />
-              <figcaption>Pl. {quote.symbol} · {still.label}</figcaption>
-            </figure>
-            <p className="bsi-cite">
-              {quote.source} · {quote.freshness} · {snap.requestId}
-            </p>
-            <aside className="bsi-note">
-              رقم ساختگی به‌جای زنده نشان داده نمی‌شود. پورتفوی روی همین دستگاه می‌ماند.
-            </aside>
+            <aside className="bsi-note">آرشیو روی Postgres سازمان است. جاب مرحله‌به‌مرحله و قابل لغو است.</aside>
           </BsiPage>
           <BsiCrease />
           <BsiPage side="recto" id="desk">
             <BsiFolio>pp. {deskLabel}</BsiFolio>
-            <span className="bsi-label">Lectio</span>
-            {tab === "markets" && (
-              <section className="bmg-grid" data-recipe="board" aria-label="بازار">
-                <PointCloudGlobe className="tg-span" hint="Drag to rotate" />
-                {snap.quotes.map((q, i) => (
-                  <QuoteCard key={q.id} quote={q} index={i + 1} />
-                ))}
-              </section>
-            )}
-            {tab === "terminal" && (
-              <section className="bmg-grid bmg-stack" data-recipe="builder" aria-label="ترمینال">
-                <div className="flex flex-wrap gap-1">
-                {snap.quotes.map((q) => (
-                  <Link
-                    key={q.id}
-                    to="/"
-                    search={(s) => ({ ...s, asset: q.id, desk: "terminal" })}
-                    data-on={q.id === assetId}
-                    aria-current={q.id === assetId ? "true" : undefined}
-                    className={cn("tab-mark", q.id === assetId && "shadow-beautiful-sm")}
-                  >
-                    {q.persianName}
-                  </Link>
-                ))}
-                </div>
-                {chart.data ? (
-                  <CandleChart
-                    candles={chart.data.candles}
-                    synthetic={chart.data.synthetic}
-                    tech={chart.data.tech}
-                    structure={chart.data.structure}
-                  />
-                ) : (
-                  <FrameCard className="p-8">
-                    <p className="text-sm text-muted">در حال بارگذاری ساختار…</p>
-                  </FrameCard>
-                )}
-              </section>
-            )}
-            {tab === "quant" && <QuantDesk assetId={quote.id} assetName={quote.persianName} />}
-            {tab === "forecast" &&
-              (chart.data ? (
-                <ForecastDesk quote={chart.data.quote} tech={chart.data.tech} />
-              ) : (
-                <FrameCard className="p-8">
-                  <p className="text-sm text-muted">در حال بارگذاری ساختار…</p>
-                </FrameCard>
-              ))}
-            {tab === "hunter" && (
-              <section className="bmg-grid" data-recipe="builder" aria-label="شکار مظنه">
-                <HunterDesk mazaneh={snap.mazaneh} />
-              </section>
-            )}
-            {tab === "dealer" && (
-              <section className="bmg-grid" data-recipe="builder" aria-label="دیلر">
-                <DealerDesk mazaneh={snap.mazaneh} quotes={snap.quotes} />
-              </section>
-            )}
-            {tab === "stats" && <StatsDesk quotes={snap.quotes} />}
-            {tab === "book" && (
-              <section className="bmg-grid" data-recipe="builder" aria-label="دفتر">
-                <PortfolioDesk quotes={snap.quotes} />
-                <JournalDesk />
-              </section>
-            )}
-            {tab === "alerts" && <AlertsDesk quotes={snap.quotes} />}
-            {tab === "strategy" && <StrategyDesk quotes={snap.quotes} />}
-            {tab === "truth" && <SourcesDesk snap={snap} />}
+            <span className="nss-label">Lectio</span>
+            {tab === "board" && <StudioBoard />}
+            {tab === "brief" && <StudioBrief />}
+            {tab === "atelier" && <StudioAtelier />}
+            {tab === "dossier" && <StudioDossier id={concept} />}
+            {tab === "production" && <StudioProduction />}
+            {tab === "set" && <StudioSet id={concept} />}
+            {tab === "collections" && <StudioCollections />}
+            {tab === "dna" && <StudioDna />}
+            {tab === "papers" && <StudioPapers />}
             <p className="nss-meta mt-8 flex items-start gap-2">
               <SolarCpu />
-              لایهٔ داده: TGJU + Gold API · کوانت: grok-4.5 پشت گارد
+              آتلیهٔ زرین · جاب واقعی روی Postgres · شباهت متنی در سطح سازمان
             </p>
           </BsiPage>
         </BsiSpread>

@@ -186,8 +186,8 @@ export function CandleChart({
             tech.momentum === "bullish"
               ? "صعودی"
               : tech.momentum === "bearish"
-                 / "نز؈لی"
-                 : "خ͆ثی"
+                ? "نزولی"
+                : "خنثی"
           }
         />
       </dl>

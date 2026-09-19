@@ -33,7 +33,7 @@ export function NssCard({
   const span = typeof className === "string" && className.includes("tm-span");
   return (
     <div className={cn("nss-shell nd-host", span && "tm-span")} data-nss-reveal>
-      <div className={cn("nss-face", tile && "nss-face--tile")}>
+      <div className={cn("nss-face nd-host", tile && "nss-face--tile")}>
         {stamp}
         <div className={className} {...rest}>
           {children}

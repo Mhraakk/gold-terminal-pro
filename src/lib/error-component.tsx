@@ -16,14 +16,14 @@ export function AppErrorComponent({ error }: ErrorComponentProps) {
       <span className="text-down" aria-hidden="true">
         <TriangleAlert className="size-10" strokeWidth={2} />
       </span>
-      <h1 className="text-lg font-semibold">خطا در ترمینال</h1>
+      <h1 className="text-lg font-semibold">خطا در آتلیه</h1>
       <p className="max-w-md text-sm break-words text-muted">{errorMessage(error)}</p>
       <Link
         to="/"
-        search={{ desk: "markets" }}
+        search={{ desk: "board" }}
         className="mt-2 inline-flex min-h-11 items-center px-4 text-sm text-gold"
       >
-        بازگشت به بازار
+        بازگشت به داشبورد
       </Link>
     </main>
   );

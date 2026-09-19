@@ -1,34 +1,35 @@
-# Spec — زرین · Gold Terminal
+# Spec — زرین · آتلیه کانسپت
 
-Coach output from the original Gold Terminal custom instructions (`Mhraakk/Gold`).
-Skeleton follows `ai-app-architecture` layers. Auth off. Device-local book & alerts.
+پلتفرم ایده‌پردازی و طراحی برای تولید مداوم کانسپت محصولات طلای لوکس.
+Auth off. آرشیو روی دستگاه. لایهٔ AI قابل تعویض (xAI grok-4.5 پشت گارد).
 
-## Product
+## محصول
 
-Institutional-grade Tehran gold & FX desk. Live quotes only. Never present a fabricated figure as a live price.
+هر کانسپت: توضیح، مشخصات فنی، ابعاد، وزن، سبک، پیچیدگی ساخت، اجرت تقریبی، داستان، مخاطب، سناریوی استفاده، ورییشن، بهینه‌سازی وزن، تولیدپذیری.
 
-## Custom instructions (binding)
+چهار سطح: استفاده روزمره لوکس · امضای برند · لاین بسیار لاکچری · کالکتورز ادیشن.
+الهام از میلان، موناکو، پاریس مجاز. کپی مستقیم ممنوع. جلوگیری از تکرار با شباهت متنی.
 
-- All quant / analysis / chat output is **Persian**. English only for tickers and technical terms (BOS, CHOCH, FVG, RSI, ATR, Kelly).
-- Role: Principal Institutional Quant, Senior SMC trader, geopolitical desk covering melted gold, 18k, coins, USD/IRT, USDT, XAUUSD.
-- Tools: Elliott, Fibonacci, SMC (order blocks, FVG, liquidity, CHOCH/BOS). High-confidence setups or say the tape is unclear.
-- Melted gold is Tehran bazaar dynamics, azad dollar arb, domestic inflation. Unit is تومان unless the quote is XAUUSD.
-- Never invent a live print. If a source is down the card reads «قطع».
-- Terminal candles are **structure helpers** derived from the live print and must be labelled as such.
-- Theoretical mazaneh = (XAUUSD ÷ 31.1034768) × 0.75 × USD/IRT. Hunter / dealer only fire a verdict when ounce, dollar and 18k are all live.
-- AI is user-initiated (button / question). Rate-limited. grok-4.5 behind gateway + guardrails.
-- Kelly-style size is a **fraction of the local book**, never a live-price substitute.
+## ست پکیج (محصول مستقل)
 
-## Surfaces
+خرید یک ست است نه جعبه: ۱) طلای اصلی ۲) محصول دوم ۳) معماری بسته‌بندی که شیء نگهداشتی است.
 
-بازار · ترمینال · کوانت · پیش‌بینی · شکار مظنه · دیلر · آمار · دفتر · هشدار · استراتژی · صحت داده
+محصول دوم باید روایت مشترک با کانسپت و کالکشن بسازد — چارم طلا، آبجکت هنری، قطعهٔ کلکسیونی داستان، یا سورپرایز شخصی. تبلیغاتی یا بی‌ربط ممنوع.
 
-## Architecture
+معماری برای هر ست از نو: فرم غیرمعمول، متریال، لایه‌ها، ترتیب مواجهه، لحظهٔ غافلگیری، زندگی بعد از باز شدن.
 
-Frontend TanStack Start RTL · Gateway TanStack server functions · Orchestrator graph · RAG disabled adapter · Models xAI grok-4.5 · Guardrails on · Memory short-term localStorage · Data in-memory cache + TGJU / Gold API · LLMOps Dockerfile + eval · Cloud Vercel
+گونه‌ها: شیء نگهداشتی · کالکت‌ابل · لیمیتد با سریال · پکیج شخصی مشتری.
 
-## Design
+خروجی ست: کانسپت، اجزا، آنباکسینگ، متریال، برآورد پیچیدگی. پکیج هم‌سطح یا مکمل ارزش طلا تجربه می‌شود.
 
-Design system — Frame newsreader-slate-shell (flex, full-bleed, open, 2px radius), Atmosphere nebula-webgl-background (D2), Motion 150ms + masked-reveal, Surfaces elevated #131315 inside 1px white-gradient shell. Type Newsreader 48 + system-sans
+## صفحات
 
-Pixels come from the design skills placed in chat. Runtime stays the architecture graph. One atmosphere at a time.
+داشبورد · کانسپت تازه · آتلیه · شناسنامه طرح · تولید · ست پکیج · کالکشن · دی‌ان‌ای · اصالت
+
+## معماری
+
+Frontend TanStack Start RTL (قرارداد پیش‌نمایش این sandbox؛ Next.js در این محیط اجرا نمی‌شود).
+Gateway · Orchestrator · grok-4.5 قابل تعویض · Guardrails
+Postgres (Neon در استقرار / PGLite در پیش‌نمایش) · صف جاب روی جدول jobs
+جداسازی سازمان با org_id + عضویت در هر کوئری (authMiddleware). pgvector در پیش‌نمایش PGLite فعال نیست؛ شباهت Jaccard روی fingerprint است.
+Auth Better Auth (Google / X). سکرت روی کلاینت نیست.

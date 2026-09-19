@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import * as THREE from "three";
 import { atmosphereLocked, onAtmosphereLock } from "@/lib/atmosphere/lock";

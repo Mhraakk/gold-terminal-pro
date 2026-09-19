@@ -3,18 +3,11 @@ import { useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { AtmosphereHost } from "@/components/atmosphere-host";
 import { NdItem, NdList } from "@/components/number-details";
-import { ProgressiveBlur } from "@/components/progressive-blur";
 import { useMaskedReveal } from "@/components/use-masked-reveal";
 import { useSectionReveal } from "@/components/use-section-reveal";
-import type { AssetId } from "@/data/market/types";
 
 export function BsiShell({ children }: { children: ReactNode }) {
-  return (
-    <>
-      <ProgressiveBlur />
-      <AtmosphereHost>{children}</AtmosphereHost>
-    </>
-  );
+  return <AtmosphereHost>{children}</AtmosphereHost>;
 }
 
 export function BsiIndex({ children, className = "", ...rest }: HTMLAttributes<HTMLElement>) {
@@ -33,23 +26,10 @@ export function BsiIndexItem({
   children,
   active = false,
   desk,
-  asset,
 }: {
   children: ReactNode;
   active?: boolean;
-  desk?:
-    | "markets"
-    | "terminal"
-    | "quant"
-    | "forecast"
-    | "hunter"
-    | "dealer"
-    | "stats"
-    | "book"
-    | "alerts"
-    | "strategy"
-    | "truth";
-  asset?: AssetId;
+  desk?: string;
 }) {
   const className = `sdp-nav-link nd-title${active ? " is-active" : ""}`;
   if (desk) {
@@ -57,7 +37,7 @@ export function BsiIndexItem({
       <NdItem current={active}>
         <Link
           to="/"
-          search={{ desk, asset }}
+          search={{ desk } as { desk: "board" }}
           className={className}
           aria-current={active ? "page" : undefined}
         >

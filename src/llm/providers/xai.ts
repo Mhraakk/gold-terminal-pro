@@ -5,6 +5,7 @@ export async function completeXai(opts: {
   system: string;
   user: string;
   maxTokens?: number;
+  temperature?: number;
 }): Promise<
   | { ok: true; text: string; model: string; tokens: number }
   | { ok: false; error: string }
@@ -20,7 +21,7 @@ export async function completeXai(opts: {
     },
     body: JSON.stringify({
       model: MODEL,
-      temperature: 0.2,
+      temperature: opts.temperature ?? 0.2,
       max_tokens: opts.maxTokens ?? 900,
       messages: [
         { role: "system", content: opts.system },

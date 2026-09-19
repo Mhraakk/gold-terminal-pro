@@ -51,7 +51,7 @@ export function generateDots(
   const step = density * 0.12;
   for (const feat of features) {
     const bounds = geoBounds(feat);
-    let lng0 = bounds[0][0];
+    const lng0 = bounds[0][0];
     let lng1 = bounds[1][0];
     if (lng1 < lng0) lng1 += 360;
     for (let lng = lng0; lng <= lng1; lng += step) {
