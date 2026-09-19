@@ -19,10 +19,10 @@ const databaseConfigured = Boolean(process.env.DATABASE_URL?.trim());
 export { authConfigured };
 
 if (databaseConfigured && !authConfigured) {
-  console.error(
+  console.warn(
     "[auth] DATABASE_URL is set but auth is disabled (VITE_AUTH_ENABLED=false) " +
-      "— requireUserId() will reject every request (fail closed) rather than " +
-      "share one dev user on a real database.",
+      "— temporary single-tenant unlock: requireUserId() returns DEV_USER_ID " +
+      "so studio can enqueue jobs against Neon until real auth is provisioned.",
   );
 }
 
@@ -76,17 +76,15 @@ export async function getSessionUser(
  * - Auth enabled -> the verified session user id; throws
  *   `UnauthorizedError` when signed out. Works in the sandbox preview too (real
  *   sign-in via the baked preview client).
- * - Auth disabled (`VITE_AUTH_ENABLED=false`) + `DATABASE_URL` set -> throw (fail
- *   closed): one shared dev user on a real database would let every visitor
- *   read/write everyone's rows.
- * - Auth disabled + no database -> the shared dev user id.
+ * - Auth disabled (`VITE_AUTH_ENABLED=false`) -> always the shared DEV_USER_ID
+ *   (temporary single-tenant unlock), including when `DATABASE_URL` is set so
+ *   studio can write jobs/orgs/concepts to Neon until real auth is provisioned.
  */
 export async function requireUserId(bearerToken?: string): Promise<string> {
   if (!authConfigured && !gateIdentityEnabled()) {
     if (databaseConfigured) {
-      throw new Error(
-        "Auth is disabled (VITE_AUTH_ENABLED=false) but DATABASE_URL is set — " +
-          "refusing to fall back to the shared dev user against a real database.",
+      console.warn(
+        "[auth] temporary unlock: auth off + DATABASE_URL — returning DEV_USER_ID",
       );
     }
     return DEV_USER_ID;
