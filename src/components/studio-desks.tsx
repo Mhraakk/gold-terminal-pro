@@ -31,6 +31,7 @@ import {
 import { SEED_DNA } from "@/data/studio/seed";
 import { stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
 import { MAX_JOB_TICKS } from "@/lib/studio-pipeline";
+import { studioClientError } from "@/lib/studio-error";
 
 function plate(concept: Concept) {
   if (concept.brief.productType === "ring") return AURA_STILLS.ring;
@@ -55,7 +56,7 @@ function useStudio() {
       })
       .catch((e: unknown) => {
         if (!live) return;
-        setError(e instanceof Error && e.message === "Unauthorized" ? "ورود لازم است." : "خواندن آرشیو شکست خورد.");
+        setError(studioClientError(e, "خواندن آرشیو شکست خورد."));
       });
     return () => {
       live = false;
@@ -209,7 +210,7 @@ export function StudioBrief() {
         }
       }
     } catch (e) {
-      setError(e instanceof Error && e.message === "Unauthorized" ? "ورود لازم است." : "جاب شکست خورد. دوباره بزن.");
+      setError(studioClientError(e, "جاب شکست خورد. دوباره بزن."));
     } finally {
       setBusy(false);
     }
