@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
 import { HoverExpand } from "@/components/hover-expand";
+import { ParallaxStills } from "@/components/parallax-stills";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
@@ -812,6 +813,7 @@ export function StudioDna() {
 
   return (
     <FrameCard>
+      <ParallaxStills />
       <p className="nss-label">دی‌ان‌ای برند</p>
       <h3 className="nss-display">{draft.name}</h3>
       <Field label="نام">
