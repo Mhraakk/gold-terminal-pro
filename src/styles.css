@@ -3991,6 +3991,11 @@ html[data-theme="light"] body {
   mix-blend-mode: difference;
 }
 
+.za-pointer[data-on="true"] {
+  display: block;
+  filter: url(#za-squircle);
+}
+
 .za-squircle-defs {
   position: absolute;
   width: 0;
@@ -3998,10 +4003,8 @@ html[data-theme="light"] body {
   overflow: hidden;
 }
 
-.za-theme,
-.za-music,
-.za-pointer[data-on="true"] {
-  filter: url(#za-squircle);
+.za-top-actions {
+  filter: url(#za-gooey);
 }
 
 
