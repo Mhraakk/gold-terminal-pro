@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { CatalogCarousel } from "@/components/catalog-carousel";
 import { FrameCard } from "@/components/frame";
-import { HoverExpand } from "@/components/hover-expand";
 import { ParallaxStills } from "@/components/parallax-stills";
 import { ScatterTitle } from "@/components/scatter-title";
 import { NdStamp } from "@/components/number-details";
@@ -96,7 +96,7 @@ export function StudioBoard() {
           </Link>
         </FrameCard>
       ) : (
-        <HoverExpand concepts={concepts.slice(0, 6)} axis="col" />
+        <CatalogCarousel concepts={concepts.slice(0, 8)} />
       )}
     </section>
   );
@@ -459,7 +459,7 @@ export function StudioAtelier({ q, status, level, type }: ArchiveFilter) {
       ) : (
         <>
           {filtered.length > 1 ? (
-            <HoverExpand concepts={filtered.slice(0, 8)} />
+            <CatalogCarousel concepts={filtered.slice(0, 11)} />
           ) : null}
           {(filtered.length === 1 ? filtered : filtered.slice(8)).map((c) => {
             const near = maxSimilarity(
