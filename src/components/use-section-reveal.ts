@@ -5,24 +5,26 @@ export function useSectionReveal(ref: RefObject<HTMLElement | null>): void {
   useEffect(() => {
     const scope = ref.current;
     if (!scope) return;
+    const nodes = scope.querySelectorAll<HTMLElement>("[data-nss-reveal]");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    nodes.forEach((el) => {
+      el.style.visibility = "visible";
+      el.style.opacity = "1";
+      el.style.pointerEvents = "auto";
+    });
+    if (reduce) return;
     const ctx = gsap.context(() => {
-      scope.querySelectorAll<HTMLElement>("[data-nss-reveal]").forEach((el) => {
-        if (reduce) {
-          gsap.set(el, { autoAlpha: 1, y: 0 });
-          return;
-        }
+      nodes.forEach((el) => {
         gsap.fromTo(
           el,
-          { autoAlpha: 0, y: 16 },
+          { y: 8 },
           {
-            autoAlpha: 1,
             y: 0,
-            duration: 0.15,
+            duration: 0.18,
             ease: "power2.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 85%",
+              start: "top 95%",
               once: true,
               invalidateOnRefresh: true,
             },

@@ -2630,10 +2630,10 @@ button.bsi-index-item {
 }
 
 .pgd-root .nss-display {
-  font-family: var(--pgd-sans);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .pgd-root .nss-link:hover,
@@ -3012,21 +3012,21 @@ button.bsi-index-item {
 }
 
 .nss-display {
-  font-family: Newsreader, serif;
-  font-size: 48px;
-  font-weight: 400;
-  line-height: 48px;
-  letter-spacing: -0.025em;
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
+  font-size: clamp(28px, 6vw, 44px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   text-transform: none;
   color: var(--nss-ink);
   margin: 0;
 }
 
 .nss-body {
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 22.75px;
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
   letter-spacing: normal;
   text-transform: none;
   color: var(--nss-ink);
@@ -3034,23 +3034,23 @@ button.bsi-index-item {
 }
 
 .nss-label {
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-transform: none;
   color: var(--nss-muted);
   margin: 0;
 }
 
 .nss-meta {
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--nss-muted);
   margin: 0;
 }
@@ -3505,5 +3505,30 @@ button.bsi-index-item {
     animation: none;
   }
 }
+
+.nss-shell,
+.nss-face,
+.nss-link,
+.sdp-nav-link,
+button,
+a,
+select,
+input,
+textarea {
+  pointer-events: auto;
+}
+
+.desk-input,
+.sdp-nav-link,
+.nd-title {
+  font-family: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
+}
+
+.desk-input {
+  min-height: 44px;
+  width: 100%;
+  font-size: 16px;
+}
+
 
 

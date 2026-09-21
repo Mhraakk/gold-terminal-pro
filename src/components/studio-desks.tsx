@@ -163,9 +163,22 @@ export function StudioBoard() {
           </NssCard>
         </Link>
       ))}
-      {concepts.slice(0, 4).map((c, i) => (
-        <ConceptTile key={c.id} concept={c} index={i + 5} />
-      ))}
+      {concepts.length === 0 ? (
+        <FrameCard className="tm-span">
+          <p className="nss-label">شروع</p>
+          <h3 className="nss-display">هنوز کانسپتی نیست</h3>
+          <p className="nss-body mt-2">از یک بریف ساده سه مسیر بساز. لمس این دکمه تولید را شروع می‌کند.</p>
+          <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-4 inline-block">
+            <Button type="button" variant="primary">
+              رفتن به کانسپت تازه
+            </Button>
+          </Link>
+        </FrameCard>
+      ) : (
+        concepts.slice(0, 4).map((c, i) => (
+          <ConceptTile key={c.id} concept={c} index={i + 5} />
+        ))
+      )}
     </section>
   );
 }
@@ -397,7 +410,7 @@ export function StudioBrief() {
             placeholder="مثلاً بدون نگین مرکزی، قفل پنهان…"
           />
         </Field>
-        <Button className="mt-6" type="button" onClick={() => void generate()} disabled={busy}>
+        <Button className="mt-6 min-h-12 w-full" type="button" variant="primary" onClick={() => void generate()} disabled={busy}>
           {busy ? "در حال تولید…" : "سه مسیر بساز"}
         </Button>
         {busy && jobId ? (

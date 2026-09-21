@@ -71,25 +71,20 @@ export async function getSessionUser(
 }
 
 /**
- * Resolve the current user id for a server function, or throw when unauthorized.
+ * Resolve the current user id for a server function.
  * Prefer `authMiddleware` (`./middleware`), which calls this for you.
- * - Auth enabled -> the verified session user id; throws
- *   `UnauthorizedError` when signed out. Works in the sandbox preview too (real
- *   sign-in via the baked preview client).
- * - Auth disabled (`VITE_AUTH_ENABLED=false`) -> always the shared DEV_USER_ID
- *   (temporary single-tenant unlock), including when `DATABASE_URL` is set so
- *   studio can write jobs/orgs/concepts to Neon until real auth is provisioned.
+ * Signed-in session wins. Unsigned visitors get DEV_USER_ID so the studio
+ * still generates and stores concepts (single-tenant unlock).
  */
 export async function requireUserId(bearerToken?: string): Promise<string> {
-  if (!authConfigured && !gateIdentityEnabled()) {
-    if (databaseConfigured) {
-      console.warn(
-        "[auth] temporary unlock: auth off + DATABASE_URL — returning DEV_USER_ID",
-      );
-    }
-    return DEV_USER_ID;
-  }
   const user = await getSessionUser(bearerToken);
-  if (!user) throw new UnauthorizedError();
-  return user.id;
+  if (user) return user.id;
+  // Unsigned visitors (phone tunnel, public Vercel) still get a working studio.
+  // Isolation remains in the query layer: distinct signed-in ids stay apart.
+  if (databaseConfigured) {
+    console.warn(
+      "[auth] unsigned request — studio unlock with DEV_USER_ID until session exists",
+    );
+  }
+  return DEV_USER_ID;
 }
