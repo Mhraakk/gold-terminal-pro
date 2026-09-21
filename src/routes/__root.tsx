@@ -2,10 +2,8 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AuthProvider } from "@/lib/auth/provider";
 import { AppNotFound } from "@/components/not-found";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
-import { ProgressiveBlur } from "@/components/progressive-blur";
 import { AppErrorComponent } from "@/lib/error-component";
 import { QueryRoot } from "@/lib/query";
-import "@/lib/gsap-boot";
 import appCss from "../styles.css?url";
 import faFontCss from "../styles-fa.css?url";
 
@@ -31,11 +29,7 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: faFontCss },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Naskh+Arabic:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&family=Vazirmatn:wght@300;400;500;600;700&display=swap",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css",
+        href: "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap",
       },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
@@ -47,7 +41,6 @@ export const Route = createRootRoute({
         <HeadContent />
       </head>
       <body className="bg-bg text-fg antialiased">
-        <ProgressiveBlur />
         <PreviewHostBridge />
         <AuthProvider>
           <QueryRoot>

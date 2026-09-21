@@ -3530,5 +3530,92 @@ textarea {
   font-size: 16px;
 }
 
+.za-shell {
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.za-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-guide);
+}
+
+.za-brand {
+  margin: 0;
+  font-family: "Vazirmatn", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.za-title {
+  margin: 2px 0 0;
+  font-family: "Vazirmatn", sans-serif;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.za-nav {
+  position: sticky;
+  top: 57px;
+  z-index: 29;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px 12px 10px;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-guide);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.za-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.za-tab {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 64px;
+  min-height: 52px;
+  padding: 6px 10px;
+  font-family: "Vazirmatn", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.za-tab.is-active {
+  color: var(--color-gold);
+}
+
+.za-main {
+  padding: 16px 16px 40px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .za-main {
+    padding: 24px 24px 64px;
+  }
+}
+
+
 
 

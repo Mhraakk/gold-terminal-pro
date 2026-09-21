@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
-import { PointCloudGlobe } from "@/components/point-cloud-globe";
+import { useStudio } from "@/components/studio-store";
 import { Button } from "@/components/ui/button";
 import { AURA_STILLS } from "@/data/aura";
 import {
@@ -21,18 +21,7 @@ import { maxSimilarity } from "@/data/studio/similarity";
 import type { BrandDna, Collection, Concept, ConceptBrief, ConceptStatus, Karat, LuxuryLevel, PackageKind, ProductType } from "@/data/studio/types";
 import { KARATS, LUXURY_LEVELS, PRODUCT_TYPES } from "@/data/studio/types";
 import { formatSheet } from "@/data/studio/sheet";
-import {
-  cancelStudioJobFn,
-  enqueueStudioJobFn,
-  getStudioJobFn,
-  listStudioFn,
-  retryStudioJobFn,
-  saveStudioCollectionsFn,
-  saveStudioConceptFn,
-  saveStudioDnaFn,
-  tickStudioJobFn,
-} from "@/lib/studio-fn";
-import { SEED_DNA } from "@/data/studio/seed";
+import { cancelStudioJobFn, enqueueStudioJobFn, getStudioJobFn, listStudioFn, retryStudioJobFn, tickStudioJobFn } from "@/lib/studio-fn";
 import { canRetry, isTerminal, stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
 import { MAX_JOB_TICKS } from "@/lib/studio-pipeline";
 import { studioClientError } from "@/lib/studio-error";
@@ -43,68 +32,6 @@ function plate(concept: Concept) {
   if (concept.brief.productType === "ring") return AURA_STILLS.ring;
   if (concept.brief.productType === "watch") return AURA_STILLS.desk;
   return AURA_STILLS.card;
-}
-
-function useStudio() {
-  const [concepts, setConceptsState] = useState<Concept[]>([]);
-  const [dna, setDnaState] = useState<BrandDna>(SEED_DNA);
-  const [collections, setCollectionsState] = useState<Collection[]>([]);
-  const [jobs, setJobs] = useState<JobSnapshot[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let live = true;
-    listStudioFn()
-      .then((r) => {
-        if (!live) return;
-        setConceptsState(r.concepts);
-        setDnaState(r.dna);
-        setCollectionsState(r.collections);
-        setJobs(r.jobs ?? []);
-      })
-      .catch((e: unknown) => {
-        if (!live) return;
-        setError(studioClientError(e, "خواندن آرشیو شکست خورد."));
-      });
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  async function persist(concept: Concept) {
-    setConceptsState((prev) => {
-      const i = prev.findIndex((c) => c.id === concept.id);
-      if (i < 0) return [concept, ...prev];
-      const next = [...prev];
-      next[i] = concept;
-      return next;
-    });
-    try {
-      await saveStudioConceptFn({ data: { concept } });
-    } catch (e: unknown) {
-      setError(studioClientError(e, "ذخیرهٔ کانسپت شکست خورد."));
-    }
-  }
-
-  function setConcepts(next: Concept[]) {
-    setConceptsState(next);
-  }
-
-  function setDna(next: BrandDna) {
-    setDnaState(next);
-    void saveStudioDnaFn({ data: { dna: next } }).catch((e: unknown) => {
-      setError(studioClientError(e, "ذخیرهٔ دی‌ان‌ای شکست خورد."));
-    });
-  }
-
-  function setCollections(next: Collection[]) {
-    setCollectionsState(next);
-    void saveStudioCollectionsFn({ data: { collections: next } }).catch((e: unknown) => {
-      setError(studioClientError(e, "ذخیرهٔ کالکشن شکست خورد."));
-    });
-  }
-
-  return { concepts, setConcepts, persist, dna, setDna, collections, setCollections, jobs, error };
 }
 
 export function StudioBoard() {
@@ -132,7 +59,6 @@ export function StudioBoard() {
           ) : null}
         </p>
       ) : null}
-      <PointCloudGlobe className="pcg-shell--bleed tg-span" hint="DRAG TO ROTATE" />
       {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
         <NssCard key={j.id} tile>
           <p className="nss-label">جاب زنده</p>

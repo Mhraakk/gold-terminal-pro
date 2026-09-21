@@ -30,7 +30,7 @@ export const DESIGN_DNA = {
   field: "#09090B",
   accent: "#FF5A1F",
   type: "system-sans 500 tight",
-  atmosphere: "perspective-glass-dashboard" as
+  atmosphere: "off" as
     | "perspective-glass-dashboard"
     | "nebula-webgl-background"
     | "industrial-minimalism"
