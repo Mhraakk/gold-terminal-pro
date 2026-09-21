@@ -2,7 +2,7 @@ import { completeLlm, STUDIO_SYSTEM } from "@/llm";
 import { guardInbound } from "@/guardrails";
 import { CITY_LABEL, LEVEL_LABEL, TYPE_LABEL } from "@/data/studio/catalog";
 import { makeSet } from "@/data/studio/set-factory";
-import { fingerprint, maxSimilarity } from "@/data/studio/similarity";
+import { fingerprint, maxSimilarity, rejectTooClose, SIMILARITY_LIMIT } from "@/data/studio/similarity";
 import type { City, Concept, ConceptBrief, Karat } from "@/data/studio/types";
 import type { GraphNode } from "./graph";
 
@@ -121,6 +121,14 @@ function toConcept(brief: ConceptBrief, draft: PathDraft, _archive: string[]): C
     status: "idea",
     version: 1,
     versions: [{ at: now, note: "تولید کانسپت", title }],
+    limited:
+      brief.level === "collector"
+        ? { series: path, edition: 1, of: 12 }
+        : undefined,
+    passport:
+      brief.level === "collector"
+        ? { serial: `ZR-${brief.karat}-${id.slice(-8).toUpperCase()}`, issuedAt: now }
+        : undefined,
     city,
     fingerprint: fp,
     at: now,
@@ -167,17 +175,19 @@ export async function runStudioGraph(input: {
   if (!llm.ok) nodes.push({ name: "fallback", ok: true, ms: 0 });
 
   const archive = input.archive ?? [];
-  const concepts = used.map((d) => toConcept(input.brief, d, archive));
-  const tooClose = concepts.filter((c) => maxSimilarity(c.fingerprint, archive) > 0.72);
-  if (tooClose.length && drafts.length === 3) {
-    const extra = fallbackPaths(input.brief);
-    tooClose.forEach((c, i) => {
-      const alt = extra[i];
-      if (!alt) return;
-      const next = toConcept(input.brief, alt, archive.concat(c.fingerprint));
-      Object.assign(c, next, { id: c.id });
-    });
-    nodes.push({ name: "similarity", ok: true, ms: 0 });
+  let concepts = used.map((d) => toConcept(input.brief, d, archive));
+  const kept = rejectTooClose(concepts, archive);
+  if (kept.length !== concepts.length) {
+    const extra = fallbackPaths(input.brief).map((d, i) => ({
+      ...d,
+      title: `${d.title ?? "مسیر"} · ${i + 1} · ${Date.now().toString(36)}`,
+      path: `${d.path ?? "مسیر"}-${i + 1}`,
+    }));
+    const replacements = extra
+      .map((d) => toConcept(input.brief, d, archive.concat(concepts.map((c) => c.fingerprint))))
+      .filter((c) => maxSimilarity(c.fingerprint, archive) <= SIMILARITY_LIMIT);
+    concepts = rejectTooClose([...kept, ...replacements], archive).slice(0, 3);
+    nodes.push({ name: "similarity", ok: concepts.length > 0, ms: 0 });
   }
 
   return {

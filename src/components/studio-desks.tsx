@@ -22,6 +22,7 @@ import { KARATS, LUXURY_LEVELS, PRODUCT_TYPES } from "@/data/studio/types";
 import {
   cancelStudioJobFn,
   enqueueStudioJobFn,
+  getStudioJobFn,
   listStudioFn,
   saveStudioCollectionsFn,
   saveStudioConceptFn,
@@ -29,9 +30,11 @@ import {
   tickStudioJobFn,
 } from "@/lib/studio-fn";
 import { SEED_DNA } from "@/data/studio/seed";
-import { stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
+import { isTerminal, stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
 import { MAX_JOB_TICKS } from "@/lib/studio-pipeline";
 import { studioClientError } from "@/lib/studio-error";
+
+const ACTIVE_JOB_KEY = "zarin-active-job";
 
 function plate(concept: Concept) {
   if (concept.brief.productType === "ring") return AURA_STILLS.ring;
@@ -43,6 +46,7 @@ function useStudio() {
   const [concepts, setConceptsState] = useState<Concept[]>([]);
   const [dna, setDnaState] = useState<BrandDna>(SEED_DNA);
   const [collections, setCollectionsState] = useState<Collection[]>([]);
+  const [jobs, setJobs] = useState<JobSnapshot[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -53,6 +57,7 @@ function useStudio() {
         setConceptsState(r.concepts);
         setDnaState(r.dna);
         setCollectionsState(r.collections);
+        setJobs(r.jobs ?? []);
       })
       .catch((e: unknown) => {
         if (!live) return;
@@ -71,7 +76,11 @@ function useStudio() {
       next[i] = concept;
       return next;
     });
-    await saveStudioConceptFn({ data: { concept } });
+    try {
+      await saveStudioConceptFn({ data: { concept } });
+    } catch (e: unknown) {
+      setError(studioClientError(e, "ذخیرهٔ کانسپت شکست خورد."));
+    }
   }
 
   function setConcepts(next: Concept[]) {
@@ -80,19 +89,23 @@ function useStudio() {
 
   function setDna(next: BrandDna) {
     setDnaState(next);
-    void saveStudioDnaFn({ data: { dna: next } });
+    void saveStudioDnaFn({ data: { dna: next } }).catch((e: unknown) => {
+      setError(studioClientError(e, "ذخیرهٔ دی‌ان‌ای شکست خورد."));
+    });
   }
 
   function setCollections(next: Collection[]) {
     setCollectionsState(next);
-    void saveStudioCollectionsFn({ data: { collections: next } });
+    void saveStudioCollectionsFn({ data: { collections: next } }).catch((e: unknown) => {
+      setError(studioClientError(e, "ذخیرهٔ کالکشن شکست خورد."));
+    });
   }
 
-  return { concepts, setConcepts, persist, dna, setDna, collections, setCollections, error };
+  return { concepts, setConcepts, persist, dna, setDna, collections, setCollections, jobs, error };
 }
 
 export function StudioBoard() {
-  const { concepts, error } = useStudio();
+  const { concepts, jobs, error } = useStudio();
   const counts = useMemo(() => {
     const by: Record<ConceptStatus, number> = { idea: 0, approved: 0, production: 0, packaging: 0 };
     concepts.forEach((c) => {
@@ -117,6 +130,13 @@ export function StudioBoard() {
         </p>
       ) : null}
       <PointCloudGlobe className="pcg-shell--bleed tg-span" hint="DRAG TO ROTATE" />
+      {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
+        <NssCard key={j.id} tile>
+          <p className="nss-label">جاب زنده</p>
+          <p className="nss-body">{stageLabel(j.stage)}</p>
+          <p className="nss-meta">{j.status}{j.resultCount ? ` · ${j.resultCount} مسیر` : ""}</p>
+        </NssCard>
+      ))}
       {tiles.map((t, i) => (
         <Link key={t.status} to="/" search={{ desk: "production", concept: undefined }} className="nss-link block">
           <NssCard tile stamp={<NdStamp index={i + 1} />}>
@@ -164,11 +184,73 @@ export function StudioBrief() {
   const [error, setError] = useState<string | null>(null);
   const [job, setJob] = useState<JobSnapshot | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
+  const [paths, setPaths] = useState<Concept[]>([]);
+
+  async function pump(id: string) {
+    setJobId(id);
+    sessionStorage.setItem(ACTIVE_JOB_KEY, id);
+    for (let i = 0; i < MAX_JOB_TICKS; i += 1) {
+      const tick = await tickStudioJobFn({ data: { jobId: id } });
+      if (!tick.ok) {
+        setError(tick.error);
+        break;
+      }
+      setJob(tick.job);
+      if (tick.concepts?.length) setPaths(tick.concepts);
+      if (isTerminal(tick.job.status)) {
+        if (tick.job.error) setError(tick.job.error);
+        sessionStorage.removeItem(ACTIVE_JOB_KEY);
+        const list = await listStudioFn();
+        setConcepts(list.concepts);
+        if (!tick.concepts?.length) {
+          setPaths(list.concepts.slice(0, 3));
+        }
+        break;
+      }
+      if (i === MAX_JOB_TICKS - 1) {
+        setError("جاب بیش از حد طول کشید و متوقف شد. با رفرش ادامه می‌دهد.");
+      }
+    }
+  }
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(ACTIVE_JOB_KEY);
+    if (!saved) return;
+    let live = true;
+    setBusy(true);
+    getStudioJobFn({ data: { jobId: saved } })
+      .then(async (hit) => {
+        if (!live) return;
+        if (!hit.ok || isTerminal(hit.job.status)) {
+          sessionStorage.removeItem(ACTIVE_JOB_KEY);
+          if (hit.ok) {
+            setJob(hit.job);
+            if (hit.concepts?.length) setPaths(hit.concepts);
+          }
+          return;
+        }
+        setJob(hit.job);
+        await pump(saved);
+      })
+      .catch((e: unknown) => {
+        if (!live) return;
+        setError(studioClientError(e, "ادامهٔ جاب شکست خورد."));
+      })
+      .finally(() => {
+        if (live) setBusy(false);
+      });
+    return () => {
+      live = false;
+    };
+    // Resume at most once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function generate() {
     setBusy(true);
     setError(null);
     setJob(null);
+    setPaths([]);
     try {
       const created = await enqueueStudioJobFn({
         data: {
@@ -186,29 +268,7 @@ export function StudioBrief() {
         setError(created.error);
         return;
       }
-      setJobId(created.jobId);
-      for (let i = 0; i < MAX_JOB_TICKS; i += 1) {
-        const tick = await tickStudioJobFn({ data: { jobId: created.jobId } });
-        if (!tick.ok) {
-          setError(tick.error);
-          break;
-        }
-        setJob(tick.job);
-        if (
-          tick.job.status === "succeeded" ||
-          tick.job.status === "partial" ||
-          tick.job.status === "failed" ||
-          tick.job.status === "cancelled"
-        ) {
-          if (tick.job.error) setError(tick.job.error);
-          const list = await listStudioFn();
-          setConcepts(list.concepts);
-          break;
-        }
-        if (i === MAX_JOB_TICKS - 1) {
-          setError("جاب بیش از حد طول کشید و متوقف شد.");
-        }
-      }
+      await pump(created.jobId);
     } catch (e) {
       setError(studioClientError(e, "جاب شکست خورد. دوباره بزن."));
     } finally {
@@ -295,7 +355,10 @@ export function StudioBrief() {
           <button
             type="button"
             className="nss-chip nss-link mt-3"
-            onClick={() => void cancelStudioJobFn({ data: { jobId } })}
+            onClick={() => {
+              sessionStorage.removeItem(ACTIVE_JOB_KEY);
+              void cancelStudioJobFn({ data: { jobId } });
+            }}
           >
             لغو جاب
           </button>
@@ -308,6 +371,9 @@ export function StudioBrief() {
         ) : null}
         {error ? <p className="mt-3 text-sm text-down">{error}</p> : null}
       </FrameCard>
+      {paths.map((c, i) => (
+        <ConceptTile key={c.id} concept={c} index={i + 1} />
+      ))}
     </div>
   );
 }
@@ -323,6 +389,16 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 export function StudioAtelier() {
   const { concepts } = useStudio();
+  if (!concepts.length) {
+    return (
+      <FrameCard>
+        <p className="nss-body">کانسپتی در آرشیو نیست. از «کانسپت تازه» سه مسیر بساز.</p>
+        <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-3 inline-block">
+          کانسپت تازه
+        </Link>
+      </FrameCard>
+    );
+  }
   return (
     <section className="bmg-grid" data-recipe="board" aria-label="آتلیه">
       {concepts.map((c, i) => (
@@ -333,7 +409,7 @@ export function StudioAtelier() {
 }
 
 export function StudioDossier({ id }: { id?: string }) {
-  const { concepts, persist } = useStudio();
+  const { concepts, persist, collections } = useStudio();
   const concept = concepts.find((c) => c.id === id) ?? concepts[0];
   if (!concept) {
     return (
@@ -374,6 +450,32 @@ export function StudioDossier({ id }: { id?: string }) {
             </button>
           ))}
         </div>
+        {collections.length ? (
+          <Field label="کالکشن">
+            <select
+              className="desk-input"
+              value={concept.collectionId ?? ""}
+              onChange={(e) => {
+                const collectionId = e.target.value || undefined;
+                const col = collections.find((c) => c.id === collectionId);
+                void persist({
+                  ...concept,
+                  collectionId,
+                  version: concept.version + 1,
+                  versions: [
+                    { at: Date.now(), note: col ? `کالکشن: ${col.name}` : "خروج از کالکشن", title: concept.title },
+                    ...concept.versions,
+                  ],
+                });
+              }}
+            >
+              <option value="">بدون کالکشن</option>
+              {collections.map((col) => (
+                <option key={col.id} value={col.id}>{col.name}</option>
+              ))}
+            </select>
+          </Field>
+        ) : null}
       </FrameCard>
       <FrameCard>
         <p className="nss-label">مشخصات</p>
@@ -669,14 +771,39 @@ export function StudioCollections() {
 
 export function StudioPapers() {
   const { concepts, persist } = useStudio();
+  if (!concepts.length) {
+    return (
+      <FrameCard>
+        <p className="nss-body">برای صدور گواهی، اول کانسپت بساز.</p>
+      </FrameCard>
+    );
+  }
   return (
     <section className="bmg-grid" data-recipe="board" aria-label="شناسنامه">
       {concepts.map((c, i) => (
         <NssCard key={c.id} tile stamp={<NdStamp index={i + 1} />}>
-          <p className="nss-label">{c.limited ? `${c.limited.series} ${c.limited.edition}/${c.limited.of}` : "سری باز"}</p>
+          <p className="nss-label">گواهی اصالت زرین</p>
           <p className="nss-body">{c.title}</p>
-          <p className="nss-meta">{c.passport ? c.passport.serial : "بدون گواهی"}</p>
-          {!c.passport ? (
+          <p className="nss-meta">
+            {TYPE_LABEL[c.brief.productType]} · {KARAT_LABEL[c.specs.karat]} · {CITY_LABEL[c.city]}
+          </p>
+          <p className="nss-meta mt-2">
+            {c.limited ? `لیمیتد ${c.limited.series} · ${c.limited.edition}/${c.limited.of}` : "سری باز"}
+          </p>
+          {c.passport ? (
+            <>
+              <p className="nss-display mt-3" style={{ fontSize: 22, lineHeight: 1.2 }}>
+                {c.passport.serial}
+              </p>
+              <p className="nss-meta">
+                صادر {new Date(c.passport.issuedAt).toLocaleDateString("fa-IR")}
+              </p>
+              <p className="nss-body mt-3">گواهی اصالت صادر شده. سریال روی پکیج و شناسنامه یکی است.</p>
+              <Link to="/" search={{ desk: "dossier", concept: c.id }} className="nss-link mt-2 inline-block">
+                شناسنامه طرح
+              </Link>
+            </>
+          ) : (
             <button
               type="button"
               className="nss-chip nss-link mt-3"
@@ -698,8 +825,6 @@ export function StudioPapers() {
             >
               صدور شناسنامه
             </button>
-          ) : (
-            <p className="nss-body mt-3">گواهی اصالت صادر شده.</p>
           )}
         </NssCard>
       ))}

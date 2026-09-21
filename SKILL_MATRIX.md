@@ -70,4 +70,6 @@
 | threejs | terrain PGD |
 | building-games, controls, game-* , generate2d*, imagine, video2dsprite, multiplayer-p2p | نامربوط به آتلیه طلا — ثبت شد که روی محصول پاشیده نشود |
 
-جمع: ۵۰ طراحی + ۱۸ پلتفرم = ۶۸. سه مورد تا ۷۱ از Neuform Featured در HTML عمومی نیامد؛ بدون حدس نام جعلی ثبت نشد.
+جمع: ۵۰ طراحی از `/root/.grok/server-skills` + ۱۸ پلتفرم workspace = ۶۸.
+صفحهٔ [neuform.ai/community/featured](https://neuform.ai/community/featured) در این اجرا HTML عمومی خالی برگرداند (رندر کلاینت). سه نام تا ۷۱ بدون حدس ثبت نشد.
+قانون یک‌اتموسفر حفظ شد: PGD برنده است؛ بقیه پارک یا نفی شده‌اند.

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { applyCancel, isTerminal, nextStage } from "./studio-jobs.ts";
-import { jaccard, maxSimilarity } from "../data/studio/similarity.ts";
+import { jaccard, maxSimilarity, rejectTooClose } from "../data/studio/similarity.ts";
 
 describe("job machine", () => {
   it("advances stages in order without skipping", () => {
@@ -53,5 +53,17 @@ describe("similarity adapter", () => {
     const score = maxSimilarity("انگشتر لیدو اسکله", ["انگشتر لیدو اسکله شب", "گوشواره بررا"]);
     assert.ok(score > 0.4);
     assert.ok(score <= 1);
+  });
+
+  it("rejectTooClose drops archive twins and keeps distant drafts", () => {
+    const kept = rejectTooClose(
+      [
+        { fingerprint: "انگشتر لیدو اسکله شب" },
+        { fingerprint: "گوشواره مه پل پاریس قوس" },
+      ],
+      ["انگشتر لیدو اسکله شب"],
+    );
+    assert.equal(kept.length, 1);
+    assert.equal(kept[0]?.fingerprint, "گوشواره مه پل پاریس قوس");
   });
 });

@@ -1,5 +1,6 @@
 import { fingerprint } from "./similarity";
 import { makeSet } from "./set-factory";
+import { taggedId } from "./tag";
 import type { BrandDna, Collection, Concept } from "./types";
 
 export const SEED_DNA: BrandDna = {
@@ -181,3 +182,17 @@ export const SEED_CONCEPTS: Concept[] = [
     at: Date.now() - 86400000,
   }),
 ];
+
+export function taggedSeed(userId: string) {
+  return {
+    concepts: SEED_CONCEPTS.map((c) => ({
+      ...c,
+      id: taggedId(c.id, userId),
+      collectionId: c.collectionId ? taggedId(c.collectionId, userId) : undefined,
+    })),
+    collections: SEED_COLLECTIONS.map((col) => ({
+      ...col,
+      id: taggedId(col.id, userId),
+    })),
+  };
+}

@@ -1,8 +1,7 @@
 import { getSql } from "@/lib/db";
-import { SEED_COLLECTIONS, SEED_CONCEPTS, SEED_DNA } from "@/data/studio/seed";
+import { SEED_DNA, taggedSeed } from "@/data/studio/seed";
 import type { BrandDna, Collection, Concept, ConceptBrief } from "@/data/studio/types";
-import { fingerprint } from "@/data/studio/similarity";
-import { isTerminal, nextStage, type JobSnapshot, type JobStage, type JobStatus } from "@/lib/studio-jobs";
+import { isTerminal, type JobSnapshot, type JobStage, type JobStatus } from "@/lib/studio-jobs";
 
 export async function ensureOrg(userId: string): Promise<string> {
   const sql = await getSql();
@@ -11,22 +10,24 @@ export async function ensureOrg(userId: string): Promise<string> {
   `;
   if (existing[0]) return existing[0].org_id;
   const orgId = `org-${userId}`;
-  await sql`insert into orgs (id, name, owner_id) values (${orgId}, ${"آتلیه زرین"}, ${userId})`;
-  await sql`insert into org_members (org_id, user_id, role) values (${orgId}, ${userId}, ${"owner"})`;
-  for (const c of SEED_CONCEPTS) {
+  await sql`insert into orgs (id, name, owner_id) values (${orgId}, ${"آتلیه زرین"}, ${userId}) on conflict (id) do nothing`;
+  await sql`insert into org_members (org_id, user_id, role) values (${orgId}, ${userId}, ${"owner"}) on conflict (org_id, user_id) do nothing`;
+  const seed = taggedSeed(userId);
+  for (const payload of seed.concepts) {
     await sql`
       insert into concepts (id, org_id, user_id, title, fingerprint, status, payload)
-      values (${`${c.id}-${userId.slice(0, 8)}`}, ${orgId}, ${userId}, ${c.title}, ${c.fingerprint}, ${c.status}, ${JSON.stringify({ ...c, id: `${c.id}-${userId.slice(0, 8)}` })}::jsonb)
+      values (${payload.id}, ${orgId}, ${userId}, ${payload.title}, ${payload.fingerprint}, ${payload.status}, ${JSON.stringify(payload)}::jsonb)
+      on conflict (id) do nothing
     `;
   }
   await sql`
     insert into org_dna (org_id, payload) values (${orgId}, ${JSON.stringify(SEED_DNA)}::jsonb)
     on conflict (org_id) do nothing
   `;
-  for (const col of SEED_COLLECTIONS) {
+  for (const payload of seed.collections) {
     await sql`
       insert into org_collections (id, org_id, payload)
-      values (${`${col.id}-${userId.slice(0, 8)}`}, ${orgId}, ${JSON.stringify({ ...col, id: `${col.id}-${userId.slice(0, 8)}` })}::jsonb)
+      values (${payload.id}, ${orgId}, ${JSON.stringify(payload)}::jsonb)
       on conflict (id) do nothing
     `;
   }
@@ -203,4 +204,16 @@ export function toSnapshot(row: JobRow): JobSnapshot {
   };
 }
 
-export { isTerminal, nextStage, fingerprint };
+export async function listOrgJobs(orgId: string, userId: string): Promise<JobSnapshot[]> {
+  const sql = await getSql();
+  const rows = await sql<JobRow>`
+    select id, org_id, user_id, status, stage, error, cancel_requested, brief, result
+    from jobs
+    where org_id = ${orgId} and user_id = ${userId}
+    order by updated_at desc
+    limit 8
+  `;
+  return rows.map(toSnapshot);
+}
+
+export { isTerminal };

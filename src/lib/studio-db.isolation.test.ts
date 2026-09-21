@@ -2,11 +2,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { PGlite } from "@electric-sql/pglite";
+import { taggedId } from "../data/studio/tag.ts";
 
 async function boot() {
   const pg = new PGlite();
   await pg.waitReady;
-  for (const file of ["0002_studio.sql", "0003_org_brand.sql"]) {
+  for (const file of ["0002_studio.sql", "0003_org_brand.sql", "0004_jobs_index.sql"]) {
     await pg.exec(readFileSync(new URL(`../../migrations/${file}`, import.meta.url), "utf8"));
   }
   return pg;
@@ -74,5 +75,25 @@ describe("studio tenant isolation", () => {
     );
     assert.equal(leak.rows.length, 0);
     await pg.close();
+  });
+
+  it("0004 indexes apply on studio tables", async () => {
+    const pg = await boot();
+    const rows = await pg.query<{ indexname: string }>(
+      `select indexname from pg_indexes where tablename in ('jobs','concepts') order by indexname`,
+    );
+    const names = rows.rows.map((r) => r.indexname);
+    assert.ok(names.includes("jobs_org_status_idx"));
+    assert.ok(names.includes("concepts_org_status_idx"));
+    await pg.close();
+  });
+
+  it("seed concept collectionId is remapped with the same user tag as collections", () => {
+    const userId = "dev-user";
+    const conceptCollectionId = taggedId("col-nocturne", userId);
+    const collectionId = taggedId("col-nocturne", userId);
+    assert.equal(conceptCollectionId, collectionId);
+    assert.equal(collectionId, "col-nocturne-dev-user");
+    assert.notEqual(taggedId("c-lido", userId), "c-lido");
   });
 });

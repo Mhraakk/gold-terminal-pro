@@ -11,6 +11,7 @@ import {
   ensureOrg,
   insertConcepts,
   listOrgConcepts,
+  listOrgJobs,
   loadJob,
   loadOrgCollections,
   loadOrgDna,
@@ -30,7 +31,8 @@ export const listStudioFn = createServerFn({ method: "GET" })
     const concepts = await listOrgConcepts(orgId, context.userId);
     const dna = await loadOrgDna(orgId, context.userId);
     const collections = await loadOrgCollections(orgId, context.userId);
-    return { orgId, concepts, dna, collections };
+    const jobs = await listOrgJobs(orgId, context.userId);
+    return { orgId, concepts, dna, collections, jobs };
   });
 
 export const saveStudioConceptFn = createServerFn({ method: "POST" })

@@ -1,5 +1,7 @@
 /** Bag-of-tokens Jaccard. No live embeddings; swap this adapter for a vector store later. */
 
+export const SIMILARITY_LIMIT = 0.72;
+
 function tokens(text: string): Set<string> {
   return new Set(
     text
@@ -28,4 +30,10 @@ export function jaccard(a: string, b: string): number {
 export function maxSimilarity(candidate: string, corpus: string[]): number {
   if (corpus.length === 0) return 0;
   return Math.max(...corpus.map((c) => jaccard(candidate, c)));
+}
+
+/** Drop drafts that collide with the org archive. Never silently keep a twin. */
+export function rejectTooClose<T extends { fingerprint: string }>(items: T[], archive: string[]): T[] {
+  if (archive.length === 0) return items;
+  return items.filter((item) => maxSimilarity(item.fingerprint, archive) <= SIMILARITY_LIMIT);
 }
