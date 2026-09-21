@@ -3,12 +3,18 @@ import { Link } from "@tanstack/react-router";
 import { stillForType } from "@/data/atelier-stills";
 import type { Concept } from "@/data/studio/types";
 
-export function HoverExpand({ concepts }: { concepts: Concept[] }) {
+export function HoverExpand({
+  concepts,
+  axis = "row",
+}: {
+  concepts: Concept[];
+  axis?: "row" | "col";
+}) {
   const [on, setOn] = useState(0);
 
   return (
     <div
-      className="za-expand"
+      className={axis === "col" ? "za-expand is-col" : "za-expand"}
       onMouseLeave={() => setOn(0)}
       aria-label="گالری کانسپت"
     >

@@ -94,7 +94,7 @@ export function StudioBoard() {
           </Link>
         </FrameCard>
       ) : (
-        concepts.slice(0, 6).map((c) => <ConceptTile key={c.id} concept={c} />)
+        <HoverExpand concepts={concepts.slice(0, 6)} axis="col" />
       )}
     </section>
   );
