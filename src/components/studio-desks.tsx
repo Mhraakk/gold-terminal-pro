@@ -96,7 +96,7 @@ export function StudioBoard() {
           </Link>
         </FrameCard>
       ) : (
-        <CatalogCarousel concepts={concepts.slice(0, 8)} />
+        <CatalogCarousel concepts={concepts.slice(0, 8)} mode="coverflow" />
       )}
     </section>
   );

@@ -3994,8 +3994,13 @@ textarea {
   opacity: 0.35;
 }
 
-.za-catalog-swiper .swiper-pagination-bullet-active {
-  opacity: 1;
+.za-catalog.is-cover .za-catalog-swiper {
+  height: 360px;
+}
+
+.za-catalog.is-cover .swiper-slide {
+  width: auto;
+  height: 320px;
 }
 
 .za-expand a {
