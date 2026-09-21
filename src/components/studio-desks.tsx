@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { AtelierReel } from "@/components/atelier-reel";
 import { CatalogCarousel } from "@/components/catalog-carousel";
 import { FrameCard } from "@/components/frame";
 import { ParallaxStills } from "@/components/parallax-stills";
@@ -84,6 +85,7 @@ export function StudioBoard() {
         ))}
       </div>
       <LoopTicker items={concepts.slice(0, 8).map((c) => c.title)} />
+      <AtelierReel />
       {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
         <p key={j.id} className="nss-meta mb-4">
           در حال تولید: {stageLabel(j.stage)}
