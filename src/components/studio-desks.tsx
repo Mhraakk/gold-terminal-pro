@@ -48,83 +48,61 @@ export function StudioBoard() {
     { status: "packaging", n: counts.packaging },
   ];
   return (
-    <section className="bmg-grid" data-recipe="board" aria-label="داشبورد آتلیه">
+    <section aria-label="داشبورد آتلیه">
       {error ? (
-        <p className="nss-meta tm-span">
+        <p className="nss-meta">
           {error}{" "}
           {error === "ورود لازم است." ? (
             <a href="/login" className="nss-link">ورود آتلیه</a>
           ) : null}
         </p>
       ) : null}
-      {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
-        <NssCard key={j.id} tile>
-          <p className="nss-label">جاب زنده</p>
-          <p className="nss-body">{stageLabel(j.stage)}</p>
-          <p className="nss-meta">{j.status}{j.resultCount ? ` · ${j.resultCount} مسیر` : ""}</p>
-        </NssCard>
-      ))}
-      {jobs.filter((j) => canRetry(j.status)).slice(0, 2).map((j) => (
-        <NssCard key={j.id} tile>
-          <p className="nss-label">جاب نیازمند ری‌تری</p>
-          <p className="nss-body">{j.error ?? j.status}</p>
-          <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-2 inline-block">
-            ادامه در کانسپت تازه
+      <div className="za-stats">
+        {tiles.map((t) => (
+          <Link
+            key={t.status}
+            to="/"
+            search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
+            className="za-stat"
+          >
+            <strong>{t.n}</strong>
+            <span>{STATUS_LABEL[t.status]}</span>
           </Link>
-        </NssCard>
-      ))}
-      {tiles.map((t, i) => (
-        <Link
-          key={t.status}
-          to="/"
-          search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
-          className="nss-link block"
-        >
-          <NssCard tile stamp={<NdStamp index={i + 1} />}>
-            <p className="nss-label">{STATUS_LABEL[t.status]}</p>
-            <p className="nss-display">{t.n}</p>
-            <p className="nss-meta">کانسپت</p>
-          </NssCard>
-        </Link>
+        ))}
+      </div>
+      {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
+        <p key={j.id} className="nss-meta mb-4">
+          در حال تولید: {stageLabel(j.stage)}
+        </p>
       ))}
       {concepts.length === 0 ? (
-        <FrameCard className="tm-span">
-          <p className="nss-label">شروع</p>
+        <FrameCard>
           <h3 className="nss-display">هنوز کانسپتی نیست</h3>
-          <p className="nss-body mt-2">از یک بریف ساده سه مسیر بساز. لمس این دکمه تولید را شروع می‌کند.</p>
+          <p className="nss-body mt-2">از یک بریف ساده سه مسیر بساز.</p>
           <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-4 inline-block">
-            <Button type="button" variant="primary">
-              رفتن به کانسپت تازه
-            </Button>
+            <Button type="button" variant="primary">ساخت کانسپت</Button>
           </Link>
         </FrameCard>
       ) : (
-        concepts.slice(0, 4).map((c, i) => (
-          <ConceptTile key={c.id} concept={c} index={i + 5} />
-        ))
+        concepts.slice(0, 6).map((c) => <ConceptTile key={c.id} concept={c} />)
       )}
     </section>
   );
 }
 
-function ConceptTile({ concept, index, near }: { concept: Concept; index: number; near?: number }) {
+function ConceptTile({ concept, near }: { concept: Concept; near?: number }) {
   const still = plate(concept);
   return (
-    <Link to="/" search={{ desk: "dossier", concept: concept.id }} className="nss-link block">
-      <NssCard tile stamp={<NdStamp index={index} />}>
-        <div className="relative h-32">
-          <img src={still.src} alt={still.alt} width={1600} height={900} className="h-full w-full object-cover" />
-          <div className="nss-plate-veil" />
-        </div>
-        <p className="nss-label">{TYPE_LABEL[concept.brief.productType]} · {LEVEL_LABEL[concept.brief.level]}</p>
-        <p className="nss-body">{concept.title}</p>
-        <p className="nss-meta">{STATUS_LABEL[concept.status]} · {CITY_LABEL[concept.city]}</p>
+    <Link to="/" search={{ desk: "dossier", concept: concept.id }} className="za-piece">
+      <img src={still.src} alt={still.alt} width={1600} height={900} />
+      <div className="za-piece-body">
+        <p className="nss-meta">{TYPE_LABEL[concept.brief.productType]} · {LEVEL_LABEL[concept.brief.level]}</p>
+        <h3>{concept.title}</h3>
+        <p className="nss-meta mt-1">{STATUS_LABEL[concept.status]} · {CITY_LABEL[concept.city]}</p>
         {near != null ? (
-          <p className="nss-meta mt-1">
-            شباهت آرشیو {Math.round(near * 100)}٪{near > 0.55 ? " · نزدیک" : ""}
-          </p>
+          <p className="nss-meta mt-1">شباهت {Math.round(near * 100)}٪</p>
         ) : null}
-      </NssCard>
+      </div>
     </Link>
   );
 }
@@ -265,9 +243,9 @@ export function StudioBrief() {
   return (
     <div className="bmg-grid" data-recipe="builder">
       <FrameCard>
-        <p className="nss-label">BRIEF</p>
-        <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>کانسپت تازه</h3>
-        <p className="nss-body">نوع، سطح لوکس، وزن، عیار، مناسبت. سه مسیر خلاق با هویت متفاوت.</p>
+        <p className="nss-label">بریف</p>
+        <h3 className="nss-display">سه مسیر تازه</h3>
+        <p className="nss-body">نوع، سطح، وزن و عیار را بگو. خروجی سه هویت جدا است.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <Field label="نوع محصول">
             <select
@@ -363,8 +341,8 @@ export function StudioBrief() {
         ) : null}
         {error ? <p className="mt-3 text-sm text-down">{error}</p> : null}
       </FrameCard>
-      {paths.map((c, i) => (
-        <ConceptTile key={c.id} concept={c} index={i + 1} />
+      {paths.map((c) => (
+        <ConceptTile key={c.id} concept={c} />
       ))}
     </div>
   );
@@ -475,7 +453,7 @@ export function StudioAtelier({ q, status, level, type }: ArchiveFilter) {
             c.fingerprint,
             concepts.filter((x) => x.id !== c.id).map((x) => x.fingerprint),
           );
-          return <ConceptTile key={c.id} concept={c} index={i + 1} near={near} />;
+          return <ConceptTile key={c.id} concept={c} near={near} />;
         })
       )}
     </div>
@@ -496,14 +474,13 @@ export function StudioDossier({ id }: { id?: string }) {
   const twins = concepts.filter((c) => c.id !== concept.id);
   const near = maxSimilarity(concept.fingerprint, twins.map((c) => c.fingerprint));
   return (
-    <div className="bmg-grid" data-recipe="builder">
-      <FrameCard className="tm-span">
-        <div className="relative mb-4 h-48 overflow-hidden">
-          <img src={still.src} alt={still.alt} className="h-full w-full object-cover" />
-          <div className="nss-plate-veil" />
-        </div>
+    <div>
+      <div className="za-hero">
+        <img src={still.src} alt={still.alt} />
+      </div>
+      <FrameCard>
         <p className="nss-label">{concept.path} · {CITY_LABEL[concept.city]}</p>
-        <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{concept.title}</h3>
+        <h3 className="nss-display">{concept.title}</h3>
         <p className="nss-body mt-2">{concept.description}</p>
         <p className="nss-meta mt-4">
           شباهت به آرشیو {Math.round(near * 100)}٪ · {near > 0.55 ? "نزدیک — مسیر را عوض کن" : "فاصلهٔ سالم"}

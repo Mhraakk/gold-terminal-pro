@@ -3525,15 +3525,31 @@ textarea {
 }
 
 .desk-input {
-  min-height: 44px;
+  min-height: 48px;
   width: 100%;
   font-size: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--za-line);
+  border-radius: 12px;
+  background: var(--za-field);
+  color: var(--za-ink);
+  appearance: none;
 }
 
 .za-shell {
+  --za-void: #0c0b09;
+  --za-elev: #161310;
+  --za-field: #1c1914;
+  --za-ink: #f4efe4;
+  --za-mute: #9a9284;
+  --za-gold: #c4a574;
+  --za-line: rgba(244, 239, 228, 0.1);
+  --za-radius: 20px;
   min-height: 100dvh;
-  background: var(--color-bg);
-  color: var(--color-fg);
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  background: var(--za-void);
+  color: var(--za-ink);
+  font-family: "Vazirmatn", Tahoma, sans-serif;
 }
 
 .za-top {
@@ -3543,76 +3559,252 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
-  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--color-guide);
+  padding: calc(10px + env(safe-area-inset-top)) 20px 12px;
+  background: color-mix(in srgb, var(--za-void) 86%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 .za-brand {
   margin: 0;
-  font-family: "Vazirmatn", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-gold);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--za-gold);
 }
 
-.za-title {
-  margin: 2px 0 0;
-  font-family: "Vazirmatn", sans-serif;
-  font-size: 12px;
-  color: var(--color-muted);
+.za-kicker {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--za-mute);
 }
 
-.za-nav {
-  position: sticky;
-  top: 57px;
-  z-index: 29;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  padding: 8px 12px 10px;
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-guide);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+.za-main {
+  padding: 8px 16px 32px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-.za-nav::-webkit-scrollbar {
-  display: none;
+.za-dock {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--za-void) 92%, transparent);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--za-line);
 }
 
 .za-tab {
-  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-width: 64px;
   min-height: 52px;
-  padding: 6px 10px;
-  font-family: "Vazirmatn", sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: var(--color-muted);
+  color: var(--za-mute);
+  background: none;
+  border: 0;
   text-decoration: none;
 }
 
 .za-tab.is-active {
-  color: var(--color-gold);
+  color: var(--za-gold);
 }
 
-.za-main {
-  padding: 16px 16px 40px;
-  max-width: 960px;
-  margin: 0 auto;
+.za-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.za-sheet-dismiss {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.za-sheet-panel {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 16px calc(88px + env(safe-area-inset-bottom));
+  background: var(--za-elev);
+  border-radius: 24px 24px 0 0;
+  border: 1px solid var(--za-line);
+}
+
+.za-more {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 8px;
+  color: var(--za-ink);
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+.za-more.is-active {
+  color: var(--za-gold);
+}
+
+.za-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.za-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px;
+  background: var(--za-elev);
+  border: 1px solid var(--za-line);
+  border-radius: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.za-stat strong {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.za-stat span {
+  font-size: 11px;
+  color: var(--za-mute);
+}
+
+.za-piece {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: var(--za-elev);
+  border: 1px solid var(--za-line);
+  border-radius: var(--za-radius);
+  text-decoration: none;
+  color: inherit;
+}
+
+.za-piece img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.za-piece-body {
+  padding: 14px 16px 16px;
+}
+
+.za-piece h3 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.za-hero {
+  overflow: hidden;
+  margin: -8px -16px 20px;
+  border-radius: 0;
+}
+
+.za-hero img {
+  display: block;
+  width: 100%;
+  height: min(52vw, 320px);
+  object-fit: cover;
+}
+
+.za-shell .nd-stamp,
+.za-shell .nss-plate-veil,
+.za-shell .nss-face::after {
+  display: none !important;
+}
+
+.za-shell .nss-shell {
+  background: none;
+  padding: 0;
+  transform: none;
+  border-radius: 0;
+}
+
+.za-shell .nss-face {
+  background: var(--za-elev);
+  color: var(--za-ink);
+  border: 1px solid var(--za-line);
+  border-radius: var(--za-radius);
+  padding: 18px;
+  box-shadow: none;
+}
+
+.za-shell .nss-display {
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+  font-size: clamp(26px, 7vw, 36px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--za-ink);
+}
+
+.za-shell .nss-body,
+.za-shell .nss-label,
+.za-shell .nss-meta {
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+  color: var(--za-ink);
+}
+
+.za-shell .nss-label,
+.za-shell .nss-meta {
+  color: var(--za-mute);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.za-shell .nss-link {
+  color: var(--za-gold);
+}
+
+.za-shell .bmg-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.za-shell .desk-input {
+  background: var(--za-field);
+  color: var(--za-ink);
+  border-color: var(--za-line);
+}
+
+.za-shell button.bg-gold,
+.za-shell .bg-gold {
+  background: var(--za-gold) !important;
+  color: #1a140c !important;
+  border-radius: 14px;
 }
 
 @media (min-width: 768px) {
   .za-main {
-    padding: 24px 24px 64px;
+    padding: 16px 24px 48px;
+  }
+  .za-hero {
+    margin: 0 0 24px;
+    border-radius: 24px;
   }
 }
 
