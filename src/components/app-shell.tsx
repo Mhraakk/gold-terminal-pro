@@ -14,6 +14,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { MusicToggle } from "@/components/music-toggle";
+import { TextRoll } from "@/components/text-roll";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserButton } from "@/lib/auth/gates";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -94,7 +95,7 @@ export function AppShell({
                 onClick={() => setOpen(false)}
               >
                 <item.Icon size={18} strokeWidth={1.75} aria-hidden />
-                <span>{item.label}</span>
+                <TextRoll>{item.label}</TextRoll>
               </Link>
             ))}
           </div>
@@ -113,7 +114,7 @@ export function AppShell({
                   aria-current={active ? "page" : undefined}
                 >
                   <item.Icon size={22} strokeWidth={1.7} aria-hidden />
-                  <span>{item.label}</span>
+                  <TextRoll>{item.label}</TextRoll>
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="top">{item.label}</TooltipContent>
@@ -128,7 +129,7 @@ export function AppShell({
               onClick={() => setOpen((v) => !v)}
             >
               <MoreHorizontal size={22} strokeWidth={1.7} aria-hidden />
-              <span>بیشتر</span>
+              <TextRoll>بیشتر</TextRoll>
             </button>
           </TooltipTrigger>
           <TooltipContent side="top">شناسنامه، ست، کالکشن</TooltipContent>

@@ -3681,9 +3681,43 @@ textarea {
   color: inherit;
 }
 
-.za-count {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
+.za-roll {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.15;
+}
+
+.za-roll > span {
+  grid-area: 1 / 1;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.za-roll > span:last-child {
+  transform: translateY(110%);
+}
+
+.za-tab:hover .za-roll > span:first-child,
+.za-tab:active .za-roll > span:first-child,
+.za-more:hover .za-roll > span:first-child,
+.za-more:active .za-roll > span:first-child {
+  transform: translateY(-110%);
+}
+
+.za-tab:hover .za-roll > span:last-child,
+.za-tab:active .za-roll > span:last-child,
+.za-more:hover .za-roll > span:last-child,
+.za-more:active .za-roll > span:last-child {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .za-roll > span {
+    transition: none;
+  }
+  .za-tab:hover .za-roll > span,
+  .za-more:hover .za-roll > span {
+    transform: none;
+  }
 }
 
 .za-stat span {
