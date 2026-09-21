@@ -42,7 +42,7 @@ export const DESIGN_DNA = {
     | "corner-lasers"
     | "chromatic-band-background"
     | "off",
-  motion: "plane scrub + masked-reveal",
+  motion: "flat plane + masked-reveal",
   surfaces: "#18181B glass + #FF5A1F signal",
 } as const;
 
@@ -50,4 +50,4 @@ export const ARCHITECTURE_LINE =
   "Architecture — Frontend TanStack Start RTL, Gateway TanStack server functions, Orchestrator graph (plan → tools → evaluate), RAG similarity adapter, Models xAI grok-4.5 (swappable), Guardrails on, Memory device-local concepts, Data localStore, LLMOps Dockerfile + eval fixtures, Cloud Vercel";
 
 export const DESIGN_LINE =
-  "Design system — Frame perspective-glass-dashboard + Gradient Shell, Atmosphere Three.js wireframe terrain 40% + God Rays, Motion plane scrub + masked-reveal, Surfaces #18181B glass + #FF5A1F signal";
+  "Design system — Frame newsreader-slate + glass, Atmosphere terrain 40% behind a flat desk, Motion masked-reveal, Surfaces #18181B glass + #FF5A1F signal";

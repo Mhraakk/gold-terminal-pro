@@ -26,6 +26,7 @@ import {
   StudioSet,
   StudioSheet,
 } from "@/components/studio-desks";
+import { ZarinLoop } from "@/components/zarin-loop";
 import { LEVEL_LABEL } from "@/data/studio/catalog";
 import { LUXURY_LEVELS, PRODUCT_TYPES, STATUSES } from "@/data/studio/types";
 import type { ConceptStatus, LuxuryLevel, ProductType } from "@/data/studio/types";
@@ -140,7 +141,7 @@ function Studio() {
             <BsiFolio>f. {deskLabel}</BsiFolio>
             <UserButton />
             <p className="bsi-kicker">ZARIN · ATELIER · VOL. I</p>
-            <BsiDisplay>طلا، بدون تکرار</BsiDisplay>
+            <ZarinLoop />
             <BsiBody drop="آ">
               تلیهٔ کانسپت زرین. چهار سطح لوکس، الهام از میلان و موناکو و پاریس، بدون کپی. هر طرح داستان، وزن، اجرت و جعبه دارد.
             </BsiBody>
