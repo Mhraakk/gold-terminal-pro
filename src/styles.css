@@ -3693,8 +3693,88 @@ textarea {
   border-radius: 12px;
 }
 
-.za-more.is-active {
-  color: var(--za-gold);
+.za-more .za-arrow {
+  margin-inline-start: auto;
+}
+
+.za-burger {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.za-burger i {
+  position: absolute;
+  inset-inline: 1px;
+  height: 1.5px;
+  border-radius: 99px;
+  background: currentColor;
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
+}
+
+.za-burger i:nth-child(1) { top: 4px; }
+.za-burger i:nth-child(2) { top: 8px; }
+.za-burger i:nth-child(3) { top: 12px; }
+
+.za-burger.is-open i:nth-child(1) {
+  top: 8px;
+  transform: rotate(45deg);
+}
+
+.za-burger.is-open i:nth-child(2) {
+  opacity: 0;
+}
+
+.za-burger.is-open i:nth-child(3) {
+  top: 8px;
+  transform: rotate(-45deg);
+}
+
+.za-arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--za-mute);
+}
+
+.za-arrow-shaft {
+  position: absolute;
+  inset-inline-end: 9px;
+  width: 10px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: inline-end;
+  transform-origin: right;
+  transition: transform 280ms ease, inset-inline-end 280ms ease;
+}
+
+[dir="rtl"] .za-arrow-shaft {
+  transform-origin: left;
+}
+
+.za-more:hover .za-arrow-shaft,
+.za-more:active .za-arrow-shaft {
+  transform: scaleX(1);
+  inset-inline-end: 7px;
+}
+
+.za-more:hover .za-arrow svg,
+.za-more:active .za-arrow svg {
+  transform: translateX(-2px);
+}
+
+[dir="ltr"] .za-more:hover .za-arrow svg {
+  transform: translateX(2px);
+}
+
+.za-arrow svg {
+  transition: transform 280ms ease;
 }
 
 .za-stats {
@@ -3957,6 +4037,7 @@ textarea {
 }
 
 .za-music {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3968,6 +4049,20 @@ textarea {
   border-radius: 999px;
   background: var(--za-elev);
   color: var(--za-ink);
+}
+
+.za-mute-slash {
+  position: absolute;
+  inset: 10px 12px;
+  pointer-events: none;
+  transform: rotate(-40deg) scaleY(1);
+  transform-origin: top;
+  background: linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+  transition: transform 160ms ease;
+}
+
+.za-music[data-on="true"] .za-mute-slash {
+  transform: rotate(-40deg) scaleY(0);
 }
 
 .za-music i {

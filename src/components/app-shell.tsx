@@ -6,7 +6,6 @@ import {
   FolderKanban,
   House,
   Library,
-  MoreHorizontal,
   Package,
   Printer,
   ScrollText,
@@ -14,6 +13,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { GoldPointer } from "@/components/gold-pointer";
+import { ArrowGo, BurgerIcon } from "@/components/motion-icons";
 import { MusicToggle } from "@/components/music-toggle";
 import { SquircleFilter } from "@/components/squircle-filter";
 import { TextRoll } from "@/components/text-roll";
@@ -100,6 +100,7 @@ export function AppShell({
               >
                 <item.Icon size={18} strokeWidth={1.75} aria-hidden />
                 <TextRoll>{item.label}</TextRoll>
+                <ArrowGo />
               </Link>
             ))}
           </div>
@@ -132,7 +133,7 @@ export function AppShell({
               className={moreActive || open ? "za-tab is-active" : "za-tab"}
               onClick={() => setOpen((v) => !v)}
             >
-              <MoreHorizontal size={22} strokeWidth={1.7} aria-hidden />
+              <BurgerIcon open={open} />
               <TextRoll>بیشتر</TextRoll>
             </button>
           </TooltipTrigger>

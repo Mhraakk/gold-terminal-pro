@@ -51,6 +51,7 @@ export function MusicToggle() {
       {heights.map((h, i) => (
         <i key={i} style={{ height: `${Math.max(3, h * 14)}px` }} />
       ))}
+      <span className="za-mute-slash" aria-hidden />
     </button>
   );
 }
