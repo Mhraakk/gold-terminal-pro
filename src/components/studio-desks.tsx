@@ -4,6 +4,7 @@ import { CatalogCarousel } from "@/components/catalog-carousel";
 import { FrameCard } from "@/components/frame";
 import { ParallaxStills } from "@/components/parallax-stills";
 import { ScatterTitle } from "@/components/scatter-title";
+import { LoopTicker } from "@/components/loop-ticker";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
@@ -82,6 +83,7 @@ export function StudioBoard() {
           </Tooltip>
         ))}
       </div>
+      <LoopTicker items={concepts.slice(0, 8).map((c) => c.title)} />
       {jobs.filter((j) => !isTerminal(j.status)).map((j) => (
         <p key={j.id} className="nss-meta mb-4">
           در حال تولید: {stageLabel(j.stage)}
