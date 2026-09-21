@@ -3910,6 +3910,10 @@ textarea {
   transform: rotate(-180deg);
 }
 
+html {
+  view-transition-name: root;
+}
+
 html[data-theme="light"] {
   color-scheme: light;
 }

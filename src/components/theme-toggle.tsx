@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 const KEY = "za-theme";
 
@@ -14,8 +14,36 @@ function apply(theme: "dark" | "light") {
   localStorage.setItem(KEY, theme);
 }
 
+function injectReveal(x: number, y: number) {
+  const id = "za-theme-vt";
+  let el = document.getElementById(id) as HTMLStyleElement | null;
+  if (!el) {
+    el = document.createElement("style");
+    el.id = id;
+    document.head.appendChild(el);
+  }
+  el.textContent = `
+    ::view-transition-group(root) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    ::view-transition-old(root) {
+      animation: none;
+      z-index: -1;
+    }
+    ::view-transition-new(root) {
+      animation: za-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes za-reveal {
+      from { clip-path: circle(0% at ${x}% ${y}%); }
+      to { clip-path: circle(150% at ${x}% ${y}%); }
+    }
+  `;
+}
+
 export function ThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const next = readTheme();
@@ -27,14 +55,28 @@ export function ThemeToggle() {
 
   return (
     <button
+      ref={btnRef}
       type="button"
       className="za-theme"
       aria-label={dark ? "حالت روشن" : "حالت تیره"}
       aria-pressed={!dark}
       onClick={() => {
         const next = dark ? "light" : "dark";
-        setTheme(next);
-        apply(next);
+        const run = () => {
+          setTheme(next);
+          apply(next);
+        };
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const start = document.startViewTransition?.bind(document);
+        if (reduce || !start) {
+          run();
+          return;
+        }
+        const box = btnRef.current?.getBoundingClientRect();
+        const x = box ? ((box.left + box.width / 2) / window.innerWidth) * 100 : 8;
+        const y = box ? ((box.top + box.height / 2) / window.innerHeight) * 100 : 6;
+        injectReveal(x, y);
+        start(run);
       }}
     >
       <svg viewBox="0 0 240 240" fill="none" aria-hidden>
