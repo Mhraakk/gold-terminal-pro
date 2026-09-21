@@ -3808,6 +3808,31 @@ textarea {
   }
 }
 
+.za-smooth {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--za-line, rgba(244, 239, 228, 0.1));
+  border-radius: 12px;
+  background: var(--za-field, #1c1914);
+  color: var(--za-ink, #f4efe4);
+}
+
+.za-smooth input {
+  font-size: 16px;
+}
+
+.za-smooth input::placeholder {
+  color: color-mix(in srgb, var(--za-mute, #9a9284) 80%, transparent);
+}
+
+.za-caret {
+  background: var(--za-gold, #c4a574);
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 120ms ease;
+}
+
 
 
 

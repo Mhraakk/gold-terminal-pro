@@ -5,6 +5,7 @@ import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
 import { Button } from "@/components/ui/button";
+import { SmoothInput } from "@/components/ui/smooth-input";
 import { stillForType } from "@/data/atelier-stills";
 import {
   CITY_LABEL,
@@ -270,14 +271,10 @@ export function StudioBrief() {
             </select>
           </Field>
           <Field label="وزن هدف (گرم)">
-            <input
-              className="desk-input"
+            <SmoothInput
               type="number"
-              min={0.4}
-              max={80}
-              step={0.1}
-              value={brief.weightGrams}
-              onChange={(e) => setBrief({ ...brief, weightGrams: Number(e.target.value) })}
+              value={String(brief.weightGrams)}
+              onChange={(e) => setBrief({ ...brief, weightGrams: Number(e.target.value) || 0 })}
             />
           </Field>
           <Field label="عیار">
@@ -395,8 +392,7 @@ export function StudioAtelier({ q, status, level, type }: ArchiveFilter) {
         <p className="nss-label">آرشیو</p>
         <p className="nss-body mt-2">جست‌وجو روی عنوان، داستان، مسیر و اثرانگشت. فیلتر همان چهار سطل داشبورد است.</p>
         <Field label="جست‌وجو">
-          <input
-            className="desk-input"
+          <SmoothInput
             value={q ?? ""}
             maxLength={80}
             placeholder="مثلاً اسکله، باگت، موناکو…"
@@ -737,7 +733,7 @@ export function StudioSet({ id }: { id?: string }) {
           ))}
         </div>
         <Field label="پکیج شخصی برای">
-          <input className="desk-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="نام مشتری" />
+          <SmoothInput value={name} onChange={(e) => setName(e.target.value)} placeholder="نام مشتری" />
         </Field>
         <Button
           className="mt-3"
@@ -785,11 +781,10 @@ export function StudioDna() {
 
   return (
     <FrameCard>
-      <p className="nss-label">BRAND DNA</p>
-      <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{draft.name}</h3>
+      <p className="nss-label">دی‌ان‌ای برند</p>
+      <h3 className="nss-display">{draft.name}</h3>
       <Field label="نام">
-        <input
-          className="desk-input"
+        <SmoothInput
           value={draft.name}
           onChange={(e) => patch("name", e.target.value)}
         />
@@ -816,7 +811,7 @@ export function StudioCollections() {
     <div className="bmg-grid" data-recipe="builder">
       <FrameCard>
         <p className="nss-label">کالکشن تازه</p>
-        <input className="desk-input mt-3" value={name} onChange={(e) => setName(e.target.value)} placeholder="نام کالکشن" />
+        <SmoothInput value={name} onChange={(e) => setName(e.target.value)} placeholder="نام کالکشن" />
         <Button
           className="mt-4"
           type="button"
