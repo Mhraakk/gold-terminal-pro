@@ -3998,9 +3998,21 @@ textarea {
   height: 360px;
 }
 
-.za-catalog.is-cover .swiper-slide {
-  width: auto;
-  height: 320px;
+.za-catalog.is-cards {
+  display: flex;
+  justify-content: center;
+}
+
+.za-catalog.is-cards .za-catalog-swiper {
+  width: 260px;
+  height: 380px;
+  padding-bottom: 0 !important;
+}
+
+.za-catalog.is-cards .swiper-slide {
+  width: 260px;
+  height: 380px;
+  border-radius: 24px;
 }
 
 .za-expand a {

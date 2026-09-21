@@ -484,24 +484,14 @@ export function StudioDossier({ id }: { id?: string }) {
       </FrameCard>
     );
   }
-  const still = plate(concept);
-  const deck = [
-    still,
-    stillForType("object"),
-    stillForType("bracelet"),
-  ].filter((s, i, a) => a.findIndex((x) => x.src === s.src) === i);
   const twins = concepts.filter((c) => c.id !== concept.id);
   const near = maxSimilarity(concept.fingerprint, twins.map((c) => c.fingerprint));
   return (
     <div>
-      <div className="za-deck" aria-label="صفحات محصول">
-        {deck.map((s, i) => (
-          <figure key={s.src} className="za-deck-card">
-            <img src={s.src} alt={s.alt} />
-            <figcaption>{i + 1} / {deck.length}</figcaption>
-          </figure>
-        ))}
-      </div>
+      <CatalogCarousel
+        mode="cards"
+        concepts={[concept, ...twins.slice(0, 6)]}
+      />
       <FrameCard>
         <p className="nss-label">{concept.path} · {CITY_LABEL[concept.city]}</p>
         <h3 className="nss-display">{concept.title}</h3>

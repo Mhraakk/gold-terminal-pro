@@ -1,14 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { EffectCoverflow, EffectCreative, Pagination } from "swiper/modules";
+import { EffectCards, EffectCoverflow, EffectCreative, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import "swiper/css/effect-cards";
 import "swiper/css/effect-coverflow";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 import { stillForType } from "@/data/atelier-stills";
 import type { Concept } from "@/data/studio/types";
 
-type Mode = "creative" | "coverflow";
+type Mode = "creative" | "coverflow" | "cards";
 
 export function CatalogCarousel({
   concepts,
@@ -19,30 +20,31 @@ export function CatalogCarousel({
 }) {
   if (concepts.length === 0) return null;
   const coverflow = mode === "coverflow";
+  const cards = mode === "cards";
 
   return (
-    <div className={coverflow ? "za-catalog is-cover" : "za-catalog"}>
+    <div className={cards ? "za-catalog is-cards" : coverflow ? "za-catalog is-cover" : "za-catalog"}>
       <Swiper
         dir="rtl"
-        spaceBetween={coverflow ? 40 : 0}
-        effect={coverflow ? "coverflow" : "creative"}
+        spaceBetween={cards ? 0 : coverflow ? 40 : 0}
+        effect={cards ? "cards" : coverflow ? "coverflow" : "creative"}
         grabCursor
-        slidesPerView={coverflow ? 1.35 : "auto"}
+        slidesPerView={cards ? 1 : coverflow ? 1.35 : "auto"}
         breakpoints={
           coverflow
             ? { 640: { slidesPerView: 2.43 } }
             : undefined
         }
-        centeredSlides
+        centeredSlides={!cards}
         loop={concepts.length > 2}
-        pagination={{ clickable: true }}
+        pagination={cards ? false : { clickable: true }}
         coverflowEffect={
           coverflow
             ? { rotate: 0, slideShadows: false, stretch: 0, depth: 100, modifier: 2.5 }
             : undefined
         }
         creativeEffect={
-          coverflow
+          coverflow || cards
             ? undefined
             : {
                 prev: {
@@ -58,7 +60,7 @@ export function CatalogCarousel({
                 },
               }
         }
-        modules={[EffectCoverflow, EffectCreative, Pagination]}
+        modules={[EffectCards, EffectCoverflow, EffectCreative, Pagination]}
         className="za-catalog-swiper"
       >
         {concepts.map((c) => {
