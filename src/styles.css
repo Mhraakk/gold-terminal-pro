@@ -3566,6 +3566,9 @@ textarea {
 
 .za-brand {
   margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -3831,6 +3834,23 @@ textarea {
   transition:
     transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 120ms ease;
+}
+
+.za-tip {
+  z-index: 70;
+  max-width: 220px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--za-elev);
+  color: var(--za-ink);
+  outline: 1px solid var(--za-line);
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.za-tip-arrow {
+  display: inline-flex;
 }
 
 

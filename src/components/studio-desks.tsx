@@ -6,6 +6,7 @@ import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
 import { Button } from "@/components/ui/button";
 import { SmoothInput } from "@/components/ui/smooth-input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { stillForType } from "@/data/atelier-stills";
 import {
   CITY_LABEL,
@@ -60,15 +61,19 @@ export function StudioBoard() {
       ) : null}
       <div className="za-stats">
         {tiles.map((t) => (
-          <Link
-            key={t.status}
-            to="/"
-            search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
-            className="za-stat"
-          >
-            <strong>{t.n}</strong>
-            <span>{STATUS_LABEL[t.status]}</span>
-          </Link>
+          <Tooltip key={t.status}>
+            <TooltipTrigger asChild>
+              <Link
+                to="/"
+                search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
+                className="za-stat"
+              >
+                <strong>{t.n}</strong>
+                <span>{STATUS_LABEL[t.status]}</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">باز کردن آرشیو {STATUS_LABEL[t.status]}</TooltipContent>
+          </Tooltip>
         ))}
       </div>
       {jobs.filter((j) => !isTerminal(j.status)).map((j) => (

@@ -14,6 +14,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { UserButton } from "@/lib/auth/gates";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const DESK_META = [
   { id: "board", label: "خانه", Icon: House },
@@ -44,9 +45,15 @@ export function AppShell({
   const moreActive = MORE.some((d) => d.id === desk);
 
   return (
+    <TooltipProvider>
     <div className="za-shell">
       <header className="za-top">
-        <p className="za-brand">زرین</p>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button type="button" className="za-brand">زرین</button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">آتلیه کانسپت طلا</TooltipContent>
+        </Tooltip>
         <UserButton />
       </header>
       <main className="za-main" id="desk">
@@ -77,27 +84,37 @@ export function AppShell({
         {DESK_META.filter((d) => PRIMARY.includes(d.id as (typeof PRIMARY)[number])).map((item) => {
           const active = desk === item.id;
           return (
-            <Link
-              key={item.id}
-              to="/"
-              search={{ desk: item.id } as { desk: "board" }}
-              className={active ? "za-tab is-active" : "za-tab"}
-              aria-current={active ? "page" : undefined}
-            >
-              <item.Icon size={22} strokeWidth={1.7} aria-hidden />
-              <span>{item.label}</span>
-            </Link>
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/"
+                  search={{ desk: item.id } as { desk: "board" }}
+                  className={active ? "za-tab is-active" : "za-tab"}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <item.Icon size={22} strokeWidth={1.7} aria-hidden />
+                  <span>{item.label}</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top">{item.label}</TooltipContent>
+            </Tooltip>
           );
         })}
-        <button
-          type="button"
-          className={moreActive || open ? "za-tab is-active" : "za-tab"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <MoreHorizontal size={22} strokeWidth={1.7} aria-hidden />
-          <span>بیشتر</span>
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className={moreActive || open ? "za-tab is-active" : "za-tab"}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <MoreHorizontal size={22} strokeWidth={1.7} aria-hidden />
+              <span>بیشتر</span>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top">شناسنامه، ست، کالکشن</TooltipContent>
+        </Tooltip>
       </nav>
     </div>
+    </TooltipProvider>
   );
 }
