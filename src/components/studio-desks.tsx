@@ -833,6 +833,7 @@ export function StudioCollections() {
   const [name, setName] = useState("");
   return (
     <div className="bmg-grid" data-recipe="builder">
+      <CatalogCarousel mode="stack" concepts={concepts} />
       <FrameCard>
         <p className="nss-label">کالکشن تازه</p>
         <SmoothInput value={name} onChange={(e) => setName(e.target.value)} placeholder="نام کالکشن" />

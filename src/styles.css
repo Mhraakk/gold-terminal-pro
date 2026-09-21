@@ -4009,10 +4009,13 @@ textarea {
   padding-bottom: 0 !important;
 }
 
-.za-catalog.is-cards .swiper-slide {
-  width: 260px;
-  height: 380px;
-  border-radius: 24px;
+.za-catalog.is-stack .za-catalog-swiper {
+  height: min(70vw, 400px);
+}
+
+.za-catalog.is-stack .swiper-slide {
+  width: 100%;
+  height: calc(100% - 36px);
 }
 
 .za-expand a {
