@@ -659,6 +659,7 @@ export function StudioSet({ id }: { id?: string }) {
   }
   const arch = concept.set.architecture;
   const chosen = concept.set.companions.find((x) => x.id === concept.set.companionId);
+  const still = plate(concept);
   return (
     <div className="bmg-grid" data-recipe="builder">
       <FrameCard className="tm-span">
@@ -703,13 +704,17 @@ export function StudioSet({ id }: { id?: string }) {
         <p className="nss-meta mt-3">لایه‌ها</p>
         <p className="nss-body">{arch.layers.join(" → ")}</p>
         <p className="nss-meta mt-3">ترتیب مواجهه</p>
-        <ol className="nd-list mt-2" data-nd="leading">
-          {arch.sequence.map((step) => (
-            <li key={step} className="nd-item">
-              <span className="nd-title">{step}</span>
-            </li>
+        <div className="za-stack">
+          {arch.sequence.map((step, i) => (
+            <article key={step} className="za-stack-card" style={{ top: 8 + i * 14 }}>
+              <img src={still.src} alt="" />
+              <div className="za-stack-body">
+                <p className="nss-meta">{i + 1} / {arch.sequence.length}</p>
+                <p>{step}</p>
+              </div>
+            </article>
           ))}
-        </ol>
+        </div>
         <p className="nss-meta mt-3">غافلگیری</p>
         <p className="nss-body">{arch.surprise}</p>
       </FrameCard>
