@@ -5,7 +5,7 @@ import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
 import { Button } from "@/components/ui/button";
-import { AURA_STILLS } from "@/data/aura";
+import { stillForType } from "@/data/atelier-stills";
 import {
   CITY_LABEL,
   COMPANION_LABEL,
@@ -29,9 +29,7 @@ import { studioClientError } from "@/lib/studio-error";
 const ACTIVE_JOB_KEY = "zarin-active-job";
 
 function plate(concept: Concept) {
-  if (concept.brief.productType === "ring") return AURA_STILLS.ring;
-  if (concept.brief.productType === "watch") return AURA_STILLS.desk;
-  return AURA_STILLS.card;
+  return stillForType(concept.brief.productType);
 }
 
 export function StudioBoard() {

@@ -10,14 +10,19 @@ import { completeXai } from "./providers/xai";
 
 type LlmOpts = { system: string; user: string; maxTokens?: number; temperature?: number };
 
-/** Prefer cline2api-workers when configured; otherwise xAI Grok. */
+/** Prefer cline2api-workers when configured; otherwise xAI Grok. Always time-bound. */
 export async function completeLlm(opts: LlmOpts) {
-  if (isCline2ApiConfigured()) {
-    const viaCline = await completeCline2Api(opts);
-    if (viaCline.ok) return viaCline;
-    const viaXai = await completeXai(opts);
-    if (viaXai.ok) return viaXai;
-    return viaCline;
-  }
-  return completeXai(opts);
+  const bound = Promise.race([
+    (async () => {
+      if (isCline2ApiConfigured()) {
+        const viaCline = await completeCline2Api(opts);
+        if (viaCline.ok) return viaCline;
+      }
+      return completeXai(opts);
+    })(),
+    new Promise<{ ok: false; error: string }>((resolve) => {
+      setTimeout(() => resolve({ ok: false, error: "llm-timeout" }), 7000);
+    }),
+  ]);
+  return bound;
 }
