@@ -15,6 +15,7 @@ import {
 import { GoldPointer } from "@/components/gold-pointer";
 import { ArrowGo, BurgerIcon } from "@/components/motion-icons";
 import { MusicToggle } from "@/components/music-toggle";
+import { ScrollStroke } from "@/components/scroll-stroke";
 import { SquircleFilter } from "@/components/squircle-filter";
 import { TextRoll } from "@/components/text-roll";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -82,6 +83,7 @@ export function AppShell({
         </div>
       </header>
       <main className="za-main" id="desk">
+        <ScrollStroke />
         <p className="za-kicker">{title}</p>
         {children}
       </main>

@@ -3584,7 +3584,28 @@ textarea {
   color: var(--za-mute);
 }
 
+.za-stroke {
+  position: sticky;
+  top: 12px;
+  float: inline-start;
+  width: 22px;
+  height: min(70vh, 520px);
+  margin-inline-end: 4px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.za-stroke path {
+  fill: none;
+  stroke: var(--za-gold);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
 .za-main {
+  position: relative;
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
