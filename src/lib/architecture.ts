@@ -7,8 +7,8 @@ export const ARCHITECTURE = {
   rag: "disabled adapter",
   models: "xAI grok-4.5",
   guardrails: "injection · PII · schema",
-  memory: "short-term localStorage",
-  data: "device-local concepts + swappable AI",
+  memory: "org-scoped concepts + job queue",
+  data: "Neon/PGLite org isolation",
   llmops: "Dockerfile + eval fixtures",
   cloud: "Vercel",
 } as const;

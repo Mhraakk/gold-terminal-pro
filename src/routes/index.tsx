@@ -27,7 +27,8 @@ import {
   StudioSheet,
 } from "@/components/studio-desks";
 import { LEVEL_LABEL } from "@/data/studio/catalog";
-import { LUXURY_LEVELS } from "@/data/studio/types";
+import { LUXURY_LEVELS, PRODUCT_TYPES, STATUSES } from "@/data/studio/types";
+import type { ConceptStatus, LuxuryLevel, ProductType } from "@/data/studio/types";
 
 const DESKS = [
   "board",
@@ -44,12 +45,23 @@ const DESKS = [
 
 type Tab = (typeof DESKS)[number];
 
-type DeskSearch = { desk: Tab; concept?: string };
+type DeskSearch = {
+  desk: Tab;
+  concept?: string;
+  status?: ConceptStatus;
+  q?: string;
+  level?: LuxuryLevel;
+  type?: ProductType;
+};
 
 function parseSearch(raw: Record<string, unknown>): DeskSearch {
   const desk = DESKS.includes(raw.desk as Tab) ? (raw.desk as Tab) : "board";
   const concept = typeof raw.concept === "string" ? raw.concept : undefined;
-  return { desk, concept };
+  const status = STATUSES.includes(raw.status as ConceptStatus) ? (raw.status as ConceptStatus) : undefined;
+  const q = typeof raw.q === "string" && raw.q.trim() ? raw.q.trim().slice(0, 80) : undefined;
+  const level = LUXURY_LEVELS.includes(raw.level as LuxuryLevel) ? (raw.level as LuxuryLevel) : undefined;
+  const type = PRODUCT_TYPES.includes(raw.type as ProductType) ? (raw.type as ProductType) : undefined;
+  return { desk, concept, status, q, level, type };
 }
 
 const TABS: { id: Tab; label: string }[] = [
@@ -97,7 +109,7 @@ function StudioPending() {
 }
 
 function Studio() {
-  const { desk: tab, concept } = Route.useSearch();
+  const { desk: tab, concept, status, q, level, type } = Route.useSearch();
   const deskLabel = TAB_BY_ID[tab].label;
 
   return (
@@ -140,7 +152,7 @@ function Studio() {
             <span className="nss-label">Lectio</span>
             {tab === "board" && <StudioBoard />}
             {tab === "brief" && <StudioBrief />}
-            {tab === "atelier" && <StudioAtelier />}
+            {tab === "atelier" && <StudioAtelier q={q} status={status} level={level} type={type} />}
             {tab === "dossier" && <StudioDossier id={concept} />}
             {tab === "production" && <StudioProduction />}
             {tab === "set" && <StudioSet id={concept} />}

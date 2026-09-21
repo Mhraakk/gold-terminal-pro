@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
@@ -16,6 +16,7 @@ import {
   STATUS_LABEL,
   TYPE_LABEL,
 } from "@/data/studio/catalog";
+import { filterArchive, type ArchiveFilter } from "@/data/studio/archive";
 import { maxSimilarity } from "@/data/studio/similarity";
 import type { BrandDna, Collection, Concept, ConceptBrief, ConceptStatus, Karat, LuxuryLevel, PackageKind, ProductType } from "@/data/studio/types";
 import { KARATS, LUXURY_LEVELS, PRODUCT_TYPES } from "@/data/studio/types";
@@ -149,7 +150,12 @@ export function StudioBoard() {
         </NssCard>
       ))}
       {tiles.map((t, i) => (
-        <Link key={t.status} to="/" search={{ desk: "production", concept: undefined }} className="nss-link block">
+        <Link
+          key={t.status}
+          to="/"
+          search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
+          className="nss-link block"
+        >
           <NssCard tile stamp={<NdStamp index={i + 1} />}>
             <p className="nss-label">{STATUS_LABEL[t.status]}</p>
             <p className="nss-display">{t.n}</p>
@@ -164,7 +170,7 @@ export function StudioBoard() {
   );
 }
 
-function ConceptTile({ concept, index }: { concept: Concept; index: number }) {
+function ConceptTile({ concept, index, near }: { concept: Concept; index: number; near?: number }) {
   const still = plate(concept);
   return (
     <Link to="/" search={{ desk: "dossier", concept: concept.id }} className="nss-link block">
@@ -176,6 +182,11 @@ function ConceptTile({ concept, index }: { concept: Concept; index: number }) {
         <p className="nss-label">{TYPE_LABEL[concept.brief.productType]} · {LEVEL_LABEL[concept.brief.level]}</p>
         <p className="nss-body">{concept.title}</p>
         <p className="nss-meta">{STATUS_LABEL[concept.status]} · {CITY_LABEL[concept.city]}</p>
+        {near != null ? (
+          <p className="nss-meta mt-1">
+            شباهت آرشیو {Math.round(near * 100)}٪{near > 0.55 ? " · نزدیک" : ""}
+          </p>
+        ) : null}
       </NssCard>
     </Link>
   );
@@ -431,8 +442,27 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export function StudioAtelier() {
+export function StudioAtelier({ q, status, level, type }: ArchiveFilter) {
   const { concepts } = useStudio();
+  const navigate = useNavigate({ from: "/" });
+  const filtered = useMemo(
+    () => filterArchive(concepts, { q, status, level, type }),
+    [concepts, q, status, level, type],
+  );
+
+  function setFilter(patch: ArchiveFilter) {
+    void navigate({
+      search: {
+        desk: "atelier",
+        concept: undefined,
+        q: "q" in patch ? patch.q || undefined : q,
+        status: "status" in patch ? patch.status || undefined : status,
+        level: "level" in patch ? patch.level || undefined : level,
+        type: "type" in patch ? patch.type || undefined : type,
+      },
+    });
+  }
+
   if (!concepts.length) {
     return (
       <FrameCard>
@@ -443,12 +473,75 @@ export function StudioAtelier() {
       </FrameCard>
     );
   }
+
   return (
-    <section className="bmg-grid" data-recipe="board" aria-label="آتلیه">
-      {concepts.map((c, i) => (
-        <ConceptTile key={c.id} concept={c} index={i + 1} />
-      ))}
-    </section>
+    <div className="bmg-grid" data-recipe="board" aria-label="آتلیه">
+      <FrameCard className="tm-span">
+        <p className="nss-label">آرشیو</p>
+        <p className="nss-body mt-2">جست‌وجو روی عنوان، داستان، مسیر و اثرانگشت. فیلتر همان چهار سطل داشبورد است.</p>
+        <Field label="جست‌وجو">
+          <input
+            className="desk-input"
+            value={q ?? ""}
+            maxLength={80}
+            placeholder="مثلاً اسکله، باگت، موناکو…"
+            onChange={(e) => setFilter({ q: e.target.value })}
+          />
+        </Field>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <Field label="وضعیت">
+            <select
+              className="desk-input"
+              value={status ?? ""}
+              onChange={(e) => setFilter({ status: (e.target.value || undefined) as ConceptStatus | undefined })}
+            >
+              <option value="">همه</option>
+              {(["idea", "approved", "production", "packaging"] as ConceptStatus[]).map((s) => (
+                <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="سطح">
+            <select
+              className="desk-input"
+              value={level ?? ""}
+              onChange={(e) => setFilter({ level: (e.target.value || undefined) as LuxuryLevel | undefined })}
+            >
+              <option value="">همه</option>
+              {LUXURY_LEVELS.map((id) => (
+                <option key={id} value={id}>{LEVEL_LABEL[id]}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="نوع">
+            <select
+              className="desk-input"
+              value={type ?? ""}
+              onChange={(e) => setFilter({ type: (e.target.value || undefined) as ProductType | undefined })}
+            >
+              <option value="">همه</option>
+              {PRODUCT_TYPES.map((id) => (
+                <option key={id} value={id}>{TYPE_LABEL[id]}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
+        <p className="nss-meta mt-3">{filtered.length} از {concepts.length} طرح</p>
+      </FrameCard>
+      {filtered.length === 0 ? (
+        <FrameCard>
+          <p className="nss-body">با این فیلتر طرحی نیست. فیلتر را بردار یا کانسپت تازه بساز.</p>
+        </FrameCard>
+      ) : (
+        filtered.map((c, i) => {
+          const near = maxSimilarity(
+            c.fingerprint,
+            concepts.filter((x) => x.id !== c.id).map((x) => x.fingerprint),
+          );
+          return <ConceptTile key={c.id} concept={c} index={i + 1} near={near} />;
+        })
+      )}
+    </div>
   );
 }
 
@@ -767,7 +860,7 @@ export function StudioDna() {
     setDraft(dna);
   }, [dna]);
 
-  function patch(key: "promise" | "materials" | "silhouette" | "forbidden", value: string) {
+  function patch(key: "name" | "promise" | "materials" | "silhouette" | "forbidden", value: string) {
     const next = { ...draft, [key]: value };
     setDraft(next);
     window.clearTimeout(timer.current);
@@ -780,6 +873,13 @@ export function StudioDna() {
     <FrameCard>
       <p className="nss-label">BRAND DNA</p>
       <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{draft.name}</h3>
+      <Field label="نام">
+        <input
+          className="desk-input"
+          value={draft.name}
+          onChange={(e) => patch("name", e.target.value)}
+        />
+      </Field>
       {(["promise", "materials", "silhouette", "forbidden"] as const).map((key) => (
         <Field key={key} label={key === "promise" ? "وعده" : key === "materials" ? "متریال" : key === "silhouette" ? "سیلوئت" : "ممنوع"}>
           <textarea
