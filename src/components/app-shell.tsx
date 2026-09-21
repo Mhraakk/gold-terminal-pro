@@ -15,6 +15,7 @@ import {
 import { GoldPointer } from "@/components/gold-pointer";
 import { ArrowGo, BurgerIcon } from "@/components/motion-icons";
 import { MusicToggle } from "@/components/music-toggle";
+import { ScrollRing } from "@/components/scroll-ring";
 import { ScrollStroke } from "@/components/scroll-stroke";
 import { SquircleFilter } from "@/components/squircle-filter";
 import { TextRoll } from "@/components/text-roll";
@@ -108,6 +109,7 @@ export function AppShell({
           </div>
         </div>
       ) : null}
+      <ScrollRing />
       <nav className="za-dock" aria-label="میزها">
         {DESK_META.filter((d) => PRIMARY.includes(d.id as (typeof PRIMARY)[number])).map((item) => {
           const active = desk === item.id;
