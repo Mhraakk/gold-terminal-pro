@@ -12,8 +12,8 @@
   --color-panel: #14110e;
   --color-ember: #b08948;
   --color-guide: #2a2618;
-  --font-sans: "Vazirmatn", "Noto Naskh Arabic", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "Vazirmatn", "Tahoma", "Arial", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
   --radius-sm: 0px;
   --radius: 0px;
 }

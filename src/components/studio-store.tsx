@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { SEED_DNA } from "@/data/studio/seed";
+import { SEED_COLLECTIONS, SEED_CONCEPTS, SEED_DNA } from "@/data/studio/seed";
 import type { BrandDna, Collection, Concept } from "@/data/studio/types";
 import { studioClientError } from "@/lib/studio-error";
 import {
@@ -10,38 +10,61 @@ import {
 } from "@/lib/studio-fn";
 import type { JobSnapshot } from "@/lib/studio-jobs";
 
-type StudioState = {
-  ready: boolean;
+export type StudioSnapshot = {
   concepts: Concept[];
+  dna: BrandDna;
+  collections: Collection[];
+  jobs: JobSnapshot[];
+};
+
+type StudioState = StudioSnapshot & {
+  ready: boolean;
   setConcepts: (next: Concept[]) => void;
   persist: (concept: Concept) => Promise<void>;
-  dna: BrandDna;
   setDna: (next: BrandDna) => void;
-  collections: Collection[];
   setCollections: (next: Collection[]) => void;
-  jobs: JobSnapshot[];
   error: string | null;
+};
+
+const EMPTY: StudioSnapshot = {
+  concepts: SEED_CONCEPTS,
+  dna: SEED_DNA,
+  collections: SEED_COLLECTIONS,
+  jobs: [],
 };
 
 const StudioContext = createContext<StudioState | null>(null);
 
-export function StudioProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
-  const [concepts, setConceptsState] = useState<Concept[]>([]);
-  const [dna, setDnaState] = useState<BrandDna>(SEED_DNA);
-  const [collections, setCollectionsState] = useState<Collection[]>([]);
-  const [jobs, setJobs] = useState<JobSnapshot[]>([]);
+export function StudioProvider({
+  children,
+  initial,
+}: {
+  children: ReactNode;
+  initial?: StudioSnapshot | null;
+}) {
+  const start = initial && initial.concepts.length ? initial : EMPTY;
+  const [ready, setReady] = useState(Boolean(initial?.concepts.length));
+  const [concepts, setConceptsState] = useState<Concept[]>(start.concepts);
+  const [dna, setDnaState] = useState<BrandDna>(start.dna);
+  const [collections, setCollectionsState] = useState<Collection[]>(start.collections);
+  const [jobs, setJobs] = useState<JobSnapshot[]>(start.jobs);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initial?.concepts.length) {
+      setReady(true);
+      return;
+    }
     let live = true;
     listStudioFn()
       .then((r) => {
         if (!live) return;
-        setConceptsState(r.concepts);
-        setDnaState(r.dna);
-        setCollectionsState(r.collections);
-        setJobs(r.jobs ?? []);
+        if (r.concepts.length) {
+          setConceptsState(r.concepts);
+          setDnaState(r.dna);
+          setCollectionsState(r.collections);
+          setJobs(r.jobs ?? []);
+        }
       })
       .catch((e: unknown) => {
         if (!live) return;
@@ -53,7 +76,7 @@ export function StudioProvider({ children }: { children: ReactNode }) {
     return () => {
       live = false;
     };
-  }, []);
+  }, [initial]);
 
   const persist = useCallback(async (concept: Concept) => {
     setConceptsState((prev) => {
