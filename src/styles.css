@@ -3545,17 +3545,19 @@ textarea {
   --za-gold: #c4a574;
   --za-line: rgba(244, 239, 228, 0.1);
   --za-radius: 20px;
-  min-height: 100dvh;
-  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--za-void);
   color: var(--za-ink);
   font-family: "Vazirmatn", Tahoma, sans-serif;
 }
 
 .za-top {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 30;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3583,9 +3585,27 @@ textarea {
 }
 
 .za-main {
-  padding: 8px 16px 32px;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 16px calc(96px + env(safe-area-inset-bottom));
   max-width: 720px;
+  width: 100%;
   margin: 0 auto;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 18px,
+    #000 calc(100% - 72px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 18px,
+    #000 calc(100% - 72px),
+    transparent
+  );
 }
 
 .za-dock {
@@ -3640,10 +3660,26 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  max-height: min(70dvh, 520px);
+  overflow-y: auto;
   padding: 20px 16px calc(88px + env(safe-area-inset-bottom));
   background: var(--za-elev);
   border-radius: 24px 24px 0 0;
   border: 1px solid var(--za-line);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 14px,
+    #000 calc(100% - 20px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 14px,
+    #000 calc(100% - 20px),
+    transparent
+  );
 }
 
 .za-more {
@@ -3854,7 +3890,7 @@ textarea {
 
 @media (min-width: 768px) {
   .za-main {
-    padding: 16px 24px 48px;
+    padding: 16px 24px calc(96px + env(safe-area-inset-bottom));
   }
   .za-hero {
     margin: 0 0 24px;
