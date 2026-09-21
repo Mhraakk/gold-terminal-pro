@@ -3612,12 +3612,22 @@ textarea {
   will-change: transform;
 }
 
-.za-para-col img {
-  display: block;
-  width: 100%;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 12px;
+.za-scatter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0;
+  perspective: 480px;
+}
+
+.za-scatter span {
+  display: inline-block;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.za-scatter span.is-space {
+  width: 0.35em;
 }
 
 .za-main {
