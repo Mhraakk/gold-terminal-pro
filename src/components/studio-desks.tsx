@@ -103,7 +103,9 @@ function ConceptTile({ concept, near }: { concept: Concept; near?: number }) {
   const still = plate(concept);
   return (
     <Link to="/" search={{ desk: "dossier", concept: concept.id }} className="za-piece">
-      <img src={still.src} alt={still.alt} width={1600} height={900} />
+      <div className="za-clip">
+        <img src={still.src} alt={still.alt} width={1600} height={900} />
+      </div>
       <div className="za-piece-body">
         <p className="nss-meta">{TYPE_LABEL[concept.brief.productType]} · {LEVEL_LABEL[concept.brief.level]}</p>
         <h3>{concept.title}</h3>
@@ -479,7 +481,7 @@ export function StudioDossier({ id }: { id?: string }) {
   const near = maxSimilarity(concept.fingerprint, twins.map((c) => c.fingerprint));
   return (
     <div>
-      <div className="za-hero">
+      <div className="za-hero za-clip">
         <img src={still.src} alt={still.alt} />
       </div>
       <FrameCard>
