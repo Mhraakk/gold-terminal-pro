@@ -13,6 +13,7 @@ import {
   Sparkles,
   Workflow,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { UserButton } from "@/lib/auth/gates";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -54,7 +55,17 @@ export function AppShell({
           </TooltipTrigger>
           <TooltipContent side="bottom">آتلیه کانسپت طلا</TooltipContent>
         </Tooltip>
-        <UserButton />
+        <div className="za-top-actions">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <ThemeToggle />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">تغییر زمینه</TooltipContent>
+          </Tooltip>
+          <UserButton />
+        </div>
       </header>
       <main className="za-main" id="desk">
         <p className="za-kicker">{title}</p>

@@ -3853,6 +3853,62 @@ textarea {
   display: inline-flex;
 }
 
+.za-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.za-theme {
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  border: 1px solid var(--za-line);
+  border-radius: 999px;
+  background: #111;
+  color: #f4efe4;
+}
+
+.za-theme-spin {
+  transform-origin: 120px 120px;
+  transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="light"] .za-theme {
+  background: #f4efe4;
+  color: #1a140c;
+}
+
+[data-theme="light"] .za-theme-spin {
+  transform: rotate(-180deg);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="light"] body {
+  background: #f3eee4;
+  color: #1a140c;
+}
+
+[data-theme="light"] .za-shell {
+  --za-void: #f3eee4;
+  --za-elev: #fffaf2;
+  --za-field: #ffffff;
+  --za-ink: #1a140c;
+  --za-mute: #6e665a;
+  --za-gold: #8a6a38;
+  --za-line: rgba(26, 20, 12, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .za-theme-spin {
+    transition: none;
+  }
+}
+
+
 
 
 
