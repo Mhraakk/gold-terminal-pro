@@ -13,6 +13,7 @@ import {
   Sparkles,
   Workflow,
 } from "lucide-react";
+import { MusicToggle } from "@/components/music-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserButton } from "@/lib/auth/gates";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -56,6 +57,14 @@ export function AppShell({
           <TooltipContent side="bottom">آتلیه کانسپت طلا</TooltipContent>
         </Tooltip>
         <div className="za-top-actions">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <MusicToggle />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">صدای آتلیه</TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <span>

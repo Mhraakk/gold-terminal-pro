@@ -3869,6 +3869,33 @@ textarea {
   color: #f4efe4;
 }
 
+.za-music {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 44px;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--za-line);
+  border-radius: 999px;
+  background: var(--za-elev);
+  color: var(--za-ink);
+}
+
+.za-music i {
+  display: block;
+  width: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: height 110ms ease;
+}
+
+[data-theme="light"] .za-music {
+  background: #fffaf2;
+  color: #1a140c;
+}
+
 .za-theme-spin {
   transform-origin: 120px 120px;
   transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
