@@ -3681,10 +3681,9 @@ textarea {
   color: inherit;
 }
 
-.za-stat strong {
-  font-size: 22px;
-  font-weight: 600;
+.za-count {
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
 .za-stat span {

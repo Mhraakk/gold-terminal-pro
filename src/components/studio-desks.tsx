@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
 import { Button } from "@/components/ui/button";
+import { CountFlow } from "@/components/ui/count-flow";
 import { SmoothInput } from "@/components/ui/smooth-input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { stillForType } from "@/data/atelier-stills";
@@ -68,7 +69,9 @@ export function StudioBoard() {
                 search={{ desk: "atelier", concept: undefined, status: t.status, q: undefined, level: undefined, type: undefined }}
                 className="za-stat"
               >
-                <strong>{t.n}</strong>
+                <strong>
+                  <CountFlow value={t.n} />
+                </strong>
                 <span>{STATUS_LABEL[t.status]}</span>
               </Link>
             </TooltipTrigger>
@@ -533,7 +536,7 @@ export function StudioDossier({ id }: { id?: string }) {
         <p className="nss-label">مشخصات</p>
         <dl className="mt-3 space-y-2 text-sm">
           <Row k="ابعاد" v={concept.specs.dimensions} />
-          <Row k="وزن" v={`${concept.specs.weightGrams} g`} />
+          <Row k="وزن" v={<><CountFlow value={concept.specs.weightGrams} /> g</>} />
           <Row k="عیار" v={KARAT_LABEL[concept.specs.karat]} />
           <Row k="سبک" v={concept.specs.style} />
           <Row k="پیچیدگی" v={concept.specs.complexity} />
@@ -586,7 +589,7 @@ export function StudioDossier({ id }: { id?: string }) {
   );
 }
 
-function Row({ k, v }: { k: string; v: string }) {
+function Row({ k, v }: { k: string; v: ReactNode }) {
   return (
     <div className="flex justify-between gap-4">
       <dt className="nss-meta">{k}</dt>
@@ -954,7 +957,7 @@ export function StudioSheet({ id }: { id?: string }) {
           <p className="nss-body mt-3">{concept.story}</p>
           <dl className="mt-4 space-y-2 text-sm">
             <Row k="ابعاد" v={concept.specs.dimensions} />
-            <Row k="وزن" v={`${concept.specs.weightGrams} g`} />
+            <Row k="وزن" v={<><CountFlow value={concept.specs.weightGrams} /> g</>} />
             <Row k="عیار" v={KARAT_LABEL[concept.specs.karat]} />
             <Row k="سبک" v={concept.specs.style} />
             <Row k="اجرت" v={concept.laborEstimate} />
