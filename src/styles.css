@@ -3972,6 +3972,29 @@ html[data-theme="light"] body {
   }
 }
 
+.za-count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.za-pointer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--za-gold);
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.za-pointer[data-on="true"] {
+  display: block;
+}
+
 
 
 

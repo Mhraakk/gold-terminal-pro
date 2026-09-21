@@ -13,6 +13,7 @@ import {
   Sparkles,
   Workflow,
 } from "lucide-react";
+import { GoldPointer } from "@/components/gold-pointer";
 import { MusicToggle } from "@/components/music-toggle";
 import { TextRoll } from "@/components/text-roll";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -50,6 +51,7 @@ export function AppShell({
   return (
     <TooltipProvider>
     <div className="za-shell">
+      <GoldPointer />
       <header className="za-top">
         <Tooltip>
           <TooltipTrigger asChild>
