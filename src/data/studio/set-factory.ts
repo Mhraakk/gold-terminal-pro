@@ -1,5 +1,5 @@
-import { CITY_LABEL, TYPE_LABEL } from "./catalog";
-import type { City, Companion, ConceptBrief, PackageArchitecture, ProductSet } from "./types";
+import { CITY_LABEL, TYPE_LABEL } from "./catalog.ts";
+import type { City, Companion, ConceptBrief, PackageArchitecture, ProductSet } from "./types.ts";
 
 function id(prefix: string, n: number) {
   return `${prefix}-${n}`;

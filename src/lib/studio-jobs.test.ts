@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { applyCancel, isTerminal, nextStage } from "./studio-jobs.ts";
+import { applyCancel, canRetry, isTerminal, nextStage } from "./studio-jobs.ts";
 import { jaccard, maxSimilarity, rejectTooClose } from "../data/studio/similarity.ts";
 
 describe("job machine", () => {
@@ -37,6 +37,15 @@ describe("job machine", () => {
       resultCount: 3,
     });
     assert.equal(next.status, "succeeded");
+  });
+
+  it("retry is allowed only for failed, partial, cancelled", () => {
+    assert.equal(canRetry("failed"), true);
+    assert.equal(canRetry("partial"), true);
+    assert.equal(canRetry("cancelled"), true);
+    assert.equal(canRetry("succeeded"), false);
+    assert.equal(canRetry("running"), false);
+    assert.equal(canRetry("queued"), false);
   });
 });
 

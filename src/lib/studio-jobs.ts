@@ -41,6 +41,11 @@ export function isTerminal(status: JobStatus): boolean {
   return status === "succeeded" || status === "partial" || status === "failed" || status === "cancelled";
 }
 
+/** Safe retry clones the brief into a new job. Succeeded jobs are not retried (that would duplicate). */
+export function canRetry(status: JobStatus): boolean {
+  return status === "failed" || status === "partial" || status === "cancelled";
+}
+
 export function applyCancel(job: JobSnapshot): JobSnapshot {
   if (isTerminal(job.status)) return job;
   return { ...job, status: "cancelled", stage: "done", error: "لغو شد." };

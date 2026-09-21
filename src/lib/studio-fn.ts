@@ -21,7 +21,7 @@ import {
   toSnapshot,
   updateConceptPayload,
 } from "@/lib/studio-db";
-import { isTerminal } from "@/lib/studio-jobs";
+import { canRetry, isTerminal } from "@/lib/studio-jobs";
 import { persistOutcome, planAdvance } from "@/lib/studio-pipeline";
 
 export const listStudioFn = createServerFn({ method: "GET" })
@@ -101,6 +101,22 @@ export const cancelStudioJobFn = createServerFn({ method: "POST" })
     }
     const next = await loadJob(data.jobId, context.userId);
     return { ok: true as const, job: next ? toSnapshot(next) : null };
+  });
+
+export const retryStudioJobFn = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: unknown) => z.object({ jobId: z.string() }).parse(input))
+  .handler(async ({ context, data }) => {
+    const row = await loadJob(data.jobId, context.userId);
+    if (!row) return { ok: false as const, error: "جاب پیدا نشد." };
+    if (!canRetry(row.status)) {
+      return { ok: false as const, error: "فقط جاب ناموفق، ناقص یا لغو‌شده ری‌تری می‌شود." };
+    }
+    const limit = allowAiCall();
+    if (!limit.allowed) return { ok: false as const, error: "سقف تولید کانسپت در این دقیقه پر شد." };
+    const orgId = await ensureOrg(context.userId);
+    const id = await createJobRow(orgId, context.userId, row.brief.brief, row.brief.extra ?? {});
+    return { ok: true as const, jobId: id };
   });
 
 export const tickStudioJobFn = createServerFn({ method: "POST" })

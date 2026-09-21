@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
 import { NdStamp } from "@/components/number-details";
@@ -19,18 +19,20 @@ import {
 import { maxSimilarity } from "@/data/studio/similarity";
 import type { BrandDna, Collection, Concept, ConceptBrief, ConceptStatus, Karat, LuxuryLevel, PackageKind, ProductType } from "@/data/studio/types";
 import { KARATS, LUXURY_LEVELS, PRODUCT_TYPES } from "@/data/studio/types";
+import { formatSheet } from "@/data/studio/sheet";
 import {
   cancelStudioJobFn,
   enqueueStudioJobFn,
   getStudioJobFn,
   listStudioFn,
+  retryStudioJobFn,
   saveStudioCollectionsFn,
   saveStudioConceptFn,
   saveStudioDnaFn,
   tickStudioJobFn,
 } from "@/lib/studio-fn";
 import { SEED_DNA } from "@/data/studio/seed";
-import { isTerminal, stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
+import { canRetry, isTerminal, stageLabel, type JobSnapshot } from "@/lib/studio-jobs";
 import { MAX_JOB_TICKS } from "@/lib/studio-pipeline";
 import { studioClientError } from "@/lib/studio-error";
 
@@ -137,6 +139,15 @@ export function StudioBoard() {
           <p className="nss-meta">{j.status}{j.resultCount ? ` · ${j.resultCount} مسیر` : ""}</p>
         </NssCard>
       ))}
+      {jobs.filter((j) => canRetry(j.status)).slice(0, 2).map((j) => (
+        <NssCard key={j.id} tile>
+          <p className="nss-label">جاب نیازمند ری‌تری</p>
+          <p className="nss-body">{j.error ?? j.status}</p>
+          <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-2 inline-block">
+            ادامه در کانسپت تازه
+          </Link>
+        </NssCard>
+      ))}
       {tiles.map((t, i) => (
         <Link key={t.status} to="/" search={{ desk: "production", concept: undefined }} className="nss-link block">
           <NssCard tile stamp={<NdStamp index={i + 1} />}>
@@ -185,11 +196,19 @@ export function StudioBrief() {
   const [job, setJob] = useState<JobSnapshot | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [paths, setPaths] = useState<Concept[]>([]);
+  const abortRef = useRef(false);
 
   async function pump(id: string) {
     setJobId(id);
     sessionStorage.setItem(ACTIVE_JOB_KEY, id);
+    abortRef.current = false;
     for (let i = 0; i < MAX_JOB_TICKS; i += 1) {
+      if (abortRef.current) {
+        const cancelled = await cancelStudioJobFn({ data: { jobId: id } });
+        if (cancelled.ok && cancelled.job) setJob(cancelled.job);
+        sessionStorage.removeItem(ACTIVE_JOB_KEY);
+        break;
+      }
       const tick = await tickStudioJobFn({ data: { jobId: id } });
       if (!tick.ok) {
         setError(tick.error);
@@ -276,6 +295,25 @@ export function StudioBrief() {
     }
   }
 
+  async function retryLast() {
+    if (!jobId || !job || !canRetry(job.status)) return;
+    setBusy(true);
+    setError(null);
+    setPaths([]);
+    try {
+      const created = await retryStudioJobFn({ data: { jobId } });
+      if (!created.ok) {
+        setError(created.error);
+        return;
+      }
+      await pump(created.jobId);
+    } catch (e) {
+      setError(studioClientError(e, "ری‌تری شکست خورد."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="bmg-grid" data-recipe="builder">
       <FrameCard>
@@ -356,12 +394,18 @@ export function StudioBrief() {
             type="button"
             className="nss-chip nss-link mt-3"
             onClick={() => {
+              abortRef.current = true;
               sessionStorage.removeItem(ACTIVE_JOB_KEY);
               void cancelStudioJobFn({ data: { jobId } });
             }}
           >
             لغو جاب
           </button>
+        ) : null}
+        {!busy && job && canRetry(job.status) ? (
+          <Button className="mt-3" type="button" onClick={() => void retryLast()}>
+            ری‌تری امن همین بریف
+          </Button>
         ) : null}
         {job ? (
           <p className="nss-meta mt-3">
@@ -515,6 +559,9 @@ export function StudioDossier({ id }: { id?: string }) {
         </p>
         <Link to="/" search={{ desk: "set", concept: concept.id }} className="nss-link mt-3 inline-block">
           معماری کامل ست
+        </Link>
+        <Link to="/" search={{ desk: "sheet", concept: concept.id }} className="nss-link mt-3 mr-4 inline-block">
+          برگه ارائه
         </Link>
       </FrameCard>
       <FrameCard>
@@ -713,17 +760,33 @@ export function StudioSet({ id }: { id?: string }) {
 
 export function StudioDna() {
   const { dna, setDna } = useStudio();
+  const [draft, setDraft] = useState(dna);
+  const timer = useRef<number>(0);
+
+  useEffect(() => {
+    setDraft(dna);
+  }, [dna]);
+
+  function patch(key: "promise" | "materials" | "silhouette" | "forbidden", value: string) {
+    const next = { ...draft, [key]: value };
+    setDraft(next);
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      setDna(next);
+    }, 700);
+  }
+
   return (
     <FrameCard>
       <p className="nss-label">BRAND DNA</p>
-      <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{dna.name}</h3>
+      <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{draft.name}</h3>
       {(["promise", "materials", "silhouette", "forbidden"] as const).map((key) => (
         <Field key={key} label={key === "promise" ? "وعده" : key === "materials" ? "متریال" : key === "silhouette" ? "سیلوئت" : "ممنوع"}>
           <textarea
             className="desk-input min-h-20"
-            value={dna[key]}
+            value={draft[key]}
             onChange={(e) => {
-              setDna({ ...dna, [key]: e.target.value });
+              patch(key, e.target.value);
             }}
           />
         </Field>
@@ -829,5 +892,106 @@ export function StudioPapers() {
         </NssCard>
       ))}
     </section>
+  );
+}
+
+export function StudioSheet({ id }: { id?: string }) {
+  const { concepts } = useStudio();
+  const [copied, setCopied] = useState<"ok" | "err" | null>(null);
+  const concept = concepts.find((c) => c.id === id) ?? concepts[0];
+  if (!concept) {
+    return (
+      <FrameCard>
+        <p className="nss-body">برای برگه ارائه، اول کانسپت بساز.</p>
+        <Link to="/" search={{ desk: "brief", concept: undefined }} className="nss-link mt-3 inline-block">
+          کانسپت تازه
+        </Link>
+      </FrameCard>
+    );
+  }
+  const text = formatSheet(concept);
+  const still = plate(concept);
+  const chosen = concept.set.companions.find((x) => x.id === concept.set.companionId);
+  const arch = concept.set.architecture;
+
+  async function copySheet() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied("ok");
+    } catch {
+      setCopied("err");
+    }
+  }
+
+  return (
+    <div className="bmg-grid" data-recipe="builder">
+      <article className="zarin-sheet tm-span">
+        <FrameCard>
+          <p className="nss-label">برگه ارائه · زرین</p>
+          <div className="relative my-4 h-48 overflow-hidden">
+            <img src={still.src} alt={still.alt} className="h-full w-full object-cover" />
+            <div className="nss-plate-veil" />
+          </div>
+          <h3 className="nss-display" style={{ fontSize: 32, lineHeight: 1.1 }}>{concept.title}</h3>
+          <p className="nss-meta mt-2">
+            {TYPE_LABEL[concept.brief.productType]} · {LEVEL_LABEL[concept.brief.level]} · {CITY_LABEL[concept.city]}
+          </p>
+          <p className="nss-body mt-3">{concept.description}</p>
+          <p className="nss-body mt-3">{concept.story}</p>
+          <dl className="mt-4 space-y-2 text-sm">
+            <Row k="ابعاد" v={concept.specs.dimensions} />
+            <Row k="وزن" v={`${concept.specs.weightGrams} g`} />
+            <Row k="عیار" v={KARAT_LABEL[concept.specs.karat]} />
+            <Row k="سبک" v={concept.specs.style} />
+            <Row k="اجرت" v={concept.laborEstimate} />
+          </dl>
+          <p className="nss-label mt-6">ورییشن</p>
+          <ul className="mt-2 space-y-1 text-sm">
+            {concept.variations.map((v) => (
+              <li key={v}>{v}</li>
+            ))}
+          </ul>
+          <p className="nss-label mt-6">ست کامل — نه جعبه</p>
+          <p className="nss-body mt-2">{arch.name}</p>
+          <p className="nss-body mt-2">{arch.concept}</p>
+          <p className="nss-meta mt-2">{arch.form} · {PACKAGE_KIND_LABEL[arch.kind]}</p>
+          <ol className="nd-list mt-3" data-nd="leading">
+            {arch.sequence.map((step) => (
+              <li key={step} className="nd-item">
+                <span className="nd-title">{step}</span>
+              </li>
+            ))}
+          </ol>
+          {chosen ? (
+            <>
+              <p className="nss-label mt-6">محصول دوم</p>
+              <p className="nss-body mt-2">
+                {COMPANION_LABEL[chosen.kind]} · {chosen.title}
+                {chosen.isGold ? " · طلا" : ""}
+              </p>
+              <p className="nss-body mt-2">{chosen.narrative}</p>
+            </>
+          ) : null}
+          {concept.passport ? (
+            <p className="nss-display mt-6" style={{ fontSize: 22 }}>{concept.passport.serial}</p>
+          ) : (
+            <p className="nss-meta mt-6">شناسنامه هنوز صادر نشده — از میز اصالت صادر کن.</p>
+          )}
+          <div className="zarin-sheet-actions mt-6 flex flex-wrap gap-2">
+            <Button type="button" onClick={() => void copySheet()}>
+              رونوشت برگه
+            </Button>
+            <Button type="button" onClick={() => window.print()}>
+              چاپ
+            </Button>
+            <Link to="/" search={{ desk: "set", concept: concept.id }} className="nss-link inline-block px-3 py-2">
+              معماری ست
+            </Link>
+          </div>
+          {copied === "ok" ? <p className="nss-meta mt-3">برگه روی کلیپ‌بورد است.</p> : null}
+          {copied === "err" ? <p className="nss-meta mt-3 text-down">دسترسی به کلیپ‌بورد داده نشد.</p> : null}
+        </FrameCard>
+      </article>
+    </div>
   );
 }

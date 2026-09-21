@@ -3376,3 +3376,34 @@ button.bsi-index-item {
 .nw-content .im-card {
   background: #050507;
 }
+
+@media print {
+  .gradient-blur,
+  .pgd-rays,
+  .pgd-canvas,
+  .pgd-veil,
+  .bsi-index,
+  .bsi-banner,
+  .bsi-kicker,
+  .bsi-note,
+  .zarin-sheet-actions,
+  .skip-link {
+    display: none !important;
+  }
+
+  .pgd-root,
+  .bsi-shell,
+  .bsi-well,
+  .bsi-spread,
+  .bsi-page {
+    background: #fff !important;
+    color: #161513 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .zarin-sheet {
+    break-inside: avoid;
+  }
+}
+

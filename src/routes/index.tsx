@@ -24,6 +24,7 @@ import {
   StudioPapers,
   StudioProduction,
   StudioSet,
+  StudioSheet,
 } from "@/components/studio-desks";
 import { LEVEL_LABEL } from "@/data/studio/catalog";
 import { LUXURY_LEVELS } from "@/data/studio/types";
@@ -38,6 +39,7 @@ const DESKS = [
   "collections",
   "dna",
   "papers",
+  "sheet",
 ] as const;
 
 type Tab = (typeof DESKS)[number];
@@ -60,6 +62,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "collections", label: "کالکشن" },
   { id: "dna", label: "دی‌ان‌ای" },
   { id: "papers", label: "اصالت" },
+  { id: "sheet", label: "برگه ارائه" },
 ];
 
 const TAB_BY_ID = Object.fromEntries(TABS.map((t) => [t.id, t])) as Record<Tab, (typeof TABS)[number]>;
@@ -144,6 +147,7 @@ function Studio() {
             {tab === "collections" && <StudioCollections />}
             {tab === "dna" && <StudioDna />}
             {tab === "papers" && <StudioPapers />}
+            {tab === "sheet" && <StudioSheet id={concept} />}
             <p className="nss-meta mt-8 flex items-start gap-2">
               <SolarCpu />
               آتلیهٔ زرین · جاب واقعی روی Postgres · شباهت متنی در سطح سازمان
