@@ -12,6 +12,7 @@ import {
   Sparkles,
   Workflow,
 } from "lucide-react";
+import { BreakpointIndicator } from "@/components/breakpoint-indicator";
 import { GoldPointer } from "@/components/gold-pointer";
 import { ArrowGo, BurgerIcon } from "@/components/motion-icons";
 import { MusicToggle } from "@/components/music-toggle";
@@ -92,6 +93,7 @@ export function AppShell({
       <ProgressiveBlur position="top" />
       <ProgressiveBlur position="bottom" />
       <ScrollRing />
+      <BreakpointIndicator />
       {open ? (
         <div className="za-sheet" role="dialog" aria-label="میزهای دیگر">
           <button type="button" className="za-sheet-dismiss" onClick={() => setOpen(false)} aria-label="بستن" />
