@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FrameCard } from "@/components/frame";
+import { HoverExpand } from "@/components/hover-expand";
 import { NdStamp } from "@/components/number-details";
 import { NssCard } from "@/components/nss-card";
 import { useStudio } from "@/components/studio-store";
@@ -454,13 +455,18 @@ export function StudioAtelier({ q, status, level, type }: ArchiveFilter) {
           <p className="nss-body">با این فیلتر طرحی نیست. فیلتر را بردار یا کانسپت تازه بساز.</p>
         </FrameCard>
       ) : (
-        filtered.map((c, i) => {
-          const near = maxSimilarity(
-            c.fingerprint,
-            concepts.filter((x) => x.id !== c.id).map((x) => x.fingerprint),
-          );
-          return <ConceptTile key={c.id} concept={c} near={near} />;
-        })
+        <>
+          {filtered.length > 1 ? (
+            <HoverExpand concepts={filtered.slice(0, 8)} />
+          ) : null}
+          {(filtered.length === 1 ? filtered : filtered.slice(8)).map((c) => {
+            const near = maxSimilarity(
+              c.fingerprint,
+              concepts.filter((x) => x.id !== c.id).map((x) => x.fingerprint),
+            );
+            return <ConceptTile key={c.id} concept={c} near={near} />;
+          })}
+        </>
       )}
     </div>
   );
