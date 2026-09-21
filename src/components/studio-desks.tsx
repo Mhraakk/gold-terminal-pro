@@ -885,55 +885,48 @@ export function StudioPapers() {
     );
   }
   return (
-    <section className="bmg-grid" data-recipe="board" aria-label="شناسنامه">
-      {concepts.map((c, i) => (
-        <NssCard key={c.id} tile stamp={<NdStamp index={i + 1} />}>
-          <p className="nss-label">گواهی اصالت زرین</p>
-          <p className="nss-body">{c.title}</p>
-          <p className="nss-meta">
-            {TYPE_LABEL[c.brief.productType]} · {KARAT_LABEL[c.specs.karat]} · {CITY_LABEL[c.city]}
-          </p>
-          <p className="nss-meta mt-2">
-            {c.limited ? `لیمیتد ${c.limited.series} · ${c.limited.edition}/${c.limited.of}` : "سری باز"}
-          </p>
-          {c.passport ? (
-            <>
-              <p className="nss-display mt-3" style={{ fontSize: 22, lineHeight: 1.2 }}>
-                {c.passport.serial}
-              </p>
-              <p className="nss-meta">
-                صادر {new Date(c.passport.issuedAt).toLocaleDateString("fa-IR")}
-              </p>
-              <p className="nss-body mt-3">گواهی اصالت صادر شده. سریال روی پکیج و شناسنامه یکی است.</p>
-              <Link to="/" search={{ desk: "dossier", concept: c.id }} className="nss-link mt-2 inline-block">
-                شناسنامه طرح
-              </Link>
-            </>
-          ) : (
-            <button
-              type="button"
-              className="nss-chip nss-link mt-3"
-              onClick={() => {
-                const serial = `ZR-${c.brief.karat}-${c.at.toString(36).toUpperCase()}`;
-                const next: Concept = {
-                  ...c,
-                  passport: { serial, issuedAt: Date.now() },
-                  limited: c.limited ?? { series: c.path, edition: 1, of: c.brief.level === "collector" ? 12 : 50 },
-                  set: {
-                    ...c.set,
-                    architecture: { ...c.set.architecture, serial: c.set.architecture.serial ?? serial },
-                  },
-                  version: c.version + 1,
-                  versions: [{ at: Date.now(), note: `شناسنامه ${serial}`, title: c.title }, ...c.versions],
-                };
-                void persist(next);
-              }}
-            >
-              صدور شناسنامه
-            </button>
-          )}
-        </NssCard>
-      ))}
+    <section className="za-stack za-stack-spin" aria-label="شناسنامه">
+      {concepts.map((c, i) => {
+        const still = plate(c);
+        return (
+          <article key={c.id} className="za-stack-card" style={{ top: 8 + i * 10 }}>
+            <img src={still.src} alt={still.alt} />
+            <div className="za-stack-body">
+              <p className="nss-meta">گواهی اصالت زرین · {i + 1}</p>
+              <p>{c.title}</p>
+              <p className="nss-meta">{TYPE_LABEL[c.brief.productType]} · {KARAT_LABEL[c.specs.karat]}</p>
+              {c.passport ? (
+                <>
+                  <p className="nss-meta">{c.passport.serial}</p>
+                  <Link to="/" search={{ desk: "dossier", concept: c.id }} className="nss-link">شناسنامه طرح</Link>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="nss-chip nss-link mt-2"
+                  onClick={() => {
+                    const serial = `ZR-${c.brief.karat}-${c.at.toString(36).toUpperCase()}`;
+                    const next: Concept = {
+                      ...c,
+                      limited: c.limited ?? { series: c.path, edition: 1, of: c.brief.level === "collector" ? 12 : 50 },
+                      passport: { serial, issuedAt: Date.now() },
+                      set: {
+                        ...c.set,
+                        architecture: { ...c.set.architecture, serial: c.set.architecture.serial ?? serial },
+                      },
+                      version: c.version + 1,
+                      versions: [{ at: Date.now(), note: `شناسنامه ${serial}`, title: c.title }, ...c.versions],
+                    };
+                    void persist(next);
+                  }}
+                >
+                  صدور گواهی
+                </button>
+              )}
+            </div>
+          </article>
+        );
+      })}
     </section>
   );
 }

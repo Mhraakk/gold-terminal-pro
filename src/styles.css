@@ -3991,9 +3991,26 @@ textarea {
   color: #f4efe4;
 }
 
-@keyframes za-stack-scale {
+.za-stack-spin .za-stack-card {
+  animation-name: za-stack-spin;
+  animation-range: exit 0% exit 80%;
+}
+
+.za-stack-spin .za-stack-card img {
+  animation: za-stack-spin-img linear both;
+  animation-timeline: view();
+  animation-range: exit 0% exit 80%;
+}
+
+@keyframes za-stack-spin {
   to {
-    transform: scale(0.94);
+    transform: scale(0.62) rotate(10deg);
+  }
+}
+
+@keyframes za-stack-spin-img {
+  to {
+    transform: rotate(-10deg) scale(1.18);
   }
 }
 
