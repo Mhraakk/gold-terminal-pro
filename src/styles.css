@@ -3991,8 +3991,17 @@ html[data-theme="light"] body {
   mix-blend-mode: difference;
 }
 
+.za-squircle-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.za-theme,
+.za-music,
 .za-pointer[data-on="true"] {
-  display: block;
+  filter: url(#za-squircle);
 }
 
 

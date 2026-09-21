@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { GoldPointer } from "@/components/gold-pointer";
 import { MusicToggle } from "@/components/music-toggle";
+import { SquircleFilter } from "@/components/squircle-filter";
 import { TextRoll } from "@/components/text-roll";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserButton } from "@/lib/auth/gates";
@@ -51,6 +52,7 @@ export function AppShell({
   return (
     <TooltipProvider>
     <div className="za-shell">
+      <SquircleFilter />
       <GoldPointer />
       <header className="za-top">
         <Tooltip>
