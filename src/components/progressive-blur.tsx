@@ -1,12 +1,3 @@
-export function ProgressiveBlur() {
-  return (
-    <div className="gradient-blur" aria-hidden="true">
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-    </div>
-  );
+export function ProgressiveBlur({ position }: { position: "top" | "bottom" }) {
+  return <div className={position === "top" ? "za-pblur is-top" : "za-pblur is-bot"} aria-hidden />;
 }

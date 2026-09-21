@@ -15,6 +15,7 @@ import {
 import { GoldPointer } from "@/components/gold-pointer";
 import { ArrowGo, BurgerIcon } from "@/components/motion-icons";
 import { MusicToggle } from "@/components/music-toggle";
+import { ProgressiveBlur } from "@/components/progressive-blur";
 import { ScrollRing } from "@/components/scroll-ring";
 import { ScrollStroke } from "@/components/scroll-stroke";
 import { SquircleFilter } from "@/components/squircle-filter";
@@ -88,6 +89,9 @@ export function AppShell({
         <p className="za-kicker">{title}</p>
         {children}
       </main>
+      <ProgressiveBlur position="top" />
+      <ProgressiveBlur position="bottom" />
+      <ScrollRing />
       {open ? (
         <div className="za-sheet" role="dialog" aria-label="میزهای دیگر">
           <button type="button" className="za-sheet-dismiss" onClick={() => setOpen(false)} aria-label="بستن" />
